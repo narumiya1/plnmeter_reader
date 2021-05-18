@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">PLN Meters</string>
+    <string name="navigation_drawer_open">navigation_drawer_open</string>
+    <string name="navigation_drawer_close">navigation_drawer_open</string>
+    <string name="open_nav_drawer">Open Nav Drawer</string>
+    <string name="close_nav_drawer">close</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_about">About</string>
+    <string name="nav_feedback">User</string>
+    <string name="nav_logout">Logout</string>
+
+    <string name="register">REGISTER</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Password</string>
+    <string name="signup_login_hint">Already have an account? Sign In</string>
+    <string name="login_signup_hint">Don\'t have an account? Sign Up</string>
+    <string name="alamat_hint">Alamat</string>
+    <string name="reg_password_hint">Retype Passwod</string>
+    <string name="login_phone_hint">phone number</string>
+    <string name="title_activity_auth">AuthActivity</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
+</resources>

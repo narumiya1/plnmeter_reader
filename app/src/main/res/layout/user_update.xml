@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@color/cardview_shadow_end_color"
+    app:cardBackgroundColor="@color/cardview_shadow_end_color"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="3dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+
+        <EditText
+            android:id="@+id/id_UsernameUpdated"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint=" update username"
+            android:textSize="18dp" />
+
+        <EditText
+            android:id="@+id/id_email_Update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_UsernameUpdated"
+            android:gravity="center"
+            android:hint=" update email"
+            android:textSize="18dp" />
+
+        <EditText
+            android:id="@+id/alamat_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_email_Update"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:hint="update "
+            android:textSize="18dp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/button_udpate_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/alamat_detail"
+            android:text="send" />
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#FDFBFB"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_marginTop="19dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cardview_shadow_end_color"
+        android:orientation="vertical"
+        tools:context="com.demotxt.droidsrce.profileui.MainActivity">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="190dp"
+                    android:layout_height="190dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="14dp"
+                    app:civ_border_color="#8E8998"
+                    app:civ_border_width="3dp" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+
+                android:orientation="vertical">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/ic_baseline_person_pin_24"
+                    app:civ_border_color="#BFB9CA"
+                    app:civ_border_width="3dp" />
+
+
+                <Button
+                    android:id="@+id/Btn_Save_Setup"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/design_default_color_primary"
+                    android:gravity="center"
+                    android:text="Save Photo"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/nameOneTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/ubunturegular"
+                    android:text="Nama"
+                    android:textColor="#403C3C"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginRight="24dp"
+                    android:background="@color/design_default_color_primary"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+            <!--   <androidx.cardview.widget.CardView
+                   android:layout_width="400dp"
+                   android:layout_height="80dp"
+                   android:layout_centerHorizontal="true"
+                   android:layout_marginTop="250dp">
+                  <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:orientation="horizontal"
+                       android:weightSum="3">
+                       <LinearLayout
+                           android:gravity="center"
+                           android:orientation="vertical"
+                           android:layout_width="0dp"
+                           android:layout_weight="1"
+                           android:layout_height="match_parent">
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Photos"
+                               android:textSize="20sp"
+                               />
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="125"
+                               android:textStyle="bold"
+                               android:textSize="20sp"
+                               android:paddingTop="10dp"
+                               android:textColor="@color/colorPrimaryDark"/>
+                       </LinearLayout>
+                       <LinearLayout
+                           android:gravity="center"
+                           android:orientation="vertical"
+                           android:layout_width="0dp"
+                           android:layout_weight="1"
+                           android:layout_height="match_parent">
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Followers"
+                               android:textSize="20sp"
+                               />
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="1205"
+                               android:textStyle="bold"
+                               android:textSize="20sp"
+                               android:paddingTop="10dp"
+                               android:textColor="@color/colorAccent"/>
+                       </LinearLayout>
+                       <LinearLayout
+                           android:gravity="center"
+                           android:orientation="vertical"
+                           android:layout_width="0dp"
+                           android:layout_weight="1"
+                           android:layout_height="match_parent">
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Following"
+                               android:textSize="20sp"
+                               />
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="360"
+                               android:textStyle="bold"
+                               android:textSize="20sp"
+                               android:paddingTop="10dp"
+                               android:textColor="@color/colorPrimary"/>
+                       </LinearLayout>
+                   </LinearLayout>
+               </androidx.cardview.widget.CardView>
+          -->
+        </RelativeLayout>
+
+        <LinearLayout
+            android:background="@drawable/line_background"
+            android:id="@+id/lLUpdate"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="25dp">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:textColor="#F3EEEE"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:paddingLeft="45dp">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_baseline_person_pin_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/ubunturegular"
+                    android:paddingLeft="18dp"
+                    android:text=" Name/Email "
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:textColor="#F3EEEE"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:paddingLeft="45dp">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_baseline_phone_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/ubunturegular"
+                    android:paddingLeft="20dp"
+                    android:text="Phone"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:paddingLeft="45dp">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_baseline_home_work_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/ubunturegular"
+                    android:paddingLeft="20dp"
+                    android:text="ID Pelanggan  "
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal"
+                android:paddingLeft="25dp"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_baseline_camera_alt_24" />
+
+                <TextView
+                    android:id="@+id/tv_password_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/ubunturegular"
+                    android:paddingLeft="20dp"
+                    android:text="Alamat  "
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_password_view_retype"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/ubunturegular"
+                    android:paddingLeft="20dp"
+                    android:text="Alamat  "
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <Button
+
+                    android:id="@+id/btn_updatedataacount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                   android:fontFamily="@font/ubunturegular"
+                    android:text="update data"
+                    android:textColor="#F6F4F4" />
+
+                <Button
+                    android:id="@+id/btn_lougout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginLeft="6dp"
+                   android:fontFamily="@font/ubunturegular"
+                    android:visibility="gone"
+                    android:text="Logout"
+                    android:textColor="#F6F4F4" />
+
+                <Button
+
+                    android:id="@+id/btn_insertdataacount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/ic_baseline_camera_alt_24"
+                    android:text="Kotlin"
+                    android:textColor="#F6F4F4"
+                    android:visibility="gone" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="No data received"
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtData"
+            android:layout_centerInParent="true"
+            android:fontFamily="serif-monospace"
+            android:text="my account"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <Button android:layout_marginBottom="40dp"
+        android:id="@+id/btnRetryConnect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Retry"
+        android:backgroundTint="@color/cardview_dark_background"
+        android:textColor="#fff"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"/>
+</RelativeLayout>
+
+
+

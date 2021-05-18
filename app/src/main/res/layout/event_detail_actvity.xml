@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@color/cardview_shadow_end_color"
+    app:cardBackgroundColor="@color/cardview_shadow_end_color"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="3dp">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    android:layout_gravity="center"
+    android:gravity="center">
+
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/id_AddressUpdated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="id address"
+        android:textSize="18dp" />
+
+    <EditText
+        android:layout_below="@id/id_AddressUpdated"
+        android:inputType="number"
+        android:hint=" update ID PLN"
+        android:id="@+id/idp_el_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="18dp" />
+
+    <EditText
+        android:id="@+id/alamat_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idp_el_detail"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:hint="alamat update"
+        android:textSize="18dp" />
+
+    <Button
+        android:layout_below="@id/alamat_detail"
+        android:id="@+id/button_udpate"
+        android:text="send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>
+</androidx.cardview.widget.CardView>

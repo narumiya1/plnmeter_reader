@@ -1,0 +1,102 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/loginCard"
+    android:layout_gravity="center"
+    android:layout_margin="8dp"
+    android:layout_marginTop="@dimen/loginViewsMargin"
+    android:layout_marginBottom="@dimen/loginViewsMargin"
+    android:background="@color/grey"
+    android:elevation="5dp"
+    app:cardCornerRadius="@dimen/loginCardRadius"
+    app:cardElevation="6dp">
+
+    <RelativeLayout
+        android:padding="14dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="6dp"
+            android:text="May I ask you phone number?"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:textColor="#293859" />
+
+        <TextView
+            android:textColor="#293859"
+            android:id="@+id/tv_keterangan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linearLayout"
+            android:layout_marginTop="0dp"
+            android:layout_weight="2"
+            android:digits="0123456789"
+            android:fontFamily="@font/ubunturegular"
+            android:gravity="center"
+            android:text="Format nomor dimulai telefon angka 8,\n contoh: 811234567, 896667890"
+            android:textSize="12sp"
+            android:textStyle="italic" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textView"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="horizontal"
+            android:padding="1dp">
+
+            <Spinner
+                android:id="@+id/spinnerCountries"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/editTextPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:digits="0123456789"
+                android:fontFamily="@font/ubunturegular"
+                android:hint=" 81320696782"
+                android:inputType="phone"
+                android:maxLength="13" />
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonContinue"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_keterangan"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:background="#293859"
+            android:text="Continue"
+            android:textAllCaps="false"
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:id="@+id/tv_login_reg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonContinue"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="14dp"
+            android:fontFamily="@font/ubunturegular"
+            android:gravity="center"
+            android:text="Have an account, login here"
+            android:textColor="#293859"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

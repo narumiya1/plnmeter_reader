@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/loginCard"
+    android:layout_gravity="center"
+    app:cardElevation="6dp"
+    android:layout_margin="8dp"
+    android:padding="6dp"
+    android:layout_marginTop="@dimen/loginViewsMargin"
+    android:layout_marginBottom="@dimen/loginViewsMargin"
+    android:background="@color/grey"
+    android:elevation="5dp"
+    app:cardCornerRadius="@dimen/loginCardRadius">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_centerInParent="true"
+    android:layout_gravity="center_vertical"
+    android:gravity="center">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:hint="Jalan" />
+
+        <EditText
+            android:id="@+id/desa"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/address"
+            android:gravity="center"
+            android:hint="Kp/Desa" />
+
+        <EditText
+            android:id="@+id/rt_rw"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/desa"
+            android:gravity="center"
+            android:hint="RT/RW" />
+
+        <EditText
+            android:id="@+id/kec"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rt_rw"
+            android:gravity="center"
+            android:hint="Kecamatan" />
+
+        <EditText
+            android:id="@+id/kota"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/kec"
+            android:gravity="center"
+            android:hint="Kota/Kab" />
+
+        <EditText
+            android:id="@+id/prov"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/kota"
+            android:gravity="center"
+            android:hint="Prov" />
+        <Button
+            android:id="@+id/btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/address"
+            android:layout_centerInParent="true"
+            android:layout_margin="12dp"
+            android:background="#000000"
+            android:text="send"
+            android:visibility="gone" />
+    </LinearLayout>
+
+
+    <EditText
+        android:id="@+id/addresselanggan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:gravity="center"
+        android:hint="Alamat Lengkap" />
+
+    <EditText
+        android:id="@+id/id_pelanggan_new"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_below="@id/addresselanggan"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:gravity="center"
+        android:hint="ID PLN Pelanggan" />
+
+    <Button
+        android:id="@+id/btnSendAlamat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/id_pelanggan_new"
+        android:layout_centerInParent="true"
+        android:layout_margin="12dp"
+        android:background="#000000"
+        android:text="send" />
+
+</RelativeLayout>
+</androidx.cardview.widget.CardView>
