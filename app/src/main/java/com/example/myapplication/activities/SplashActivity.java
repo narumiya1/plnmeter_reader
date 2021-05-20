@@ -43,6 +43,7 @@ public class SplashActivity extends AppCompatActivity {
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(i);
             Toast.makeText(SplashActivity.this, "Silahkan login kembali !", Toast.LENGTH_LONG).show();
+            session.setIsLogin(false);
 
         }
         finish();

@@ -6,13 +6,13 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Gspinner.class}, version = 5)
+@Database(entities = {Gspinner.class,GIndeksSpinner.class}, version = 10)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract GhistorySpinner gHistorySpinnerDao();
 
     //migrate for add table
     @VisibleForTesting
-    public static final Migration MIGRATION_1_5 = new Migration(1, 5) {
+    public static final Migration MIGRATION_1_6 = new Migration(1, 6) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE tbarang "
