@@ -58,7 +58,7 @@ public class EventDetailActivity extends AppCompatActivity {
         db = Room.databaseBuilder(getBaseContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
-                .addMigrations(AppDatabase.MIGRATION_1_5)
+                .addMigrations(AppDatabase.MIGRATION_1_6)
                 .build();
 
         int selection = db.gHistorySpinnerDao().selectIndeks(Integer.valueOf(userAddressId)) ;
@@ -116,9 +116,10 @@ public class EventDetailActivity extends AppCompatActivity {
                 mDatabaseRef.child("Address").child(userAddressId).child("alamat_pelanggan").setValue(String.valueOf(update_alamat));
                 mDatabaseRef.child("Address").child(userAddressId).child("id_pelanggan").setValue(String.valueOf(id_pln_update));
                 mDatabaseRef.child("Address").child(userAddressId).child("user_address_id").setValue(String.valueOf(userAddressId));
-
+                /* user db 2 not updated
                 mDatabaseRef.child("User2").child(sessionPrefference.getPhone()).child("address").setValue(String.valueOf(update_alamat));
                 mDatabaseRef.child("User2").child(sessionPrefference.getPhone()).child("id_pelanggan").setValue(String.valueOf(id_pln_update));
+                 */
 
                 Context context = view.getContext();
                 Intent intent = new Intent(context, MainActivity.class);

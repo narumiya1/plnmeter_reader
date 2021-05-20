@@ -82,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
-                .addMigrations(AppDatabase.MIGRATION_1_5)
+                .addMigrations(AppDatabase.MIGRATION_1_6)
                 .build();
         sessionPrefference = new SessionPrefference(getApplicationContext());
 
@@ -201,9 +201,11 @@ public class RegisterActivity extends AppCompatActivity {
                 DataUser accounts = new DataUser(userId,idPelanggan, name,userName, userEmail, userAlamat,getPhone, passwordUser);
                 databaseReference.child(userPhoneReg).setValue(accounts);
 
-                //db2
-                PelangganyAlamat pelangganyAlamat1 = new PelangganyAlamat(userId,idPelanggan,userAlamat,userAddressId);
+                //db2 edit 19 05 2021
+                PelangganyAlamat pelangganyAlamat1 = new PelangganyAlamat(userAlamat,userId,idPelanggan,sessionPrefference.getPhone(), userAddressId);
                 databaseReference2.child(userAddressId).setValue(pelangganyAlamat1);
+//                PelangganyAlamat pelangganyAlamat1 = new PelangganyAlamat(userId,idPelanggan,userAlamat,userAddressId);
+//                databaseReference2.child(userAddressId).setValue(pelangganyAlamat1);
 
                 sessionPrefference.setUserId(userId);
                 sessionPrefference.setUserAddressId(userAddressId);

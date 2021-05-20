@@ -21,6 +21,7 @@ import com.example.myapplication.model.DataUser;
 import com.example.myapplication.model.PelangganyAlamat;
 import com.example.myapplication.preference.SessionPrefference;
 import com.example.myapplication.roomDb.AppDatabase;
+import com.example.myapplication.roomDb.GIndeksSpinner;
 import com.example.myapplication.roomDb.Gspinner;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -64,7 +65,7 @@ public class FormAddress extends AppCompatActivity {
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
-                .addMigrations(AppDatabase.MIGRATION_1_5)
+                .addMigrations(AppDatabase.MIGRATION_1_6)
                 .build();
         databaseReference2 = FirebaseDatabase.getInstance().getReference().child("Address");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
