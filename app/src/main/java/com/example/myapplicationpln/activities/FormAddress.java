@@ -1,4 +1,4 @@
-package com.example.myapplication.activities;
+package com.example.myapplicationpln.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -8,29 +8,24 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
-import com.example.myapplication.MainActivity;
-import com.example.myapplication.R;
-import com.example.myapplication.model.DataUser;
-import com.example.myapplication.model.PelangganyAlamat;
-import com.example.myapplication.preference.SessionPrefference;
-import com.example.myapplication.roomDb.AppDatabase;
-import com.example.myapplication.roomDb.GIndeksSpinner;
-import com.example.myapplication.roomDb.Gspinner;
+import com.example.myapplicationpln.MainActivity;
+import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.model.PelangganyAlamat;
+import com.example.myapplicationpln.preference.SessionPrefference;
+import com.example.myapplicationpln.roomDb.AppDatabase;
+import com.example.myapplicationpln.roomDb.Gspinner;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 public class FormAddress extends AppCompatActivity {

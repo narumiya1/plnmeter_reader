@@ -1,4 +1,4 @@
-package com.example.myapplication.roomDb;
+package com.example.myapplicationpln.roomDb;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.room.Database;

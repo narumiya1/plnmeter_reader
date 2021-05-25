@@ -1,11 +1,10 @@
-package com.example.myapplication.preference;
+package com.example.myapplicationpln.preference;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.example.myapplication.activities.LoginActivity;
-import com.example.myapplication.activities.RegisterActivity;
+import com.example.myapplicationpln.activities.LoginActivity;
 
 public class SessionPrefference {
     SharedPreferences pref;

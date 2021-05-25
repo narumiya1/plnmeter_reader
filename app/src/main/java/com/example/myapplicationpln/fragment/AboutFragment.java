@@ -1,4 +1,4 @@
-package com.example.myapplication.fragment;
+package com.example.myapplicationpln.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.myapplication.R;
+import com.example.myapplicationpln.R;
 
 public class AboutFragment extends Fragment {
     public AboutFragment() {

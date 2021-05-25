@@ -1,11 +1,12 @@
-package com.example.myapplication.model;
+package com.example.myapplicationpln.model;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
 public class DataUser implements Serializable {
-
+    @SerializedName("id")
+    private String id;
     @SerializedName("id_user")
     private String id_user;
 
@@ -31,7 +32,8 @@ public class DataUser implements Serializable {
     public DataUser(String name){
         this.name=name;
     }
-    public DataUser(String id_user,String id_pelanggan, String name,String username, String email, String address, String phone, String password) {
+    public DataUser(String id,String id_user,String id_pelanggan, String name,String username, String email, String address, String phone, String password) {
+        this.id= id;
         this.id_user = id_user;
         this.id_pelanggan = id_pelanggan;
         this.name=name;

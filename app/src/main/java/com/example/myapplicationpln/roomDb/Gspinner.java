@@ -1,11 +1,11 @@
-package com.example.myapplication.roomDb;
+package com.example.myapplicationpln.roomDb;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.example.myapplication.date.TimeStampConverters;
+import com.example.myapplicationpln.date.TimeStampConverters;
 
 import java.io.Serializable;
 import java.util.Date;

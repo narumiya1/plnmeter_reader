@@ -1,4 +1,4 @@
-package com.example.myapplication.activities;
+package com.example.myapplicationpln.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.R;
-import com.example.myapplication.model.DataUser;
+import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.model.DataUser;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;

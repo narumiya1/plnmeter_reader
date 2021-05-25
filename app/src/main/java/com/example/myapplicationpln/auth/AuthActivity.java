@@ -1,10 +1,10 @@
-package com.example.myapplication.auth;
+package com.example.myapplicationpln.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -12,10 +12,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.R;
-import com.example.myapplication.activities.LoginActivity;
-import com.example.myapplication.activities.RegisterActivity;
-import com.example.myapplication.preference.SessionPrefference;
+import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.activities.LoginActivity;
+import com.example.myapplicationpln.activities.RegisterActivity;
+import com.example.myapplicationpln.preference.SessionPrefference;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -63,7 +63,8 @@ public class AuthActivity extends AppCompatActivity {
                 }
 
                 String phoneNumber = "+" + code + number;
-
+                Log.d("Body phoneNumber ", " phoneNumber : " + phoneNumber + " ");
+                sessionPrefference.setPhone(phoneNumber);
                 Intent intent = new Intent(AuthActivity.this, VerifyPhoneActivity.class);
                 intent.putExtra("phonenumber", phoneNumber);
                 startActivity(intent);

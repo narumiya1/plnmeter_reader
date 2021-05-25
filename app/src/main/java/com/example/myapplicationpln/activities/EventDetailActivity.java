@@ -1,4 +1,4 @@
-package com.example.myapplication.activities;
+package com.example.myapplicationpln.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,20 +10,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
-import com.example.myapplication.MainActivity;
-import com.example.myapplication.R;
-import com.example.myapplication.model.PelangganyAlamat;
-import com.example.myapplication.preference.SessionPrefference;
-import com.example.myapplication.roomDb.AppDatabase;
-import com.example.myapplication.roomDb.Gspinner;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.badge.BadgeUtils;
+import com.example.myapplicationpln.MainActivity;
+import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.preference.SessionPrefference;
+import com.example.myapplicationpln.roomDb.AppDatabase;
+import com.example.myapplicationpln.roomDb.Gspinner;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;

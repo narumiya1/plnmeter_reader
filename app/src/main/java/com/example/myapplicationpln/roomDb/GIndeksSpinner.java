@@ -1,14 +1,10 @@
-package com.example.myapplication.roomDb;
+package com.example.myapplicationpln.roomDb;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
 
 @Entity(tableName = "tbIndeks")
 public class GIndeksSpinner implements Serializable {

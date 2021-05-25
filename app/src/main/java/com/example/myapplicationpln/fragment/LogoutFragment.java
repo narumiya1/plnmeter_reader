@@ -1,4 +1,4 @@
-package com.example.myapplication.fragment;
+package com.example.myapplicationpln.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,8 +9,9 @@ import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.myapplication.R;
-import com.example.myapplication.preference.SessionPrefference;
+import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.preference.SessionPrefference;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class LogoutFragment extends Fragment {
     Button logout ;
@@ -29,9 +30,10 @@ public class LogoutFragment extends Fragment {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
                 sessionPrefference.setPhone("");
                 sessionPrefference.setPassword("");
-//                sessionPrefference.setUserId("");
+                sessionPrefference.setUserId("");
                 sessionPrefference.setIdPelanggan("");
                 sessionPrefference.logoutUser();
                 sessionPrefference.setIsLogin(false);

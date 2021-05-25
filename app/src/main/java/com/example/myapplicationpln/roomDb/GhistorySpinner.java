@@ -1,4 +1,4 @@
-package com.example.myapplication.roomDb;
+package com.example.myapplicationpln.roomDb;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
