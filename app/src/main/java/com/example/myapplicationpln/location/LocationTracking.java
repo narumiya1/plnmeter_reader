@@ -1,4 +1,4 @@
-package com.example.myapplication.location;
+package com.example.myapplicationpln.location;
 
 import android.Manifest;
 import android.app.AlertDialog;
