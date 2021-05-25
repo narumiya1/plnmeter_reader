@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplicationpln;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -17,12 +17,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.myapplication.fragment.AboutFragment;
-import com.example.myapplication.fragment.HomeMenuFragment;
-import com.example.myapplication.fragment.LogoutFragment;
-import com.example.myapplication.fragment.UserDataFragment;
-import com.example.myapplication.preference.SessionPrefference;
-import com.example.myapplication.model.DataUser;
+import com.example.myapplicationpln.activities.LoginActivity;
+import com.example.myapplicationpln.fragment.AboutFragment;
+import com.example.myapplicationpln.fragment.HistoryFragment;
+import com.example.myapplicationpln.fragment.HomeMenuFragment;
+import com.example.myapplicationpln.fragment.LogoutFragment;
+import com.example.myapplicationpln.fragment.UserDataFragment;
+import com.example.myapplicationpln.preference.SessionPrefference;
+import com.example.myapplicationpln.model.DataUser;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,7 +50,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         sessionPrefference = new SessionPrefference(getApplicationContext());
 
         dataUser = new DataUser();
-
+        if (!sessionPrefference.isLoggedIn()) {
+            String jwtNull = "";
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            sessionPrefference.setKeyApiJwt(jwtNull);
+            sessionPrefference.setIsLogin(false);
+            sessionPrefference.logoutUser();
+            startActivity(intent);
+        }
+        String jwtKey =  new SessionPrefference(getApplicationContext()).getKeyApiJwt();
+        String jwt = "";
+        Log.d("Body jwtKeys", "String jwtKey : " +jwtKey);
+        if (jwtKey.equals(jwt)){
+            sessionPrefference.setIsLogin(false);
+            sessionPrefference.logoutUser();
+        }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -105,6 +121,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id) {
             case R.id.nav_home:
                 fg = new HomeMenuFragment();
+                break;
+            case R.id.nav_history:
+                fg = new HistoryFragment();
                 break;
             case R.id.nav_about:
                 fg = new AboutFragment();
