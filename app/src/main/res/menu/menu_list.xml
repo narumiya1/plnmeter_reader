@@ -8,13 +8,17 @@
             android:icon="@android:drawable/ic_dialog_dialer"
             android:title="@string/nav_home" />
         <item
+            android:id="@+id/nav_history"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="@string/nav_historiy" />
+        <item
             android:id="@+id/nav_about"
-            android:icon="@android:drawable/ic_menu_sort_by_size"
+            android:icon="@android:drawable/ic_dialog_info"
             android:title="@string/nav_about" />
     </group>
     <item
         android:id="@+id/nav_user"
-        android:icon="@android:drawable/ic_menu_agenda"
+        android:icon="@android:drawable/ic_menu_today"
         android:title="@string/nav_feedback" />
     <item
         android:id="@+id/nav_logout"
