@@ -1,41 +1,108 @@
 {
   "project_info": {
-    "project_number": "613164718268",
-    "project_id": "plnmeters",
-    "storage_bucket": "plnmeters.appspot.com"
+    "project_number": "832490315189",
+    "firebase_url": "https://asp-mvc-with-android-d4bd2-default-rtdb.firebaseio.com",
+    "project_id": "asp-mvc-with-android-d4bd2",
+    "storage_bucket": "asp-mvc-with-android-d4bd2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:613164718268:android:d9288fda50ba75a7e598b9",
+        "mobilesdk_app_id": "1:832490315189:android:f0231a878cf6fad5e18dfc",
         "android_client_info": {
           "package_name": "com.example.myapplication"
         }
       },
       "oauth_client": [
         {
-          "client_id": "613164718268-3smf6vn4hs450e4cr0a05rgksr2ttmoo.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.myapplication",
-            "certificate_hash": "2665fca4027ff5318a444b04a03ea64076683140"
-          }
-        },
-        {
-          "client_id": "613164718268-ke6o0j69pp9p9bmc1qnhlf2ip2di9v7m.apps.googleusercontent.com",
+          "client_id": "832490315189-n7l7nenq2um3cosmh34davgne5pe9nca.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyApynVITqmTSrA82QHIyy2QhTB4qlRqwbg"
+          "current_key": "AIzaSyD9KKojjs8i5DLmP1zbX-4cn7iX7p81z1s"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "613164718268-ke6o0j69pp9p9bmc1qnhlf2ip2di9v7m.apps.googleusercontent.com",
+              "client_id": "832490315189-n7l7nenq2um3cosmh34davgne5pe9nca.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832490315189:android:e262aa52ae8e0808e18dfc",
+        "android_client_info": {
+          "package_name": "com.example.myapplicationpln"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "832490315189-a9fo3gaprjr1r7dh4t705ep3e0buchfj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.myapplicationpln",
+            "certificate_hash": "2665fca4027ff5318a444b04a03ea64076683140"
+          }
+        },
+        {
+          "client_id": "832490315189-n7l7nenq2um3cosmh34davgne5pe9nca.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9KKojjs8i5DLmP1zbX-4cn7iX7p81z1s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "832490315189-n7l7nenq2um3cosmh34davgne5pe9nca.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832490315189:android:4eb80ed9fb937938e18dfc",
+        "android_client_info": {
+          "package_name": "com.example.uploadandviewimages"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "832490315189-s8ku0g7bd6d899sep7gql2b24k93hslc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.uploadandviewimages",
+            "certificate_hash": "2665fca4027ff5318a444b04a03ea64076683140"
+          }
+        },
+        {
+          "client_id": "832490315189-n7l7nenq2um3cosmh34davgne5pe9nca.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9KKojjs8i5DLmP1zbX-4cn7iX7p81z1s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "832490315189-n7l7nenq2um3cosmh34davgne5pe9nca.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
