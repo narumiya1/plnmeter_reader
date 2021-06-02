@@ -1,7 +1,8 @@
-package com.example.myapplication.auth;
+package com.example.myapplicationpln.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -11,9 +12,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.R;
-import com.example.myapplication.activities.RegisterActivity;
-import com.example.myapplication.preference.SessionPrefference;
+import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.activities.RegisterActivity;
+import com.example.myapplicationpln.preference.SessionPrefference;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -47,6 +48,7 @@ public class VerifyPhoneActivity extends AppCompatActivity{
 
             String phonenumber = getIntent().getStringExtra("phonenumber");
 
+
             sendVerificationCode(phonenumber);
 
             findViewById(R.id.buttonSignIn).setOnClickListener(new View.OnClickListener() {
@@ -79,14 +81,16 @@ public class VerifyPhoneActivity extends AppCompatActivity{
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
 
-//                                String phone = mAuth.getCurrentUser().getPhoneNumber();
+                                String id_auth = mAuth.getCurrentUser().getUid();
+                                Log.d("DATA CHANGEt id_auth ver ", " - : " + id_auth);
                                 String phone = sessionPrefference.getPhone();
 
-                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User2").child(phone);
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(phone);
                                 if (databaseReference.child("email")!=null){
                                     Intent intent = new Intent(VerifyPhoneActivity.this, RegisterActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     Toast.makeText(getApplicationContext(), " isi data  untuk melanjutkn", Toast.LENGTH_LONG).show();
+
 
 
                                     startActivity(intent);

@@ -1,4 +1,4 @@
-package com.example.myapplication.activities;
+package com.example.myapplicationpln.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -18,13 +18,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
-import com.example.myapplication.MainActivity;
-import com.example.myapplication.R;
-import com.example.myapplication.model.PelangganyAlamat;
-import com.example.myapplication.preference.SessionPrefference;
-import com.example.myapplication.model.DataUser;
-import com.example.myapplication.roomDb.AppDatabase;
-import com.example.myapplication.roomDb.Gspinner;
+import com.example.myapplicationpln.MainActivity;
+import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.model.PelangganyAlamat;
+import com.example.myapplicationpln.preference.SessionPrefference;
+import com.example.myapplicationpln.model.DataUser;
+import com.example.myapplicationpln.roomDb.AppDatabase;
+import com.example.myapplicationpln.roomDb.Gspinner;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,13 +33,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText nameA, id_user,id_pelanggan, username, email, alamat, password, retype_password, mobilephone;
+    String phone, id_auth; FirebaseAuth mAuth;
     private TextView addresses ;
     private TextView tv_login ;
     private Button btn_register ;
@@ -77,6 +77,8 @@ public class RegisterActivity extends AppCompatActivity {
         mobilephone = findViewById(R.id.userPhone);
         btn_register = findViewById(R.id.btn_register);
         tv_login = findViewById(R.id.textview_login);
+        mAuth = FirebaseAuth.getInstance();
+        id_auth = mAuth.getCurrentUser().getUid();
 
         addresses = findViewById(R.id.et_insert_address);
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tbGrainHistory")
@@ -87,7 +89,7 @@ public class RegisterActivity extends AppCompatActivity {
         sessionPrefference = new SessionPrefference(getApplicationContext());
 
         //Firebase DBReference
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("User2");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("User");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -140,7 +142,7 @@ public class RegisterActivity extends AppCompatActivity {
             addresses.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String phone  = mobilephone.getText().toString();
+                    String phone  = sessionPrefference.getPhone();
                     sessionPrefference.setPhone(phone);
                     Intent intent = new Intent(RegisterActivity.this, FormAddress.class);
                     startActivity(intent);
@@ -160,9 +162,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
         */
 
-        String phone  = mobilephone.getText().toString();
+         phone  = sessionPrefference.getPhone();
         String address  = alamat.getText().toString();
-
+        mobilephone.setText(phone);
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -172,6 +174,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                 String userId, idPelanggan, name,userName, userEmail, userAlamat, userPhone, passwordUser, retypePasswordUser, userPhoneReg;
                 String userAddressId;
+                Log.d("DATA  id_auth regh", "id_auth: " + id_auth);
+                String id = id_auth;
                 userId = String.valueOf(maxIdUser+1);
                 userAddressId = String.valueOf(maxIdAddress+1);
                 idPelanggan = id_pelanggan.getText().toString();
@@ -181,16 +185,18 @@ public class RegisterActivity extends AppCompatActivity {
                 userAlamat = alamat.getText().toString();
                 passwordUser = password.getText().toString();
                 userPhoneReg = mobilephone.getText().toString();
-                sessionPrefference.setPhone(userPhoneReg);
+                sessionPrefference.setPhone(phone);
 
 //                userPhone = sessionPrefference.getPhone();
 
-                String getPhone = sessionPrefference.getPhone();
+                String getPhone = phone;
+                Log.d("Body getPhone", "Response: "+getPhone);
+
                 retypePasswordUser = retype_password.getText().toString();
 
                 if (!TextUtils.isEmpty(passwordUser) && !TextUtils.isEmpty(retypePasswordUser)) {
                     if (passwordUser.equals(retypePasswordUser)) {
-                        Toast.makeText(RegisterActivity.this, " Isi data sukses, silahkan lanjutkan ", Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegisterActivity.this, " Isi data suksesz", Toast.LENGTH_LONG).show();
 
                     } else {
                         Toast.makeText(RegisterActivity.this, "password doesnt match", Toast.LENGTH_SHORT).show();
@@ -198,8 +204,8 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 //db1
-                DataUser accounts = new DataUser(userId,idPelanggan, name,userName, userEmail, userAlamat,getPhone, passwordUser);
-                databaseReference.child(userPhoneReg).setValue(accounts);
+                DataUser accounts = new DataUser(id_auth,userId,idPelanggan, name,userName, userEmail, userAlamat,getPhone, passwordUser);
+                databaseReference.child(phone).setValue(accounts);
 
                 //db2 edit 19 05 2021
                 PelangganyAlamat pelangganyAlamat1 = new PelangganyAlamat(userAlamat,userId,idPelanggan,sessionPrefference.getPhone(), userAddressId);
@@ -210,12 +216,12 @@ public class RegisterActivity extends AppCompatActivity {
                 sessionPrefference.setUserId(userId);
                 sessionPrefference.setUserAddressId(userAddressId);
                 sessionPrefference.setIdPelanggan(idPelanggan);
-                sessionPrefference.setPhone(userPhoneReg);
+                sessionPrefference.setPhone(getPhone);
                 // reference.ref(address).orderBy(userPhone).equalTo(userPhone);
                 Log.d("Body userId", "userId: "+userId);
                 Log.d("Body userAddressId", "userAddressId: "+userAddressId);
                 Log.d("Body idPelanggan", "idPelanggan: "+idPelanggan);
-                Log.d("Body phone", "phone: "+userPhoneReg);
+                Log.d("Body phone", "phone: "+phone);
 
                 sessionPrefference.setIsLogin(true);
 
