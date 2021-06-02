@@ -1,4 +1,4 @@
-package com.example.myapplication.activities;
+package com.example.myapplicationpln.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,8 +11,8 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.MainActivity;
-import com.example.myapplication.R;
+import com.example.myapplicationpln.MainActivity;
+import com.example.myapplicationpln.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -52,8 +52,8 @@ public class UpdateUserData extends AppCompatActivity {
                 String update_username = usernametxt.getText().toString();
                 String update_email = email.getText().toString();
 
-                mDatabaseRef.child("User2").child(userPhone).child("username").setValue(String.valueOf(update_username));
-                mDatabaseRef.child("User2").child(userPhone).child("email").setValue(String.valueOf(update_email));
+                mDatabaseRef.child("User").child(userPhone).child("username").setValue(String.valueOf(update_username));
+                mDatabaseRef.child("User").child(userPhone).child("email").setValue(String.valueOf(update_email));
 
                 Context context = view.getContext();
                 Intent intent = new Intent(context, MainActivity.class);

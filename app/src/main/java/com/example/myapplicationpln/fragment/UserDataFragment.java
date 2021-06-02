@@ -1,4 +1,4 @@
-package com.example.myapplication.fragment;
+package com.example.myapplicationpln.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -17,11 +17,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.myapplication.R;
-import com.example.myapplication.activities.FirebaseRecyclerAdapterAddress;
-import com.example.myapplication.activities.UpdateUserData;
-import com.example.myapplication.preference.SessionPrefference;
-import com.example.myapplication.model.DataUser;
+import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.activities.FirebaseRecyclerAdapterAddress;
+import com.example.myapplicationpln.activities.UpdateUserData;
+import com.example.myapplicationpln.preference.SessionPrefference;
+import com.example.myapplicationpln.model.DataUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -93,7 +93,7 @@ public class UserDataFragment extends Fragment {
         firebase.database().ref('works').orderBy('customerKey').equalTo('customerKey2')
         */
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child("User2").child(String.valueOf(numberPhone));
+        Query query = reference.child("User").child(String.valueOf(numberPhone));
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
