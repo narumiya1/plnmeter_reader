@@ -1,29 +1,38 @@
-package com.example.myapplication.fragment;
+package com.example.myapplicationpln.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Typeface;
+import android.graphics.pdf.PdfDocument;
 import android.media.ExifInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,17 +50,29 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.room.Room;
 
-import com.example.myapplication.R;
-import com.example.myapplication.location.LocationTracking;
-import com.example.myapplication.model.DataUser;
-import com.example.myapplication.model.IndeksSpinnrFirebase;
-import com.example.myapplication.model.PelangganyAlamat;
-import com.example.myapplication.preference.SessionPrefference;
-import com.example.myapplication.roomDb.AppDatabase;
-import com.example.myapplication.roomDb.GIndeksSpinner;
-import com.example.myapplication.roomDb.Gspinner;
+import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.activities.UpdateUserData;
+import com.example.myapplicationpln.cookies.AddCookiesInterceptor;
+import com.example.myapplicationpln.cookies.ReceivedCookiesInterceptor;
+import com.example.myapplicationpln.cookies.TokenInterceptor;
+import com.example.myapplicationpln.location.LocationTracking;
+import com.example.myapplicationpln.model.DataUser;
+import com.example.myapplicationpln.model.History;
+import com.example.myapplicationpln.model.MeterApi;
+import com.example.myapplicationpln.model.PLNDataModel;
+import com.example.myapplicationpln.model.PelangganyAlamat;
+import com.example.myapplicationpln.model.SpinnerSelection;
+import com.example.myapplicationpln.model.SpinnerSelectx;
+import com.example.myapplicationpln.network_retrofit.ApiClient;
+import com.example.myapplicationpln.network_retrofit.PLNData;
+import com.example.myapplicationpln.preference.SessionPrefference;
+import com.example.myapplicationpln.roomDb.AppDatabase;
+import com.example.myapplicationpln.roomDb.GIndeksSpinner;
+import com.example.myapplicationpln.roomDb.Gimage;
+import com.example.myapplicationpln.roomDb.Gspinner;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 import com.google.firebase.database.DataSnapshot;
@@ -60,6 +81,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -67,11 +90,30 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -88,17 +130,25 @@ public class HomeMenuFragment extends Fragment {
     private final static int ALL_PERMISSIONS_RESULT = 101;
     private ArrayList<Gspinner> listGrainType;
     private AppDatabase db;
-
+    String grain_slected;
+    String valueSpinner;
+    int spinnrVal;
     private static final String TAG = "CalculatorFragment";
     LocationTracking locationTracking;
     StringBuilder input, top;
-    TextView disp, disp2;
+    TextView hasilMeter, hasilScore, hasilIdentify;
+    DatabaseReference databaseReferenceHistory;
+    DatabaseReference mDatabaseRefApiMeter;
+    long maxIdHistory;
     View layout;
     boolean eqlFlag = false;
     ArrayList<String> arrayListz;
     private FirebaseDatabase mDatabase;
     private Query mUserDatabase, mUserDatabase2;
     PelangganyAlamat dataUser = new PelangganyAlamat();
+    MeterApi meterApi = new MeterApi();
+//    SpinnerSelection spinnerSelection = new SpinnerSelection();
+    SpinnerSelectx spinnerSelectx = new SpinnerSelectx();
     SessionPrefference sessionPrefference;
     String selectedValue;
     PhotoView photoView;
@@ -120,6 +170,43 @@ public class HomeMenuFragment extends Fragment {
 //        layout =inflater.inflate(R.layout.fragment_home_menu, container,false);
         add_photo = view.findViewById(R.id.imageview_add);
         photoView=view.findViewById(R.id.photo_view);
+        hasilMeter=view.findViewById(R.id.tv_meter);
+        hasilScore = view.findViewById(R.id.tv_scoreClassify);
+        hasilIdentify = view.findViewById(R.id.tv_scoreIdentify);
+        sessionPrefference = new SessionPrefference(getActivity());
+        DatabaseReference referenceMeter = FirebaseDatabase.getInstance().getReference();
+
+
+
+        Query querymeter = referenceMeter.child("MeterApi").child(sessionPrefference.getPhone());
+        querymeter.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Log.d("DATA CHANGEt", "onDataChange: " + dataSnapshot.getValue());
+                    meterApi = dataSnapshot.getValue(MeterApi.class);
+                    Log.d("DATA getMeter_value", "onDataChange: " + meterApi.getMeter_value());
+                    String meter = meterApi.getMeter_value();
+                    String clasfy = meterApi.getClassify_long();
+                    String idfy = meterApi.getIdentify_value();
+                    String created = meterApi.getCreated_at();
+                    Log.d("DATA meterApi", "meterApi: " +meter );
+                    Log.d("DATA createdAt", "created: " +created );
+                    hasilMeter.setText(meter);
+                    hasilScore.setText(clasfy);
+                    hasilIdentify.setText(idfy);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        Date date = new Date();
+        Log.d("Body myArrays ", " myArrays : " + date + " ");
+
         dialog = new Dialog(getActivity());
         ceklocation();
         permissions.add(ACCESS_FINE_LOCATION);
@@ -141,9 +228,27 @@ public class HomeMenuFragment extends Fragment {
             if (permissionsToRequest.size() > 0)
                 requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
+        databaseReferenceHistory = FirebaseDatabase.getInstance().getReference().child("History");
+        DatabaseReference referenceHistory = FirebaseDatabase.getInstance().getReference();
+        databaseReferenceHistory.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    maxIdHistory = (snapshot.getChildrenCount());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         // 19 05
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mDatabaseRef = database.getReference();
+        DatabaseReference mDatabaseRefs = database.getReference();
+        mDatabaseRefApiMeter = database.getReference();
         locationTracking = new LocationTracking(getActivity());
         final Spinner list = view.findViewById(R.id.listItemz);
         //1 Arraylist
@@ -159,13 +264,52 @@ public class HomeMenuFragment extends Fragment {
                 .addMigrations(AppDatabase.MIGRATION_1_6)
                 .build();
 //        List<Integer> lables = db.gHistorySpinnerDao().getAllLItems();
+        List<String> statusImg = db.gHistorySpinnerDao().getImageStorage();
+        statusImg.size();
+        if(statusImg.size()==0&&statusImg.size()<0){
+            Log.d("AAABL", "No file");
+
+
+        }
+        else if(statusImg.size()>0) {
+
+            mImageFileLocation =  statusImg.get(statusImg.size()-1);
+            File imgFile = new File(mImageFileLocation);
+            int length = (int) imgFile.length();
+            Log.d("Upload length respons", "String respons length : " +length);
+            if (imgFile.exists())
+            {
+                Bitmap bitmap ;
+                BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+                bitmap = BitmapFactory.decodeFile(mImageFileLocation,
+                        bitmapOptions);
+                bitmap = Bitmap.createScaledBitmap(bitmap, 200,200, true);
+
+                encodeTobase64(bitmap);
+//                decodeBase64(mImageFileLocation);
+                photoView = (PhotoView) view.findViewById(R.id.photo_view);
+                photoView.setVisibility(View.VISIBLE);
+                photoView.setImageBitmap(BitmapFactory.decodeFile(mImageFileLocation));
+
+                PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(photoView);
+                photoViewAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            }
+            else
+            {
+                Log.d("AAABL", "No file");
+            }
+        }
+
         Integer[] myArrays = db.gHistorySpinnerDao().getAllLItemsArray();
         Log.d("Body myArrays ", " myArrays : " + myArrays + " ");
 
         // call spinner from firebase
-        sessionPrefference = new SessionPrefference(getActivity());
+        String id_user = sessionPrefference.getUserId();
+        String jwtTokensz = sessionPrefference.getKeyApiJwt();
+        Log.d("Body id_userid_user ", " id_user : " + id_user + " ");
+        Log.d("Body jwtTokensz ", " jwtTokensz : " + jwtTokensz + " ");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child("Address").orderByChild("id_user").equalTo(sessionPrefference.getUserId());
+        Query query = reference.child("Address").orderByChild("id_user").equalTo(id_user);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -185,12 +329,43 @@ public class HomeMenuFragment extends Fragment {
                 areasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(areasAdapter);
 
+                DatabaseReference references = FirebaseDatabase.getInstance().getReference();
+                Query queryx = references.child("SpinnerDbx").child(sessionPrefference.getPhone());
+                queryx.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            Log.d("DATA CHANGEx", "onDataChange: " + dataSnapshot.getValue(SpinnerSelectx.class));
+                            spinnerSelectx = dataSnapshot.getValue(SpinnerSelectx.class);
+                            Log.d("DATA Yosikhi hyde", " : " + spinnerSelectx.getSpinner_value());
+                            String hyde = spinnerSelectx.getSpinner_long();
+                            valueSpinner = spinnerSelectx.getSpinner_value();
+                            Log.d("DATA CHANGE hyde", " : " + hyde + " valueSpinner : "+valueSpinner+"");
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                Log.d("DATA valueSpinner hyde", " valueSpinner 2: " +valueSpinner+ "");
+                spinner.setSelection(1);
+
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         Toast.makeText(getActivity(), " " + areasAdapter.getItem(i) + " choosen ", Toast.LENGTH_SHORT).show();
                         Log.d("DATA CHANGE choosen", "choosen: " + areasAdapter.getItem(i) + " choosen");
+                        grain_slected = areasAdapter.getItem(i);
+                        mDatabaseRefs.child("SpinnerDbx").child(sessionPrefference.getPhone()).child("spinner_value").setValue(String.valueOf(i));
+                        mDatabaseRefs.child("SpinnerDbx").child(sessionPrefference.getPhone()).child("spinner_long").setValue(String.valueOf(grain_slected));
+                        spinnerSelectx.setSpinner_value(String.valueOf(i));
+                        spinnerSelectx.setSpinner_long(areasAdapter.getItem(i));
+                        Log.d("DATA CHANGE grain_slected", "grain_slected: " + areasAdapter.getItem(i) + " choosen");
 
+                        adapterView.setTag(grain_slected);
                         String value = areasAdapter.getItem(i);
                         String id_user = sessionPrefference.getUserId();
 
@@ -330,7 +505,23 @@ public class HomeMenuFragment extends Fragment {
 
         return view;
     }
+   /*
+    if isConnected -> connect to firebase
+    else -> check local
+    */
+    private boolean isConnected() {
+        boolean connected = false;
+        try {
+            ConnectivityManager cm = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo nInfo = cm.getActiveNetworkInfo();
+            connected = nInfo != null && nInfo.isAvailable() && nInfo.isConnected();
+            return connected;
+        } catch (Exception e) {
+            Log.e("Connectivity Exception", e.getMessage());
+        }
+        return connected;
 
+    }
     private void selectImages() {
         dialog.setTitle("Image");
         dialog.setContentView(R.layout.dialog_custom_design);
@@ -421,6 +612,8 @@ public class HomeMenuFragment extends Fragment {
         mImageFileLocation = image.getAbsolutePath();
         return image;
     }
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode,permissions, grantResults );
         switch (requestCode) {
@@ -607,9 +800,13 @@ public class HomeMenuFragment extends Fragment {
                     viewImage.setImageBitmap(mutableBitmap);
                     viewImage.invalidate(); */
 
-
+                    dialog.dismiss();
                     PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(photoView);
                     photoViewAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    if (grain_slected!=null) {
+                        uploadImage(converetdImage, grain_slected);
+                        Log.d("Body uploadImage grain_slected", "grain_slected  : " + grain_slected);
+                    }
                       /*
                         cek jenis grain
                         if (beras = panggil function upload image beras)
@@ -633,6 +830,201 @@ public class HomeMenuFragment extends Fragment {
             }
 
         }
+    }
+    protected String jwt;
+    private void uploadImage(Bitmap converetdImage, String grain_slected) {
+        String urlDomain = "http://110.50.85.28:8200";
+        String jwtKey =  new SessionPrefference(getContext()).getKeyApiJwt();
+        Log.d("Body jwtKeys", "String jwtKey : " +jwtKey);
+        if (jwtKey.equals(jwt)){
+            sessionPrefference.setIsLogin(false);
+            sessionPrefference.logoutUser();
+        }
+        File file = new File(mImageFileLocation);
+        int length = (int) file.length();
+        Log.d("Upload length respons", "String respons length : " +length);
+        if (length>50000){
+
+        }
+        int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
+        try {
+            Log.d("Upload jwtKeys respons", "String respons jwtKey : " +jwtKey);
+
+            HttpLoggingInterceptor loggingInterceptor2 = new HttpLoggingInterceptor();
+            loggingInterceptor2.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+            TokenInterceptor tokenInterceptor = new TokenInterceptor(jwtKey);
+
+            OkHttpClient okHttpClient2 = new OkHttpClient.Builder()
+                    .addInterceptor(new AddCookiesInterceptor(getActivity()))
+                    .addInterceptor(new ReceivedCookiesInterceptor(getActivity()))
+                    .addInterceptor(loggingInterceptor2)
+                    .addInterceptor(tokenInterceptor)
+                    .build();
+
+            Gson gson2 = new GsonBuilder().serializeNulls().create();
+
+            //Retrofit retrofit = NetworkClient.getRetrofit();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(urlDomain)
+                    .addConverterFactory(GsonConverterFactory.create(gson2))
+                    .client(okHttpClient2)
+                    .build();
+
+            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+            MultipartBody.Part parts = MultipartBody.Part.createFormData("newimage", file.getName(), requestBody);
+            String name = "Rifqi";
+            double latitude = locationTracking.getLatitude();
+            int val1=(int) latitude;
+            double longitude = locationTracking.getLongitude();
+            int val2=(int) longitude;
+            Log.d("Upload longitude", "String loc  : " +longitude+" - " +latitude+ " - ");
+
+            RequestBody req1 = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(name)); //change to phone number
+            RequestBody req2 = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(latitude));
+            RequestBody req3 = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(longitude));
+            ApiClient uploadApis = retrofit.create(ApiClient.class);
+            Call call = uploadApis.uploadImage(parts, req1, req2, req3);
+            call.enqueue(new Callback() {
+                @Override
+                public void onResponse(Call call, Response response) {
+                    if (response.code() == 200) {
+                        Object obj = response.body();
+                        PLNData plnData = (PLNData) response.body();
+                        Log.d("Upload plnData", "String plnData  : " +plnData);
+                        Log.d("Upload obj", "String obj  : " +obj);
+
+                        //insert room datbase gson, created_at
+                        //  22 2 21
+                        Date dates = new Date();
+                        String gson = new Gson().toJson(plnData);
+                        Log.d("Upload gson", "String gson  : " +gson);
+                        Date date = new Date();
+                        SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss",
+                                Locale.getDefault());
+                        String text = sfd.format(date);
+
+                        ZoneId zoneId = ZoneId.systemDefault();
+                        Instant instant = Instant.now();
+                        ZonedDateTime zDateTime = instant.atZone(zoneId);
+
+                        DayOfWeek day = zDateTime.getDayOfWeek();
+                        System.out.println(day.getDisplayName(TextStyle.SHORT, Locale.US));
+                        System.out.println(day.getDisplayName(TextStyle.NARROW, Locale.US));
+
+                        Month month = zDateTime.getMonth();
+                        System.out.println(month.getDisplayName(TextStyle.SHORT, Locale.US));
+                        System.out.println(month.getDisplayName(TextStyle.NARROW, Locale.US));
+                        System.out.println(month.getDisplayName(TextStyle.FULL, Locale.US));
+                        Log.d("Upload day createdAt", "createdAt  : " +day + " MONTH " +month +" textDate" +text);
+
+                        double meter = plnData.getMeterValue();
+                        double scoreId = plnData.getScoreIdentification();
+                        double scoreClass = plnData.getScoreClassification();
+                        mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("meter_value").setValue(String.valueOf(meter));
+                        mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("identify_value").setValue(String.valueOf(scoreId));
+                        mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("classify_long").setValue(String.valueOf(scoreClass));
+                        mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("created_at").setValue(String.valueOf(text));
+                        Log.d("Upload meter", "String meter  : " +meter+ " - "+scoreId +" - "+scoreClass+" ");
+                        String m = String.valueOf(meter);
+                        double total = scoreId + scoreClass;
+
+                        if (total>=85){
+                             /*
+                             String classfy = String.valueOf(scoreClass);
+                            hasilScore.setTextColor(getResources().getColor(R.color.yellow));
+                            hasilScore.setText(classfy);
+
+                            String idtfy = String.valueOf(scoreId);
+                            hasilIdentify.setTextColor(getResources().getColor(R.color.yellow));
+                            hasilIdentify.setText(idtfy);
+                              */
+
+                            String meterfy = String.valueOf(total);
+                            hasilMeter.setTextColor(getResources().getColor(R.color.yellow));
+                            hasilMeter.setText(meterfy);
+
+                            Log.d("Upload YELLOW", "String YELLOW  : ");
+
+                        }else {
+                            /*
+                            String classfy = String.valueOf(scoreClass);
+                            hasilScore.setTextColor(getResources().getColor(R.color.de_la_red));
+                            hasilScore.setText(classfy);
+
+                            String idtfy = String.valueOf(scoreId);
+                            hasilIdentify.setTextColor(getResources().getColor(R.color.de_la_red));
+                            hasilIdentify.setText(idtfy);
+
+                            Log.d("Upload RED", "String RED  : ");
+                            */
+                            String meterfy = String.valueOf(total);
+                            hasilMeter.setTextColor(getResources().getColor(R.color.yellow));
+                            hasilMeter.setText(meterfy);
+                        }
+                        Gimage gimage = new Gimage();
+                        gimage.setType(1);
+                        int rowImageType = db.gHistorySpinnerDao().getCountimage();
+                        if (rowImageType == 0 ){
+                            gimage.setId(1);
+                            gimage.setImage(mImageFileLocation);
+                            insertData(gimage);
+                        }else {
+                            gimage.setId(1);
+                            gimage.setImage(mImageFileLocation);
+                            updateImage(gimage);
+
+                        }
+
+//                        hasilMeter.setText(m);
+                        String maxIdHistoryi = String.valueOf(maxIdHistory);
+
+                        String idtfy = String.valueOf(scoreId);
+                        String classfy = String.valueOf(scoreClass);
+
+                        History history = new History(maxIdHistoryi,sessionPrefference.getUserId(),m, classfy,idtfy,text);
+                        databaseReferenceHistory.child(maxIdHistoryi).setValue(history);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+
+                            }
+                        },1000);
+
+
+
+
+
+                    } else {
+                        Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
+                        String jwtNull = "";
+                        sessionPrefference.setKeyApiJwt(jwtNull);
+                        sessionPrefference.setIsLogin(false);
+                        sessionPrefference.logoutUser();
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call call, Throwable t) {
+                    Toast.makeText(getActivity(), "TRY AGAINSZCH", Toast.LENGTH_LONG).show();
+
+                    /*
+                    String message = "";
+                    String jwtNull = "";
+                    Toast.makeText(getActivity(), "Status Login Time Out, silahkan login kembali", Toast.LENGTH_LONG).show();
+
+                    sessionPrefference.setKeyApiJwt(jwtNull);
+                    sessionPrefference.setIsLogin(false);
+                    sessionPrefference.logoutUser();
+                    */
+                }
+            });
+
+        } catch (Exception e) {
+            String errMessage = e.getMessage();
+        }
+
     }
 
     public static String encodeTobase64(Bitmap image) {
@@ -682,25 +1074,11 @@ public class HomeMenuFragment extends Fragment {
         }
         Bitmap rotateBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
-// tambahkan login web api disini
-        // dicek apabila login berhasil jalankan uploadimage
-        // 110.50.85.28:8200/account/login
-        // http://110.50.85.28:8200/account/login
-        // x-www-form-urlencoded
-        // Phone : +6281907123427
-        // Password : 1m4dm1n
-        // post
-
         photoView.setImageBitmap(rotateBitmap);
         PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(photoView);
         photoViewAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        /*
-        cek jenis grain
-        if (beras = panggil function upload image beras)
-        else if (kopi = uploadImagekopi)
-        else if(gandum = uploadImageGandum)
-        dibuatkan upload image
-        */
+        uploadImage(rotateBitmap, grain_slected);
+        dialog.dismiss();
 
     }
 
@@ -739,6 +1117,42 @@ public class HomeMenuFragment extends Fragment {
 
         return compressedOri;
     }
+
+    private void insertData(Gimage gimage) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertImage(gimage);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " + status);
+            }
+        }.execute();
+    }
+    private void updateImage(Gimage img) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().updateImageSelected(img);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " +status);
+            }
+        }.execute();
+    }
+
     private void updateSelectedGrain(GIndeksSpinner gIndeksSpinner) {
         new AsyncTask<Void, Void, Long>() {
             @Override
