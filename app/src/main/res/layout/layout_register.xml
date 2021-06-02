@@ -67,7 +67,9 @@
             <EditText
                 android:id="@+id/userPhone"
                 style="@style/modifiedEditText"
-                android:hint="Mobile Number ex: 0811222030"
+                android:enabled="false"
+                android:hint="Mobile Number"
+                android:textColor="@color/black"
                 android:inputType="text"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>

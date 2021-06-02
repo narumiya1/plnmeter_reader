@@ -8,7 +8,7 @@
     android:layout_margin="2dp"
     android:background="@color/grey"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="4dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_main_home"
@@ -87,10 +87,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:fontFamily="@font/ubunturegular"
                     android:text="Pilih ID Pelanggan "
                     android:textColor="#293859"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <Spinner
@@ -133,15 +132,6 @@
 
     </androidx.cardview.widget.CardView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/circularbordersolid"
-        android:gravity="center"
-        android:orientation="vertical">
-
-    </LinearLayout>
 
 
     <TextView
@@ -163,8 +153,10 @@
         android:visibility="gone" />
 
     <LinearLayout
+
+        android:layout_margin="4dp"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="450dp"
         android:layout_gravity="center"
         android:background="@color/white"
         android:gravity="center">
@@ -174,7 +166,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:layout_margin="4dp"
-            android:padding="10dp"
+            android:padding="6dp"
             card_view:cardBackgroundColor="@color/white"
             card_view:cardCornerRadius="6dp"
             card_view:cardElevation="2.5dp">
@@ -207,7 +199,7 @@
                             <com.github.chrisbanes.photoview.PhotoView
                                 android:id="@+id/photo_view"
                                 android:layout_width="match_parent"
-                                android:layout_height="450dp"
+                                android:layout_height="420dp"
                                 android:layout_gravity="center_vertical"
                                 android:background="@drawable/line_background"
                                 android:fontFamily="@font/ubunturegular"
@@ -217,7 +209,7 @@
                                 android:layout_gravity="bottom|right"
                                 android:layout_marginBottom="20dp"
                                 android:gravity="bottom|right"
-                                android:layout_marginRight="4dp"
+                                android:layout_marginRight="14dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                                 <androidx.cardview.widget.CardView
@@ -227,7 +219,7 @@
                                     android:layout_margin="4dp"
                                     android:layout_marginBottom="60dp"
                                     android:background="@drawable/line_background2"
-                                    app:cardCornerRadius="4dp"
+                                    app:cardCornerRadius="8dp"
                                     app:cardElevation="4dp">
 
                                     <ImageButton
@@ -235,7 +227,7 @@
                                         android:layout_width="80dp"
                                         android:layout_height="70dp"
                                         android:layout_marginRight="6dp"
-                                        android:layout_marginBottom="30dp"
+                                        android:layout_marginBottom="37dp"
                                         android:background="@drawable/line_background"
                                         android:src="@drawable/ic_baseline_add_a_photo_24"
                                         android:visibility="visible" />
@@ -259,113 +251,178 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="6dp"
-        android:gravity="bottom">
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="4dp"
+        android:gravity="center_horizontal">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
             android:layout_margin="2dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="12dp"
             card_view:cardBackgroundColor="@color/white"
-            card_view:cardCornerRadius="6dp"
-            card_view:cardElevation="2.5dp">
+            card_view:cardCornerRadius="2dp"
+            card_view:cardElevation="3dp">
 
-            <RelativeLayout
-                android:id="@+id/rl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="6dp"
-                android:background="@drawable/circularbordersolid"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:padding="3dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal">
+                <RelativeLayout
+                    android:id="@+id/rl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="1dp"
+                    android:background="@drawable/circularbordersolid"
+                    android:gravity="top"
+                    android:orientation="vertical"
+                    android:padding="3dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/hasil"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:fontFamily="@font/ubunturegular"
+                            android:gravity="center"
+                            android:text="Angka Hasil generate : "
+                            android:textColor="@color/black"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_meter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="16dp"
+                            android:layout_toRightOf="@+id/hasil"
+                            android:fontFamily="@font/ubunturegular"
+                            android:gravity="left"
+                            android:text="192.66"
+                            android:textColor="#293859"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
                     <TextView
-                        android:id="@+id/hasil"
+                        android:id="@+id/hasil1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:fontFamily="@font/ubunturegular"
                         android:gravity="center"
                         android:text="Angka Hasil generate : "
-                        android:textColor="#293859"
+                        android:textColor="@color/white"
                         android:textSize="16dp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/et_koreksi"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_toRightOf="@+id/hasil"
-                        android:fontFamily="@font/ubunturegular"
-                        android:gravity="left"
-                        android:text="9994.0"
-                        android:textColor="#293859"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/hasil1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:fontFamily="@font/ubunturegular"
-                    android:gravity="center"
-                    android:text="Angka Hasil generate : "
-                    android:textColor="@color/white"
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:visibility="invisible" />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/hasil1"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal">
+                        android:textStyle="bold"
+                        android:visibility="invisible" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:visibility="gone"
+                        android:id="@+id/ll_angka"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginRight="119dp"
-                        android:background="@drawable/line_background"
+                        android:layout_below="@id/hasil1"
+                        android:gravity="center_horizontal"
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/hasil2"
                             android:layout_width="wrap_content"
-                            android:layout_height="35dp"
-                            android:layout_margin="1dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:fontFamily="@font/ubunturegular"
                             android:gravity="center"
-                            android:padding="6dp"
-                            android:text="Correction"
+                            android:text="Score Classification :"
+                            android:textColor="@color/black"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_scoreClassify"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="right"
+                            android:layout_marginLeft="16dp"
+                            android:layout_toRightOf="@+id/hasil2"
+                            android:fontFamily="@font/ubunturegular"
+                            android:gravity="right"
+                            android:text="86.62"
                             android:textColor="#293859"
-                            android:textStyle="bold"
-                            android:visibility="visible" />
-
-
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
                     </LinearLayout>
-                </LinearLayout>
 
-            </RelativeLayout>
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:id="@+id/ll_class"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/ll_angka"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/hasil3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:fontFamily="@font/ubunturegular"
+                            android:gravity="center"
+                            android:text="Score Identification : "
+                            android:textColor="@color/black"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_scoreIdentify"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="right"
+                            android:layout_marginLeft="16dp"
+                            android:layout_toRightOf="@+id/hasil2"
+                            android:fontFamily="@font/ubunturegular"
+                            android:gravity="right"
+                            android:text="91.46"
+                            android:textColor="#293859"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                </RelativeLayout>
+
 
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_gravity="center"
+            android:id="@+id/correction"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_margin="1dp"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="Correction"
+            android:textColor="#293859"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>
