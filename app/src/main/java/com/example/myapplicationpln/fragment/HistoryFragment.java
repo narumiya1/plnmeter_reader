@@ -3,11 +3,14 @@ package com.example.myapplicationpln.fragment;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,9 +26,27 @@ import com.example.myapplicationpln.model.History;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.IMarker;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+
+import java.util.ArrayList;
 
 public class HistoryFragment extends Fragment {
 
@@ -40,6 +61,7 @@ public class HistoryFragment extends Fragment {
     private Query offersQuery;
     SessionPrefference session;
     private Dialog dialog;
+    LineChart lineChart ;
     DatabaseReference databaseReference2;
 
 
@@ -94,6 +116,47 @@ public class HistoryFragment extends Fragment {
                 holder.setDate(model.getCreated_at());
 
                 Log.d("get getMeter ", " : " + model.getMeter());
+                dialog = new Dialog(getActivity());
+                holder.cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.setTitle("Item");
+                        dialog.setContentView(R.layout.dialog_chart_design);
+                        TextView oke = dialog.findViewById(R.id.oke);
+                        PieChart pieChart;
+                        pieChart = dialog.findViewById(R.id.chart1);
+                        pieChart.setUsePercentValues(true);
+                        ArrayList<PieEntry> yvalues = new ArrayList<PieEntry>();
+                        float f = Float.parseFloat(model.getMeter());
+                        yvalues.add(new PieEntry((float) f, model.getMeter()));
+                        PieDataSet dataSet = new PieDataSet(yvalues, getString(R.string.gcm_defaultSenderId));
+                        PieData data = new PieData(dataSet);
+
+                        data.setValueFormatter(new PercentFormatter());
+                        pieChart.setData(data);
+                        Description description = new Description();
+                        description.setText(getString(R.string.project_id));
+                        pieChart.setDescription(description);
+                        pieChart.setDrawHoleEnabled(true);
+                        pieChart.setTransparentCircleRadius(58f);
+                        pieChart.setHoleRadius(58f);
+                        pieChart.setEntryLabelColor(Color.BLACK);
+                        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+                        data.setValueTextSize(13f);
+                        data.setValueTextColor(Color.BLACK);
+                        Button button = dialog.findViewById(R.id.cancel);
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                                dialog.dismiss();
+
+                            }
+                        });
+
+                        dialog.show();
+                    }
+                });
 
                 /*
                     holder.cardView.setOnClickListener(new View.OnClickListener() {
