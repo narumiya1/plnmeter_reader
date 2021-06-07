@@ -20,6 +20,9 @@ public interface GhistorySpinner {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertIdIdx(GIndeksSpinner idx);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertCamera(GCameraValue cmr);
+
     @Query("SELECT value_int FROM tbIndeks WHERE type=1")
     int selectIndeks();
 
@@ -58,7 +61,10 @@ public interface GhistorySpinner {
 
     @Query("SELECT COUNT (*) FROM tbImage WHERE type = 1")
     int getCountimage();
-
+    @Query("SELECT COUNT (*) FROM tbCamera WHERE type = 1")
+    int getCountCamera();
     @Update
     int updateImageSelected(Gimage gimage);
+    @Update
+    int updateCameraValue(GCameraValue gCameraValue);
 }
