@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.model.History;
+import com.example.myapplicationpln.model.MeterApi;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -42,9 +43,12 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -74,6 +78,7 @@ public class HistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_historyi, container, false);
         // Inflate the layout for this fragment
+        DatabaseReference referenceHistor = FirebaseDatabase.getInstance().getReference();
 
         dialog = new Dialog(getActivity());
 
@@ -92,7 +97,24 @@ public class HistoryFragment extends Fragment {
         mDatabase = FirebaseDatabase.getInstance();
         mUserDatabase = mDatabase.getReference().child("History").orderByChild("id_user").equalTo(userId);
         mUserDatabase2 = mDatabase.getReference().child("History");
+        Query queryhistory = referenceHistor.child("History").child("33");
+        queryhistory.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    if (dataSnapshot.getChildrenCount()==0){
+                        Log.d("DATA < 0 Historyi", "onDataChange: " + dataSnapshot.getValue());
+                    }else {
+                        Log.d("DATA Historyi > 0 ", "onDataChange: \n" + dataSnapshot.getValue());
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         /*
         Rumus Firebase one to many
         mUserDatabase = mDatabase.getReference().child("User").orderByChild("address").equalTo("Kilmarnock");
