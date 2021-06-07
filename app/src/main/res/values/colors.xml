@@ -15,4 +15,5 @@
     <color name="goodgrey">#535353</color>
     <color name="blue">#293859</color>
     <color name="de_la_red">#FA0A04</color>
+    <color name="black_overlay">#66000000</color>
 </resources>

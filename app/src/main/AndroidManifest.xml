@@ -16,6 +16,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <application
         android:allowBackup="true"
@@ -53,6 +54,12 @@
         <activity android:name="com.example.myapplicationpln.activities.EventDetailActivity" />
         <activity android:name="com.example.myapplicationpln.auth.VerifyPhoneActivity"/>
         <activity android:name="com.example.myapplicationpln.activities.UpdateUserData"/>
+        <activity android:name=".fragment.ViewImageActivitiy"
+            android:hardwareAccelerated="true"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:theme="@style/FullscreenTheme"
+            />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

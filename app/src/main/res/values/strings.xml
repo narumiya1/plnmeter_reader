@@ -24,4 +24,7 @@
     values-round/strings.xml for round devices.
     -->
     <string name="hello_world">Hello Square World!</string>
+    <string name="request_permission"><![CDATA["    <string name=\"request_permission\">This sample needs camera permission.</string> "]]></string>
+    <string name="camera_error">doesnt support camer2</string>
+    <string name="intro_message">camera2</string>
 </resources>
