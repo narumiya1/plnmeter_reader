@@ -449,6 +449,12 @@ public class AboutFragment extends Fragment implements View.OnClickListener, Act
                 if (snapshot.exists()) {
                     maxIdHistory = (snapshot.getChildrenCount());
                     cameraVal = snapshot.getValue(CameraVal.class);
+                    if (cameraVal.getY().equals(null)){
+                        Log.d("DATA setValuey y ", " : 100" );
+                        cameraVal.setX(String.valueOf(100));
+                    }else {
+                        Log.d("DATA readyy y ", " : " +cameraVal.getY() );
+                    }
                     Log.d("DATA getHeight", "onDataChange: " + cameraVal.getX());
                     Log.d("DATA getWidth", "onDataChange: " + cameraVal.getY());
 
