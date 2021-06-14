@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.myapplicationpln.activities.LoginActivity;
 import com.example.myapplicationpln.fragment.AboutFragment;
+import com.example.myapplicationpln.fragment.AboutFragment2;
 import com.example.myapplicationpln.fragment.HistoryFragment;
 import com.example.myapplicationpln.fragment.HomeMenuFragment;
 import com.example.myapplicationpln.fragment.LogoutFragment;
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fg = new HistoryFragment();
                 break;
             case R.id.nav_about:
-                fg = new AboutFragment();
+                fg = new AboutFragment2();
                 break;
             case R.id.nav_user:
                 fg = new UserDataFragment();
