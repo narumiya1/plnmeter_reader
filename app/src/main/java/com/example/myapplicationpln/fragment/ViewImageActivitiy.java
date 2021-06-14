@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -74,6 +75,13 @@ public class ViewImageActivitiy extends AppCompatActivity {
             @Override public void onClick(View view) {
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra(IMAGE_SAVED_PATH, imageFile.getAbsolutePath());
+//                Log.d("getIntens img IMAGE_SAVED_PATH "," "+imageFile.getAbsolutePath());
+                Bundle bundle = new Bundle();
+                bundle.putString("edttext", imageFile.getAbsolutePath());
+                // set Fragmentclass Arguments
+                HomeMenuFragment fragobj = new HomeMenuFragment();
+                fragobj.setArguments(bundle);
+                Log.d("getIntens setbundle IMAGE_SAVED_PATH "," send data froma activite "+imageFile.getAbsolutePath());
                 setResult(Activity.RESULT_OK, resultIntent);
                 ViewImageActivitiy.super.finish();
             }
