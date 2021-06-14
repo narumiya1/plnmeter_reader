@@ -1,6 +1,7 @@
 package com.example.myapplicationpln.caamera;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -129,6 +130,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         if (bitmap != null) {
             previewImage.setImageBitmap(bitmap);
         }
+        uploadImage(imageFilePath);
     }
 
     @Override
@@ -151,19 +153,19 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.generate:
                 Log.d(TAG, "ONCLIcK Image File Path:\t" + imageFilePath);
 //                Intent intent = new Intent(PreviewActivity.this, MainActivity.class);
-//                startActivity(intent);
-                try {
-                    Bitmap bitmap;
-                    BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-                    bitmap = BitmapFactory.decodeFile(imageFilePath,
-                            bitmapOptions);
-
-                    rotateImage(setReducedImageSize());
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                rotateImage(setReducedImageSize());
+//                startActivity(intent);h
+//                try {
+//                    Bitmap bitmap;
+//                    BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+//                    bitmap = BitmapFactory.decodeFile(imageFilePath,
+//                            bitmapOptions);
+//
+//                    rotateImage(setReducedImageSize());
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                rotateImage(setReducedImageSize());
                 break;
             case R.id.previewImage:
                 Log.d(TAG, "ONCLIcK Image File Path:\t" + imageFilePath);
@@ -193,7 +195,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         Bitmap rotateBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
         previewImage.setImageBitmap(rotateBitmap);
-        uploadImage(rotateBitmap, imageFilePath);
+        uploadImage(imageFilePath);
 
     }
     private Bitmap setReducedImageSize() {
@@ -232,7 +234,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         return compressedOri;
     }
 
-    private void uploadImage(Bitmap rotateBitmap, String imageFilePath) {
+    private void uploadImage(String imageFilePath) {
         String urlDomain = "http://110.50.85.28:8200";
         String jwtKey =  new SessionPrefference(getApplicationContext()).getKeyApiJwt();
         Log.d("Body jwtKeys", "String jwtKey : " +jwtKey);
@@ -336,7 +338,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
                             String meterfy = String.valueOf(total);
                             hasilmetergenereate.setTextColor(getResources().getColor(R.color.yellow));
-                            hasilmetergenereate.setText(meterfy);
+                            hasilmetergenereate.setText(m);
 
                             Log.d("Upload YELLOW", "String YELLOW  : ");
 
@@ -344,7 +346,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
                             String meterfy = String.valueOf(total);
                             hasilmetergenereate.setTextColor(getResources().getColor(R.color.yellow));
-                            hasilmetergenereate.setText(meterfy);
+                            hasilmetergenereate.setText(m);
                         }
                         Gimage gimage = new Gimage();
                         gimage.setType(1);
@@ -383,6 +385,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                         sessionPrefference.logoutUser();
 
                     }
+                    Intent intent = new Intent(PreviewActivity.this, MainActivity.class);
+                     startActivity(intent);
                 }
 
                 @Override

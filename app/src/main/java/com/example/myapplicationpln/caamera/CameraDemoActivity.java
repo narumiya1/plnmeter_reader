@@ -1,6 +1,7 @@
 package com.example.myapplicationpln.caamera;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -30,8 +31,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.room.Room;
 
 import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.model.CameraVal;
+import com.example.myapplicationpln.preference.SessionPrefference;
+import com.example.myapplicationpln.roomDb.AppDatabase;
+import com.example.myapplicationpln.roomDb.GCameraValue;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,6 +70,10 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
     private int rotation;
     private ImageView imageVew;
     private File imageFile;
+    CameraVal cameraVal = new CameraVal();
+    SessionPrefference sessionPrefference;
+    DatabaseReference databaseReferenceCameraWidthHeight;
+    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +91,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceHolder = surfaceView.getHolder();
         imageVew = findViewById(R.id.imageVew);
-        imageVew.getLayoutParams().width = 200;
-        imageVew.getLayoutParams().height = 200;
-        imageVew.setX(250);
-        imageVew.setY(250);
+
         surfaceHolder.addCallback(this);
         flipCamera.setOnClickListener(this);
         captureImage.setOnClickListener(this);
@@ -93,6 +105,148 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                 PackageManager.FEATURE_CAMERA_FLASH)) {
             flashCameraButton.setVisibility(View.GONE);
         }
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tbGrainHistory")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .addMigrations(AppDatabase.MIGRATION_1_6)
+                .build();
+
+        sessionPrefference = new SessionPrefference(this);
+        databaseReferenceCameraWidthHeight = FirebaseDatabase.getInstance().getReference().child("CameraVal").child(sessionPrefference.getUserId());
+        databaseReferenceCameraWidthHeight.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    cameraVal = snapshot.getValue(CameraVal.class);
+                    Log.d("DATA getHeight", "onDataChange: " + cameraVal.getX());
+                    Log.d("DATA getWidth", "onDataChange: " + cameraVal.getY());
+
+                    databaseReferenceCameraWidthHeight = FirebaseDatabase.getInstance().getReference().child("CameraVal");
+
+                    if (cameraVal.getY().equals(0) && cameraVal.getX().equals(0)){
+                        imageVew.getLayoutParams().width = 400;
+                        imageVew.getLayoutParams().height = 200;
+                        int x = 250;
+                        imageVew.setX(x);
+                        int y = 250;
+                        imageVew.setX(y);
+                        String setX = String.valueOf(x);
+                        String setY = String.valueOf(y);
+                        String id = String.valueOf(1);
+                        String h = String.valueOf( imageVew.getLayoutParams().width = 400);
+                        String w = String.valueOf(imageVew.getLayoutParams().height = 200);
+                        CameraVal cameraVal = new CameraVal(id, sessionPrefference.getUserId(), sessionPrefference.getPhone(), w, h, setX, setY);
+                        databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
+                        GCameraValue gCameraValue = new GCameraValue();
+                        gCameraValue.setId_user(sessionPrefference.getUserId());
+                        gCameraValue.setUser_phone(sessionPrefference.getPhone());
+                        gCameraValue.setHeight(Integer.parseInt(h));
+                        gCameraValue.setWidth(Integer.parseInt(w));
+                        int rowCamType = db.gHistorySpinnerDao().getCountCamera();
+                        if (rowCamType == 0) {
+                            gCameraValue.setId_user(sessionPrefference.getUserId());
+                            gCameraValue.setUser_phone(sessionPrefference.getPhone());
+                            gCameraValue.setHeight(Integer.parseInt(h));
+                            gCameraValue.setWidth(Integer.parseInt(w));
+                            gCameraValue.setId(1);
+                            gCameraValue.setType(1);
+                            insertData(gCameraValue);
+                        } else {
+                            gCameraValue.setId_user(sessionPrefference.getUserId());
+                            gCameraValue.setUser_phone(sessionPrefference.getPhone());
+                            gCameraValue.setHeight(Integer.parseInt(h));
+                            gCameraValue.setWidth(Integer.parseInt(w));
+                            gCameraValue.setId(1);
+                            gCameraValue.setType(1);
+                            updateCamValue(gCameraValue);
+
+                        }
+                    }else {
+                        imageVew.getLayoutParams().height = Integer.parseInt(cameraVal.getHeight());
+                        imageVew.getLayoutParams().width = Integer.parseInt(cameraVal.getWidth());
+                        imageVew.setX(Float.parseFloat(cameraVal.getX()));
+                        imageVew.setX(Float.parseFloat(cameraVal.getX()));
+                        imageVew.requestLayout();
+
+                        String h = String.valueOf(cameraVal.getHeight());
+                        String w = String.valueOf(cameraVal.getWidth());
+                        String setX = String.valueOf(cameraVal.getX());
+                        String setY = String.valueOf(cameraVal.getY());
+                        String id = String.valueOf(1);
+
+                        CameraVal cameraVal = new CameraVal(id, sessionPrefference.getUserId(), sessionPrefference.getPhone(), w, h, setX, setY);
+                        databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
+
+                        GCameraValue gCameraValue = new GCameraValue();
+                        gCameraValue.setId_user(sessionPrefference.getUserId());
+                        gCameraValue.setUser_phone(sessionPrefference.getPhone());
+                        gCameraValue.setHeight(Integer.parseInt(h));
+                        gCameraValue.setWidth(Integer.parseInt(w));
+                        int rowCamType = db.gHistorySpinnerDao().getCountCamera();
+                        if (rowCamType == 0) {
+                            gCameraValue.setId_user(sessionPrefference.getUserId());
+                            gCameraValue.setUser_phone(sessionPrefference.getPhone());
+                            gCameraValue.setHeight(Integer.parseInt(h));
+                            gCameraValue.setWidth(Integer.parseInt(w));
+                            gCameraValue.setId(1);
+                            gCameraValue.setType(1);
+                            insertData(gCameraValue);
+                        } else {
+                            gCameraValue.setId_user(sessionPrefference.getUserId());
+                            gCameraValue.setUser_phone(sessionPrefference.getPhone());
+                            gCameraValue.setHeight(Integer.parseInt(h));
+                            gCameraValue.setWidth(Integer.parseInt(w));
+                            gCameraValue.setId(1);
+                            gCameraValue.setType(1);
+                            updateCamValue(gCameraValue);
+
+                        }
+                    }
+
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    private void insertData(GCameraValue gCameraValue) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertCamera(gCameraValue);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " + status);
+            }
+        }.execute();
+    }
+    private void updateCamValue(GCameraValue gCameraValue) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().updateCameraValue(gCameraValue);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " +status);
+            }
+        }.execute();
     }
 
     private void askPerms() {
@@ -310,10 +464,10 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
             File folder = null;
             if (state.contains(Environment.MEDIA_MOUNTED)) {
                 folder = new File(Environment
-                        .getExternalStorageDirectory() + "/Demo");
+                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/CameraDm");
             } else {
                 folder = new File(Environment
-                        .getExternalStorageDirectory() + "/Demo");
+                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/CameraDm");
             }
 
             boolean success = true;
@@ -322,10 +476,13 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
             }
             if (success) {
                 java.util.Date date = new java.util.Date();
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 imageFile = new File(folder.getAbsolutePath()
                         + File.separator
-                        + new Timestamp(date.getTime()).toString()
-                        + "Image.jpg");
+                        + timeStamp
+                        + ".jpg");
+                Log.d(TAG, "imageFilez:\t" + imageFile);
+                Log.d(TAG, "imageFilez:\t\t" + timeStamp);
 
                 try {
                     imageFile.createNewFile();
@@ -355,7 +512,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
             ByteArrayOutputStream ostream = new ByteArrayOutputStream();
 
             // save image into gallery
-            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, ostream);
 
             FileOutputStream fout = null;
             try {
