@@ -23,6 +23,11 @@ public interface GhistorySpinner {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertCamera(GCameraValue cmr);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertUserData(GUserData userData);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertMeterData(GmeterApi gmeterApi);
     @Query("SELECT value_int FROM tbIndeks WHERE type=1")
     int selectIndeks();
 
@@ -37,6 +42,10 @@ public interface GhistorySpinner {
 
     @Query("SELECT address FROM tbSpinner WHERE id_pelanggan =:id_pelanggan")
     int selectIndeks(int id_pelanggan);
+
+    @Query("SELECT meter FROM tbMeterApi WHERE type =1")
+    int selectMeter();
+
 
     @Query("SELECT id_pelanggan FROM tbSpinner WHERE user_address_id=26")
     int selectIndeksSpinner();
