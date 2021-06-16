@@ -24,6 +24,7 @@ import com.example.myapplicationpln.model.PelangganyAlamat;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.model.DataUser;
 import com.example.myapplicationpln.roomDb.AppDatabase;
+import com.example.myapplicationpln.roomDb.GUserData;
 import com.example.myapplicationpln.roomDb.Gspinner;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -172,7 +173,16 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
 
-                String userId, idPelanggan, name,userName, userEmail, userAlamat, userPhone, passwordUser, retypePasswordUser, userPhoneReg;
+                String userId;
+                String idPelanggan;
+                String name;
+                String userName;
+                String userEmail;
+                String userAlamat;
+                String userPhone;
+                String passwordUser;
+                String retypePasswordUser;
+                String userPhoneReg;
                 String userAddressId;
                 Log.d("DATA  id_auth regh", "id_auth: " + id_auth);
                 String id = id_auth;
@@ -206,6 +216,18 @@ public class RegisterActivity extends AppCompatActivity {
                 //db1
                 DataUser accounts = new DataUser(id_auth,userId,idPelanggan, name,userName, userEmail, userAlamat,getPhone, passwordUser);
                 databaseReference.child(phone).setValue(accounts);
+                // user db room
+                int staatus = 1;
+                String stats = String.valueOf(staatus) ;
+                GUserData gUserData = new GUserData();
+                gUserData.setId_user(Integer.parseInt(userId));
+                gUserData.setName(name);
+                gUserData.setUsername(userName);
+                gUserData.setEmail(userEmail);
+                gUserData.setAddress(userAlamat);
+                gUserData.setPhone(getPhone);
+                gUserData.setStatus(stats);
+                insertData(gUserData);
 
                 //db2 edit 19 05 2021
                 PelangganyAlamat pelangganyAlamat1 = new PelangganyAlamat(userAlamat,userId,idPelanggan,sessionPrefference.getPhone(), userAddressId);
@@ -283,6 +305,24 @@ public class RegisterActivity extends AppCompatActivity {
 
          */
 
+    }
+
+    private void insertData(GUserData gUserData) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertUserData(gUserData);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " + status);
+            }
+        }.execute();
     }
 
     private void insertIdx(Gspinner idx) {

@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
-        android:padding="9dp">
+        android:padding="4dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -33,7 +33,6 @@
                     android:id="@+id/gallery"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/line_background"
                     android:gravity="center"
                     android:padding="16dp"
                     android:text="Choose From Gallery"
@@ -45,11 +44,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/gallery"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/line_background"
+                    android:layout_marginTop="7dp"
+                    android:visibility="gone"
                     android:gravity="center"
                     android:padding="16dp"
                     android:text="Take Camera"
+                    android:textColor="#000"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/cammera2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/cammera"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:text="Take Camera 2"
                     android:textColor="#000"
                     android:textSize="18sp" />
             </RelativeLayout>
