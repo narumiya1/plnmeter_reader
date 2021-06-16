@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -53,12 +54,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.room.Room;
 
+import com.example.myapplicationpln.MainActivity;
 import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.activities.CamsActivity;
 import com.example.myapplicationpln.activities.UpdateUserData;
+import com.example.myapplicationpln.caamera.CameraDemoActivity;
 import com.example.myapplicationpln.cookies.AddCookiesInterceptor;
 import com.example.myapplicationpln.cookies.ReceivedCookiesInterceptor;
 import com.example.myapplicationpln.cookies.TokenInterceptor;
 import com.example.myapplicationpln.location.LocationTracking;
+import com.example.myapplicationpln.model.Connection;
 import com.example.myapplicationpln.model.DataUser;
 import com.example.myapplicationpln.model.History;
 import com.example.myapplicationpln.model.MeterApi;
@@ -71,7 +76,9 @@ import com.example.myapplicationpln.network_retrofit.PLNData;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GIndeksSpinner;
+import com.example.myapplicationpln.roomDb.GUserData;
 import com.example.myapplicationpln.roomDb.Gimage;
+import com.example.myapplicationpln.roomDb.GmeterApi;
 import com.example.myapplicationpln.roomDb.Gspinner;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
@@ -121,6 +128,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class HomeMenuFragment extends Fragment {
 
+    public static String EXTRA_NOMBRE = "HomeFragment.nombre";
     private String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int PERMISSION_CODE_READ_GALLERY = 1;
     private static final int PERMISSION_CODE_OPEN_CAMERA = 2;
@@ -156,6 +164,7 @@ public class HomeMenuFragment extends Fragment {
     private String mImageFileLocation = "";
     private Dialog dialog;
     ImageButton add_photo;
+    Bundle  args;
 
 
     @Override
@@ -168,12 +177,74 @@ public class HomeMenuFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_menu, container, false);
 //        layout =inflater.inflate(R.layout.fragment_home_menu, container,false);
+        hasilMeter=view.findViewById(R.id.tv_meter);
+        sessionPrefference = new SessionPrefference(getActivity());
+        db = Room.databaseBuilder(getContext(), AppDatabase.class, "tbGrainHistory")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .addMigrations(AppDatabase.MIGRATION_1_6)
+                .build();
+        args = new Bundle();
+        if(args == null){
+            Toast.makeText(getActivity(), "arguments is null " , Toast.LENGTH_LONG).show();
+
+        }else {
+            Toast.makeText(getActivity(), "text " + args , Toast.LENGTH_LONG).show();
+            putArgs(args);
+//            String strtxt = getArguments().getString("edttext");
+            Log.d("getIntens getbundle from IMAGE_SAVED_PATH "," " +args);
+        }
+        if (Connection.isConnect(getContext())){
+            Log.d("Internet Connectzed 1 "," " );
+            DatabaseReference referenceMeter = FirebaseDatabase.getInstance().getReference();
+            Query querymeter = referenceMeter.child("MeterApi").child(sessionPrefference.getPhone());
+            querymeter.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Log.d("DATA CHANGEt", "onDataChange: " + dataSnapshot.getValue());
+                        meterApi = dataSnapshot.getValue(MeterApi.class);
+                        Log.d("DATA getMeter_value", "onDataChange: " + meterApi.getMeter_value());
+                        String meter = meterApi.getMeter_value();
+                        String clasfy = meterApi.getClassify_long();
+                        String idfy = meterApi.getIdentify_value();
+                        String created = meterApi.getCreated_at();
+                        Log.d("DATA meterApi", "meterApi: " +meter );
+                        Log.d("DATA createdAt", "created: " +created );
+                        hasilMeter.setText(meter);
+                        hasilScore.setText(clasfy);
+                        hasilIdentify.setText(idfy);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }else {
+            Log.d("Not Connectzed , Call db room "," " );
+            int selection = db.gHistorySpinnerDao().selectMeter() ;
+            Log.d("Not Connectzed , Call db room "," selection meter" +selection);
+            if (selection==0){
+                hasilMeter.setText(0);
+            }else {
+                String select = String.valueOf(selection);
+                hasilMeter.setText(select);
+            }
+
+
+        }
+        if (!Connection.isConnect(getContext())){
+            Log.d("Not Connectzed , Call db room "," " );
+        }else {
+            Log.d("Connection "," Internet Connectzed 1 " );
+        }
         add_photo = view.findViewById(R.id.imageview_add);
         photoView=view.findViewById(R.id.photo_view);
-        hasilMeter=view.findViewById(R.id.tv_meter);
         hasilScore = view.findViewById(R.id.tv_scoreClassify);
         hasilIdentify = view.findViewById(R.id.tv_scoreIdentify);
-        sessionPrefference = new SessionPrefference(getActivity());
         DatabaseReference referenceMeter = FirebaseDatabase.getInstance().getReference();
 
 
@@ -220,6 +291,7 @@ public class HomeMenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 selectImages();
+//                showDialog();
             }
         });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -258,11 +330,7 @@ public class HomeMenuFragment extends Fragment {
         arrayListz.add("4345679");
 
         listGrainType = new ArrayList<>();
-        db = Room.databaseBuilder(getContext(), AppDatabase.class, "tbGrainHistory")
-                .allowMainThreadQueries()
-                .fallbackToDestructiveMigration()
-                .addMigrations(AppDatabase.MIGRATION_1_6)
-                .build();
+
 //        List<Integer> lables = db.gHistorySpinnerDao().getAllLItems();
         List<String> statusImg = db.gHistorySpinnerDao().getImageStorage();
         statusImg.size();
@@ -272,6 +340,7 @@ public class HomeMenuFragment extends Fragment {
 
         }
         else if(statusImg.size()>0) {
+            Log.d("statusImg", "y statusImg"+statusImg);
 
             mImageFileLocation =  statusImg.get(statusImg.size()-1);
             File imgFile = new File(mImageFileLocation);
@@ -505,10 +574,16 @@ public class HomeMenuFragment extends Fragment {
 
         return view;
     }
-   /*
-    if isConnected -> connect to firebase
-    else -> check local
-    */
+    private void putArgs(Bundle args) {
+        String myValue = args.getString("edttext");
+        Log.d("getIntens getbundle from IMAGE_SAVED_PATH "," " +myValue);
+
+    }
+
+    /*
+     if isConnected -> connect to firebase
+     else -> check local
+     */
     private boolean isConnected() {
         boolean connected = false;
         try {
@@ -575,8 +650,49 @@ public class HomeMenuFragment extends Fragment {
 
             }
         });
+        TextView cammera2 = dialog.findViewById(R.id.cammera2);
+        cammera2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if ((ActivityCompat.checkSelfPermission(getContext(),
+                            android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) ||
+                            (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)) {
+                        String[] permission = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                        requestPermissions(permission, PERMISSION_CODE_OPEN_CAMERA);
+
+                    } else {
+
+                        //user camera 2
+//                        openCustomCams();
+//                         permission already granted
+                       Intent intent2 = new Intent(getActivity(), CameraDemoActivity.class);
+                       intent2.putExtra(EXTRA_NOMBRE,mImageFileLocation);
+                        Log.d("getIntens put"," "+mImageFileLocation);
+                        startActivityForResult(intent2, 4);
+
+
+                    }
+                } else {
+
+                     Intent intent2 = new Intent(getActivity(), CameraDemoActivity.class);
+                    startActivity(intent2);
+
+                    // system OS < Marshmallow
+                   /* Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+                    openCamera();*/
+                }
+
+            }
+        });
 
         dialog.show();
+    }
+
+    private void openCustomCams() {
+
     }
 
     private void openCamera() {
@@ -827,6 +943,11 @@ public class HomeMenuFragment extends Fragment {
 
             }else if (requestCode == 19){
 
+            }else if (requestCode == 4){
+                String respuesta = data.getStringExtra(CamsActivity.EXTRA_NOMBRE);
+//                String name=this.getArguments().getString("NAME_KEY").toString();
+//                int year=this.getArguments().getInt("YEAR_KEY");
+//                Log.d("getIntens year name "," "+name+ " " +year+ " " +respuesta);
             }
 
         }
@@ -928,6 +1049,7 @@ public class HomeMenuFragment extends Fragment {
                         Log.d("Upload meter", "String meter  : " +meter+ " - "+scoreId +" - "+scoreClass+" ");
                         String m = String.valueOf(meter);
                         double total = scoreId + scoreClass;
+                        GmeterApi gmeterApi = new GmeterApi();
 
                         if (total>=85){
                              /*
@@ -943,6 +1065,9 @@ public class HomeMenuFragment extends Fragment {
                             String meterfy = String.valueOf(total);
                             hasilMeter.setTextColor(getResources().getColor(R.color.yellow));
                             hasilMeter.setText(meterfy);
+                            gmeterApi.setMeter(meterfy);
+                            gmeterApi.setType(1);
+                            insertMeterApi(gmeterApi);
 
                             Log.d("Upload YELLOW", "String YELLOW  : ");
 
@@ -961,6 +1086,9 @@ public class HomeMenuFragment extends Fragment {
                             String meterfy = String.valueOf(total);
                             hasilMeter.setTextColor(getResources().getColor(R.color.yellow));
                             hasilMeter.setText(meterfy);
+                            gmeterApi.setMeter(meterfy);
+                            gmeterApi.setType(1);
+                            insertMeterApi(gmeterApi);
                         }
                         Gimage gimage = new Gimage();
                         gimage.setType(1);
@@ -1025,6 +1153,24 @@ public class HomeMenuFragment extends Fragment {
             String errMessage = e.getMessage();
         }
 
+    }
+
+    private void insertMeterApi(GmeterApi gmeterApi) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertMeterData(gmeterApi);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " + status);
+            }
+        }.execute();
     }
 
     public static String encodeTobase64(Bitmap image) {
