@@ -55,6 +55,9 @@ public interface GhistorySpinner {
     @Query("SELECT * FROM tbSpinner")
     Gspinner[] readDataAddress();
 
+    @Query("SELECT * FROM tbHistory")
+    Ghistoryi[] readDataHistory();
+
     @Query("SELECT id_pelanggan FROM tbSpinner WHERE user_address_id=26")
     int selectIndeksSpinner();
 
