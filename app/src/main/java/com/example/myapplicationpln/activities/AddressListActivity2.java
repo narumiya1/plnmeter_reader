@@ -1,7 +1,10 @@
 package com.example.myapplicationpln.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +14,7 @@ import androidx.room.Room;
 
 import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.adapter.AddressAdapter;
+import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.Gspinner;
 
@@ -23,6 +27,8 @@ public class AddressListActivity2 extends AppCompatActivity {
     private AppDatabase db;
     private ArrayList<Gspinner> listAddress;
     private RecyclerView.Adapter adapter;
+    ImageView add_addressz2;
+    SessionPrefference session;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,5 +51,17 @@ public class AddressListActivity2 extends AppCompatActivity {
         //Mamasang adapter pada RecyclerView
         adapter= new AddressAdapter(listAddress, this);
         mRecyclerview.setAdapter(adapter);
+        session = new SessionPrefference(this);
+        String idUserAddress = session.getUserAddressId();
+        Log.d("get idUserAddress2 ", " : " + idUserAddress);
+        add_addressz2 = findViewById(R.id.add_addressz2);
+        add_addressz2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddressListActivity2.this, FormAddress.class);
+                intent.putExtra("userId", idUserAddress);
+                startActivity(intent);
+            }
+        });
     }
 }
