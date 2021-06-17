@@ -31,6 +31,7 @@ import com.example.myapplicationpln.network_retrofit.ApiClient;
 import com.example.myapplicationpln.network_retrofit.PLNData;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
+import com.example.myapplicationpln.roomDb.Ghistoryi;
 import com.example.myapplicationpln.roomDb.Gimage;
 import com.example.myapplicationpln.roomDb.GmeterApi;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
@@ -391,7 +392,13 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                             }
                         },1000);
 
-
+                        Ghistoryi ghistoryi= new Ghistoryi();
+                        ghistoryi.setMeter(m);
+                        ghistoryi.setId_user(sessionPrefference.getUserId());
+                        ghistoryi.setCreated_at(text);
+                        ghistoryi.setScore_classfy(classfy);
+                        ghistoryi.setScore_identfy(idtfy);
+                        insertDataHistory(ghistoryi);
                     } else {
                         Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_LONG).show();
                         String jwtNull = "";
@@ -424,6 +431,24 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             String errMessage = e.getMessage();
         }
 
+    }
+
+    private void insertDataHistory(Ghistoryi ghistoryi) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertHistoryiData(ghistoryi);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " +status);
+            }
+        }.execute();
     }
 
     private void updateMeterApiVal(GmeterApi gmeterApi) {
