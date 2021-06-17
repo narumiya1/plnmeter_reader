@@ -78,6 +78,7 @@ import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GIndeksSpinner;
 import com.example.myapplicationpln.roomDb.GUserData;
+import com.example.myapplicationpln.roomDb.Ghistoryi;
 import com.example.myapplicationpln.roomDb.Gimage;
 import com.example.myapplicationpln.roomDb.GmeterApi;
 import com.example.myapplicationpln.roomDb.Gspinner;
@@ -1180,7 +1181,13 @@ public class HomeMenuFragment extends Fragment {
                             }
                         },1000);
 
-
+                        Ghistoryi ghistoryi = new Ghistoryi();
+                        ghistoryi.setMeter(m);
+                        ghistoryi.setScore_classfy(classfy);
+                        ghistoryi.setScore_identfy(idtfy);
+                        ghistoryi.setCreated_at(text);
+                        ghistoryi.setId_user(String.valueOf(sessionPrefference.getUserId()));
+                        insertDataHistory(ghistoryi);
 
 
 
@@ -1213,6 +1220,25 @@ public class HomeMenuFragment extends Fragment {
         } catch (Exception e) {
             String errMessage = e.getMessage();
         }
+
+    }
+
+    private void insertDataHistory(Ghistoryi ghistoryi) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertHistoryiData(ghistoryi);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " +status);
+            }
+        }.execute();
 
     }
 
