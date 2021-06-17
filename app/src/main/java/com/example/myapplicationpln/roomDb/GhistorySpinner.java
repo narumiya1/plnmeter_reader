@@ -32,7 +32,8 @@ public interface GhistorySpinner {
     int selectIndeks();
 
     @Query("SELECT * FROM tbSpinner")
-    Gspinner[] selectAllItems();
+//    Gspinner[] selectAllItems();
+    List<Gspinner> selectAllItems();
 
     @Query("SELECT id_pelanggan FROM tbSpinner")
     List<Integer> getAllLItems();
@@ -46,6 +47,8 @@ public interface GhistorySpinner {
     @Query("SELECT meter FROM tbMeterApi WHERE type =1")
     int selectMeter();
 
+    @Query("SELECT * FROM tbSpinner")
+    Gspinner[] readDataAddress();
 
     @Query("SELECT id_pelanggan FROM tbSpinner WHERE user_address_id=26")
     int selectIndeksSpinner();
@@ -67,6 +70,8 @@ public interface GhistorySpinner {
 
     @Query("SELECT image FROM tbImage")
     List<String> getImageStorage();
+    @Query("SELECT meter FROM tbMeterApi")
+    List<String> getMetet();
 
     @Query("SELECT COUNT (*) FROM tbImage WHERE type = 1")
     int getCountimage();
@@ -74,6 +79,8 @@ public interface GhistorySpinner {
     int getCountCamera();
     @Update
     int updateImageSelected(Gimage gimage);
+    @Update
+    int updateMeterApiVal(GmeterApi gmeterApi);
     @Update
     int updateCameraValue(GCameraValue gCameraValue);
 }

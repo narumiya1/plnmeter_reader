@@ -14,7 +14,7 @@ import java.util.Date;
 public class Gspinner implements Serializable {
     //    @PrimaryKey(autoGenerate = true)
 //    public int id;
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id_pelanggan")
     public int id_pelanggan;
     @ColumnInfo(name = "address")
@@ -31,6 +31,16 @@ public class Gspinner implements Serializable {
 //    public void setId(int id) {
 //        this.id = id;
 //    }
+
+    public Gspinner() {
+    }
+
+    public Gspinner(int id_pelanggan, String address_update, Date createdAt, int user_address_id) {
+        this.id_pelanggan = id_pelanggan;
+        this.address_update = address_update;
+        this.createdAt = createdAt;
+        this.user_address_id = user_address_id;
+    }
 
     public int getId_pelanggan() {
         return id_pelanggan;
