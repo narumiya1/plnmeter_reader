@@ -18,8 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.activities.AddressListActivity2;
 import com.example.myapplicationpln.activities.FirebaseRecyclerAdapterAddress;
 import com.example.myapplicationpln.activities.UpdateUserData;
+import com.example.myapplicationpln.model.Connection;
+import com.example.myapplicationpln.model.Toastr;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.model.DataUser;
 import com.google.firebase.database.DataSnapshot;
@@ -57,14 +60,27 @@ public class UserDataFragment extends Fragment {
         tvUserEdit = rootView.findViewById(R.id.tvUserEdit);
 
         imageView_address = rootView.findViewById(R.id.imageView_address);
-        imageView_address.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        //checking connection here
+        if (!Connection.isConnect(getActivity())){
+            imageView_address.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toastr.showToast(getActivity(), "no internet connection");
+                    Intent intent = new Intent(getActivity(), AddressListActivity2.class);
+                    startActivity(intent);
+                }
+            });
+        }else {
+            imageView_address.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                Intent intent = new Intent(getActivity(), FirebaseRecyclerAdapterAddress.class);
-                startActivity(intent);
-            }
-        });
+                    Intent intent = new Intent(getActivity(), FirebaseRecyclerAdapterAddress.class);
+                    startActivity(intent);
+                }
+            });
+
+        }
 
         /*
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("User");
