@@ -229,7 +229,7 @@ public class HomeMenuFragment extends Fragment {
             int selection = db.gHistorySpinnerDao().selectMeter() ;
             Log.d("Not Connectzed , Call db room "," selection meter" +selection);
             if (selection==0){
-                hasilMeter.setText(0);
+                hasilMeter.setText(String.valueOf(0));
             }else {
                 String select = String.valueOf(selection);
                 hasilMeter.setText(select);
