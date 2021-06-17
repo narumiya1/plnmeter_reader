@@ -330,6 +330,11 @@ public class HomeMenuFragment extends Fragment {
         arrayListz.add("4345679");
 
         listGrainType = new ArrayList<>();
+        Spinner spinner = (Spinner) view.findViewById(R.id.listItemz);
+        final List<String> areasList = new ArrayList<String>();
+        ArrayAdapter<String> areasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, areasList);
+        areasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(areasAdapter);
 
 //        List<Integer> lables = db.gHistorySpinnerDao().getAllLItems();
         List<String> statusImg = db.gHistorySpinnerDao().getImageStorage();
@@ -372,82 +377,80 @@ public class HomeMenuFragment extends Fragment {
         Integer[] myArrays = db.gHistorySpinnerDao().getAllLItemsArray();
         Log.d("Body myArrays ", " myArrays : " + myArrays + " ");
 
-        // call spinner from firebase
+        // call spinner from fireFbase
         String id_user = sessionPrefference.getUserId();
         String jwtTokensz = sessionPrefference.getKeyApiJwt();
         Log.d("Body id_userid_user ", " id_user : " + id_user + " ");
         Log.d("Body jwtTokensz ", " jwtTokensz : " + jwtTokensz + " ");
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child("Address").orderByChild("id_user").equalTo(id_user);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                final List<String> areasList = new ArrayList<String>();
+        if (Connection.isConnect(getContext())){
+            Log.d("Not Connectzed , Call fbse room "," " );
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            Query query = reference.child("Address").orderByChild("id_user").equalTo(id_user);
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                int lenght = (int) dataSnapshot.getChildrenCount();
-                Log.d("Body lenght ", " lenght : " + lenght + " ");
+                    int lenght = (int) dataSnapshot.getChildrenCount();
+                    Log.d("Body lenght ", " lenght : " + lenght + " ");
 
-                for (DataSnapshot spinnerSnapshot : dataSnapshot.getChildren()) {
-                    String idName = spinnerSnapshot.child("id_pelanggan").getValue(String.class);
-                    Log.d("Body idName ", " idName : " + idName + " ");
-                    areasList.add(idName);
-                }
-
-                Spinner spinner = (Spinner) view.findViewById(R.id.listItemz);
-                ArrayAdapter<String> areasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, areasList);
-                areasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(areasAdapter);
-
-                DatabaseReference references = FirebaseDatabase.getInstance().getReference();
-                Query queryx = references.child("SpinnerDbx").child(sessionPrefference.getPhone());
-                queryx.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            Log.d("DATA CHANGEx", "onDataChange: " + dataSnapshot.getValue(SpinnerSelectx.class));
-                            spinnerSelectx = dataSnapshot.getValue(SpinnerSelectx.class);
-                            Log.d("DATA Yosikhi hyde", " : " + spinnerSelectx.getSpinner_value());
-                            String hyde = spinnerSelectx.getSpinner_long();
-                            valueSpinner = spinnerSelectx.getSpinner_value();
-                            Log.d("DATA CHANGE hyde", " : " + hyde + " valueSpinner : "+valueSpinner+"");
-
-                        }
+                    for (DataSnapshot spinnerSnapshot : dataSnapshot.getChildren()) {
+                        String idName = spinnerSnapshot.child("id_pelanggan").getValue(String.class);
+                        Log.d("Body idName ", " idName : " + idName + " ");
+                        areasList.add(idName);
                     }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
-                Log.d("DATA valueSpinner hyde", " valueSpinner 2: " +valueSpinner+ "");
-                spinner.setSelection(1);
 
-                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        Toast.makeText(getActivity(), " " + areasAdapter.getItem(i) + " choosen ", Toast.LENGTH_SHORT).show();
-                        Log.d("DATA CHANGE choosen", "choosen: " + areasAdapter.getItem(i) + " choosen");
-                        grain_slected = areasAdapter.getItem(i);
-                        mDatabaseRefs.child("SpinnerDbx").child(sessionPrefference.getPhone()).child("spinner_value").setValue(String.valueOf(i));
-                        mDatabaseRefs.child("SpinnerDbx").child(sessionPrefference.getPhone()).child("spinner_long").setValue(String.valueOf(grain_slected));
-                        spinnerSelectx.setSpinner_value(String.valueOf(i));
-                        spinnerSelectx.setSpinner_long(areasAdapter.getItem(i));
-                        Log.d("DATA CHANGE grain_slected", "grain_slected: " + areasAdapter.getItem(i) + " choosen");
+                    DatabaseReference references = FirebaseDatabase.getInstance().getReference();
+                    Query queryx = references.child("SpinnerDbx").child(sessionPrefference.getPhone());
+                    queryx.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                Log.d("DATA CHANGEx", "onDataChange: " + dataSnapshot.getValue(SpinnerSelectx.class));
+                                spinnerSelectx = dataSnapshot.getValue(SpinnerSelectx.class);
+                                Log.d("DATA Yosikhi hyde", " : " + spinnerSelectx.getSpinner_value());
+                                String hyde = spinnerSelectx.getSpinner_long();
+                                valueSpinner = spinnerSelectx.getSpinner_value();
+                                Log.d("DATA CHANGE hyde", " : " + hyde + " valueSpinner : "+valueSpinner+"");
 
-                        adapterView.setTag(grain_slected);
-                        String value = areasAdapter.getItem(i);
-                        String id_user = sessionPrefference.getUserId();
-
-                        //firebase check if data > 0 , insert
-                        if (lenght == 0) {
-                            Log.d("DATA CHANGE insertz", "insertz: ");
-                        } else {
-                            Log.d("DATA CHANGE updatez", "updatez: ");
-                            Toast.makeText(getActivity().getApplicationContext(), "value if " + value +" choosen", Toast.LENGTH_LONG).show();
-
+                            }
                         }
 
-                        // 140-161 insert to room db
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    Log.d("DATA valueSpinner hyde", " valueSpinner 2: " +valueSpinner+ "");
+                    spinner.setSelection(1);
+
+                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            Toast.makeText(getActivity(), " " + areasAdapter.getItem(i) + " choosen ", Toast.LENGTH_SHORT).show();
+                            Log.d("DATA CHANGE choosen", "choosen: " + areasAdapter.getItem(i) + " choosen");
+                            grain_slected = areasAdapter.getItem(i);
+                            mDatabaseRefs.child("SpinnerDbx").child(sessionPrefference.getPhone()).child("spinner_value").setValue(String.valueOf(i));
+                            mDatabaseRefs.child("SpinnerDbx").child(sessionPrefference.getPhone()).child("spinner_long").setValue(String.valueOf(grain_slected));
+                            spinnerSelectx.setSpinner_value(String.valueOf(i));
+                            spinnerSelectx.setSpinner_long(areasAdapter.getItem(i));
+                            Log.d("DATA CHANGE grain_slected", "grain_slected: " + areasAdapter.getItem(i) + " choosen");
+
+                            adapterView.setTag(grain_slected);
+                            String value = areasAdapter.getItem(i);
+                            String id_user = sessionPrefference.getUserId();
+
+                            //firebase check if data > 0 , insert
+                            if (lenght == 0) {
+                                Log.d("DATA CHANGE insertz", "insertz: ");
+                            } else {
+                                Log.d("DATA CHANGE updatez", "updatez: ");
+                                Toast.makeText(getActivity().getApplicationContext(), "value if " + value +" choosen", Toast.LENGTH_LONG).show();
+
+                            }
+
+                            // 140-161 insert to room db
 //                        GIndeksSpinner gIndeksSpinner = new GIndeksSpinner();
 //                        gIndeksSpinner.setType(1);
 //                        gIndeksSpinner.setId_idx(6);
@@ -468,16 +471,16 @@ public class HomeMenuFragment extends Fragment {
 //                            updateSelectedGrain(gIndeksSpinner);
 //                        }
 
-                    }
+                        }
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
 
-                    }
-                });
+                        }
+                    });
 
 
-                // call spinner from firebase 2
+                    // call spinner from firebase 2
 //                for (DataSnapshot areaSnapshot: dataSnapshot.getChildren()) {
 //
 //                    dataUser = dataSnapshot.getValue(PelangganyAlamat.class);
@@ -498,13 +501,73 @@ public class HomeMenuFragment extends Fragment {
 //                }
 
 
-            }
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }else {
+            Log.d("Connection "," Internet NConnectzed 1 " );
+            // call spinner from room
+            ArrayAdapter adapter = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, myArrays);
+            adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+            adapter.notifyDataSetChanged();
+            list.setAdapter(adapter);
+
+            //get selection from db room
+            int selection = db.gHistorySpinnerDao().selectIndeks() ;
+            Log.d("Body selectionsz ", " selection : "+selection+" ");
+            list.setSelection(selection);
+
+            list.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    Toast.makeText(getActivity()," "+adapter.getItem(i)+" choosen", Toast.LENGTH_SHORT).show();
+                    Log.d("DATA CHANGE choosen", "choosen: " + adapter.getItem(i)+" choosen");
+                    selectedValue=adapter.getItem(i).toString();
+                    String id_user = sessionPrefference.getUserId();
+                    // 140-161 insert to room db
+                    String val = adapter.getItem(i).toString();
+                    Log.d("DATA CHANGE rowCount", "rowCount: " +val);
+
+                    GIndeksSpinner gIndeksSpinner = new GIndeksSpinner();
+                    gIndeksSpinner.setType(1);
+                    gIndeksSpinner.setId_idx(1);
+                    gIndeksSpinner.setValue(val);
+                    gIndeksSpinner.setValue_int(i);
+
+                    int rowCount = db.gHistorySpinnerDao().getCountIdx();
+                    Log.d("DATA CHANGE rowCount", "rowCount: " +rowCount);
+
+                    if(rowCount==0){
+                        Log.d("AAABL", "idx "+rowCount);
+                        Toast.makeText(getActivity(), "index kosong",Toast.LENGTH_SHORT).show();
+                        insertIdxSpinner(gIndeksSpinner);
+
+                    }
+                    else{
+//                            cara-1, dengan fungsi
+                        String vals = adapter.getItem(i).toString();
+                        gIndeksSpinner.setType(1);
+                        gIndeksSpinner.setId_idx(1);
+                        gIndeksSpinner.setValue(vals);
+                        gIndeksSpinner.setValue_int(i);
+                        Log.d("AAVAIL", " i "+vals);
+                        updateSelectedGrain(gIndeksSpinner);
+                    }
+                    Log.d("DATA CHANGE selectedValue", "selectedValue: " + selectedValue+" choosen");
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        }
+
 
 
 
