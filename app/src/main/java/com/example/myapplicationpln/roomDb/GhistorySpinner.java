@@ -28,6 +28,11 @@ public interface GhistorySpinner {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertMeterData(GmeterApi gmeterApi);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertHistoryiData(Ghistoryi ghistoryi);
+
+
     @Query("SELECT value_int FROM tbIndeks WHERE type=1")
     int selectIndeks();
 
