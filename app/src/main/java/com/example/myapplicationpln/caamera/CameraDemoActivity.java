@@ -35,6 +35,7 @@ import androidx.room.Room;
 
 import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.model.CameraVal;
+import com.example.myapplicationpln.model.Connection;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GCameraValue;
@@ -112,107 +113,130 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                 .build();
 
         sessionPrefference = new SessionPrefference(this);
-        databaseReferenceCameraWidthHeight = FirebaseDatabase.getInstance().getReference().child("CameraVal").child(sessionPrefference.getUserId());
-        databaseReferenceCameraWidthHeight.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    cameraVal = snapshot.getValue(CameraVal.class);
-                    Log.d("DATA getHeight", "onDataChange: " + cameraVal.getX());
-                    Log.d("DATA getWidth", "onDataChange: " + cameraVal.getY());
+        if (!Connection.isConnect(getApplicationContext())){
+            //  20210616
+            // pupulasi koordinat & ukuran kotak kamera
+            // isi width, height, x, y dari room database
+            imageVew.requestLayout();
+            imageVew.getLayoutParams().width = 400;
+            imageVew.getLayoutParams().height = 200;
+            int x = 250;
+            imageVew.setX(x);
+            int y = 250;
+            imageVew.setX(y);
 
-                    databaseReferenceCameraWidthHeight = FirebaseDatabase.getInstance().getReference().child("CameraVal");
+        }else {
+            databaseReferenceCameraWidthHeight = FirebaseDatabase.getInstance().getReference().child("CameraVal").child(sessionPrefference.getUserId());
+            databaseReferenceCameraWidthHeight.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        cameraVal = snapshot.getValue(CameraVal.class);
+                        Log.d("DATA getHeight", "onDataChange: " + cameraVal.getX());
+                        Log.d("DATA getWidth", "onDataChange: " + cameraVal.getY());
 
-                    if (cameraVal.getY().equals(0) && cameraVal.getX().equals(0)){
-                        imageVew.getLayoutParams().width = 400;
-                        imageVew.getLayoutParams().height = 200;
-                        int x = 250;
-                        imageVew.setX(x);
-                        int y = 250;
-                        imageVew.setX(y);
-                        String setX = String.valueOf(x);
-                        String setY = String.valueOf(y);
-                        String id = String.valueOf(1);
-                        String h = String.valueOf( imageVew.getLayoutParams().width = 400);
-                        String w = String.valueOf(imageVew.getLayoutParams().height = 200);
-                        CameraVal cameraVal = new CameraVal(id, sessionPrefference.getUserId(), sessionPrefference.getPhone(), w, h, setX, setY);
-                        databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
-                        GCameraValue gCameraValue = new GCameraValue();
-                        gCameraValue.setId_user(sessionPrefference.getUserId());
-                        gCameraValue.setUser_phone(sessionPrefference.getPhone());
-                        gCameraValue.setHeight(Integer.parseInt(h));
-                        gCameraValue.setWidth(Integer.parseInt(w));
-                        int rowCamType = db.gHistorySpinnerDao().getCountCamera();
-                        if (rowCamType == 0) {
+                        databaseReferenceCameraWidthHeight = FirebaseDatabase.getInstance().getReference().child("CameraVal");
+
+                        if (cameraVal.getY().equals(0) && cameraVal.getX().equals(0)){
+                            imageVew.getLayoutParams().width = 400;
+                            imageVew.getLayoutParams().height = 200;
+                            int x = 250;
+                            imageVew.setX(x);
+                            int y = 250;
+                            imageVew.setX(y);
+                            String setX = String.valueOf(x);
+                            String setY = String.valueOf(y);
+                            String id = String.valueOf(1);
+                            String h = String.valueOf( imageVew.getLayoutParams().width = 400);
+                            String w = String.valueOf(imageVew.getLayoutParams().height = 200);
+                            CameraVal cameraVal = new CameraVal(id, sessionPrefference.getUserId(), sessionPrefference.getPhone(), w, h, setX, setY);
+                            databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
+                            GCameraValue gCameraValue = new GCameraValue();
                             gCameraValue.setId_user(sessionPrefference.getUserId());
                             gCameraValue.setUser_phone(sessionPrefference.getPhone());
                             gCameraValue.setHeight(Integer.parseInt(h));
                             gCameraValue.setWidth(Integer.parseInt(w));
-                            gCameraValue.setId(1);
-                            gCameraValue.setType(1);
-                            insertData(gCameraValue);
-                        } else {
+                            int rowCamType = db.gHistorySpinnerDao().getCountCamera();
+                            if (rowCamType == 0) {
+                                gCameraValue.setId_user(sessionPrefference.getUserId());
+                                gCameraValue.setUser_phone(sessionPrefference.getPhone());
+                                gCameraValue.setHeight(Integer.parseInt(h));
+                                gCameraValue.setWidth(Integer.parseInt(w));
+                                gCameraValue.setX(250);
+                                gCameraValue.setY(250);
+                                gCameraValue.setId(1);
+                                gCameraValue.setType(1);
+                                insertData(gCameraValue);
+                            } else {
+                                gCameraValue.setId_user(sessionPrefference.getUserId());
+                                gCameraValue.setUser_phone(sessionPrefference.getPhone());
+                                gCameraValue.setHeight(Integer.parseInt(h));
+                                gCameraValue.setWidth(Integer.parseInt(w));
+                                gCameraValue.setX(Integer.parseInt(cameraVal.getX()));
+                                gCameraValue.setY(Integer.parseInt(cameraVal.getY()));
+                                gCameraValue.setId(1);
+                                gCameraValue.setType(1);
+                                updateCamValue(gCameraValue);
+
+                            }
+                        }else {
+                            imageVew.getLayoutParams().height = Integer.parseInt(cameraVal.getHeight());
+                            imageVew.getLayoutParams().width = Integer.parseInt(cameraVal.getWidth());
+                            imageVew.setY(Float.parseFloat(cameraVal.getY()));
+                            imageVew.setX(Float.parseFloat(cameraVal.getX()));
+                            imageVew.requestLayout();
+
+                            String h = String.valueOf(cameraVal.getHeight());
+                            String w = String.valueOf(cameraVal.getWidth());
+                            String setX = String.valueOf(cameraVal.getX());
+                            String setY = String.valueOf(cameraVal.getY());
+                            String id = String.valueOf(1);
+
+                            CameraVal cameraVal = new CameraVal(id, sessionPrefference.getUserId(), sessionPrefference.getPhone(), w, h, setX, setY);
+                            databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
+
+                            GCameraValue gCameraValue = new GCameraValue();
                             gCameraValue.setId_user(sessionPrefference.getUserId());
                             gCameraValue.setUser_phone(sessionPrefference.getPhone());
                             gCameraValue.setHeight(Integer.parseInt(h));
                             gCameraValue.setWidth(Integer.parseInt(w));
-                            gCameraValue.setId(1);
-                            gCameraValue.setType(1);
-                            updateCamValue(gCameraValue);
+                            int rowCamType = db.gHistorySpinnerDao().getCountCamera();
+                            if (rowCamType == 0) {
+                                gCameraValue.setId_user(sessionPrefference.getUserId());
+                                gCameraValue.setUser_phone(sessionPrefference.getPhone());
+                                gCameraValue.setHeight(Integer.parseInt(h));
+                                gCameraValue.setWidth(Integer.parseInt(w));
+                                gCameraValue.setX(Integer.parseInt(setX));
+                                gCameraValue.setY(Integer.parseInt(setY));
+                                gCameraValue.setId(1);
+                                gCameraValue.setType(1);
+                                insertData(gCameraValue);
+                            } else {
+                                gCameraValue.setId_user(sessionPrefference.getUserId());
+                                gCameraValue.setUser_phone(sessionPrefference.getPhone());
+                                gCameraValue.setHeight(Integer.parseInt(h));
+                                gCameraValue.setWidth(Integer.parseInt(w));
+                                gCameraValue.setX(Integer.parseInt(setX));
+                                gCameraValue.setY(Integer.parseInt(setY));
+                                gCameraValue.setId(1);
+                                gCameraValue.setType(1);
+                                updateCamValue(gCameraValue);
 
+                            }
                         }
-                    }else {
-                        imageVew.getLayoutParams().height = Integer.parseInt(cameraVal.getHeight());
-                        imageVew.getLayoutParams().width = Integer.parseInt(cameraVal.getWidth());
-                        imageVew.setX(Float.parseFloat(cameraVal.getX()));
-                        imageVew.setX(Float.parseFloat(cameraVal.getX()));
-                        imageVew.requestLayout();
 
-                        String h = String.valueOf(cameraVal.getHeight());
-                        String w = String.valueOf(cameraVal.getWidth());
-                        String setX = String.valueOf(cameraVal.getX());
-                        String setY = String.valueOf(cameraVal.getY());
-                        String id = String.valueOf(1);
 
-                        CameraVal cameraVal = new CameraVal(id, sessionPrefference.getUserId(), sessionPrefference.getPhone(), w, h, setX, setY);
-                        databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
 
-                        GCameraValue gCameraValue = new GCameraValue();
-                        gCameraValue.setId_user(sessionPrefference.getUserId());
-                        gCameraValue.setUser_phone(sessionPrefference.getPhone());
-                        gCameraValue.setHeight(Integer.parseInt(h));
-                        gCameraValue.setWidth(Integer.parseInt(w));
-                        int rowCamType = db.gHistorySpinnerDao().getCountCamera();
-                        if (rowCamType == 0) {
-                            gCameraValue.setId_user(sessionPrefference.getUserId());
-                            gCameraValue.setUser_phone(sessionPrefference.getPhone());
-                            gCameraValue.setHeight(Integer.parseInt(h));
-                            gCameraValue.setWidth(Integer.parseInt(w));
-                            gCameraValue.setId(1);
-                            gCameraValue.setType(1);
-                            insertData(gCameraValue);
-                        } else {
-                            gCameraValue.setId_user(sessionPrefference.getUserId());
-                            gCameraValue.setUser_phone(sessionPrefference.getPhone());
-                            gCameraValue.setHeight(Integer.parseInt(h));
-                            gCameraValue.setWidth(Integer.parseInt(w));
-                            gCameraValue.setId(1);
-                            gCameraValue.setType(1);
-                            updateCamValue(gCameraValue);
-
-                        }
                     }
+                }
 
-
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
                 }
-            }
+            });
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
     private void insertData(GCameraValue gCameraValue) {
         new AsyncTask<Void, Void, Long>() {

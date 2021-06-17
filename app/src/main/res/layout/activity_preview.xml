@@ -51,7 +51,6 @@
             android:layout_toLeftOf="@id/ideathasil"
             android:gravity="bottom"
             android:padding="14dp"
-            android:text="1234"
             android:textSize="16dp"
             android:textStyle="bold" />
     </LinearLayout>

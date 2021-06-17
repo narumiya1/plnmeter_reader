@@ -32,6 +32,7 @@ import com.example.myapplicationpln.network_retrofit.PLNData;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.Gimage;
+import com.example.myapplicationpln.roomDb.GmeterApi;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,6 +53,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.TextStyle;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import okhttp3.MediaType;
@@ -348,6 +350,19 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                             hasilmetergenereate.setTextColor(getResources().getColor(R.color.yellow));
                             hasilmetergenereate.setText(m);
                         }
+                        List<String> metersCount = db.gHistorySpinnerDao().getMetet();
+                        GmeterApi gmeterApi = new GmeterApi();
+                        if (metersCount.equals(0)){
+                            gmeterApi.setMeter(m);
+                            gmeterApi.setType(1);
+                            insertMeterApiVal(gmeterApi);
+                        }else{
+                            gmeterApi.setMeter(m);
+                            gmeterApi.setType(1);
+                            updateMeterApiVal(gmeterApi);
+                        }
+
+
                         Gimage gimage = new Gimage();
                         gimage.setType(1);
                         int rowImageType = db.gHistorySpinnerDao().getCountimage();
@@ -409,6 +424,43 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             String errMessage = e.getMessage();
         }
 
+    }
+
+    private void updateMeterApiVal(GmeterApi gmeterApi) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertMeterData(gmeterApi);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " +status);
+            }
+        }.execute();
+
+    }
+
+    private void insertMeterApiVal(GmeterApi gmeterApi) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().updateMeterApiVal(gmeterApi);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " +status);
+            }
+        }.execute();
     }
 
     private void insertData(Gimage gimage) {
