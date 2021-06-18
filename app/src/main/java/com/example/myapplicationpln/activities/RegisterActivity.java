@@ -226,6 +226,7 @@ public class RegisterActivity extends AppCompatActivity {
                 gUserData.setEmail(userEmail);
                 gUserData.setAddress(userAlamat);
                 gUserData.setPhone(getPhone);
+                gUserData.setId_pel(idPelanggan);
                 gUserData.setStatus(stats);
                 insertData(gUserData);
 
