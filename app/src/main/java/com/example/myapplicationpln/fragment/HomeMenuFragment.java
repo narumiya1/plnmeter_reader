@@ -1124,7 +1124,7 @@ public class HomeMenuFragment extends Fragment {
                             hasilIdentify.setText(idtfy);
                               */
 
-                            String meterfy = String.valueOf(total);
+                            String meterfy = String.valueOf(meter);
                             hasilMeter.setTextColor(getResources().getColor(R.color.yellow));
                             hasilMeter.setText(meterfy);
                             gmeterApi.setMeter(meterfy);
@@ -1145,7 +1145,7 @@ public class HomeMenuFragment extends Fragment {
 
                             Log.d("Upload RED", "String RED  : ");
                             */
-                            String meterfy = String.valueOf(total);
+                            String meterfy = String.valueOf(meter);
                             hasilMeter.setTextColor(getResources().getColor(R.color.yellow));
                             hasilMeter.setText(meterfy);
                             gmeterApi.setMeter(meterfy);
