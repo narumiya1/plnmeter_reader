@@ -14,6 +14,7 @@ import androidx.room.Room;
 
 import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.adapter.AddressAdapter;
+import com.example.myapplicationpln.model.Toastr;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.Gspinner;
@@ -58,9 +59,13 @@ public class AddressListActivity2 extends AppCompatActivity {
         add_addressz2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AddressListActivity2.this, FormAddress.class);
+                Toastr.showToast(getApplicationContext(), " cannot add if no internet connection");
+              /*
+
+               Intent intent = new Intent(AddressListActivity2.this, FormAddress.class);
                 intent.putExtra("userId", idUserAddress);
                 startActivity(intent);
+               */
             }
         });
     }
