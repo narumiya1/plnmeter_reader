@@ -77,6 +77,12 @@ public interface GhistorySpinner {
     @Query("SELECT COUNT (*) FROM tbIndeks WHERE type = 1")
     int getCountIdx();
 
+    @Query("SELECT COUNT (*) FROM tbUserData WHERE status = 1")
+    int getCounTbUser();
+    @Update
+    int updateUserData(GUserData gUserData);
+    @Query("UPDATE tbUserData SET username = :username, email =:email WHERE id_user= :id")
+    int updateDataUser(int id,String username, String email);
     @Update
     int updateGrainSelected(Gspinner gindeks);
 
