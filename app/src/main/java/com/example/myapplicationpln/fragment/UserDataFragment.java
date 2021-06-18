@@ -79,7 +79,8 @@ public class UserDataFragment extends Fragment {
             imageView_address.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toastr.showToast(getActivity(), "no internet connection");
+                    Log.d("nointernet connection", " ");
+//                    Toastr.showToast(getActivity(), "no internet connection");
                     Intent intent = new Intent(getActivity(), AddressListActivity2.class);
                     startActivity(intent);
                 }
