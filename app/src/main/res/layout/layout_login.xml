@@ -97,7 +97,8 @@
             android:onClick="viewForgotPAssword"
             android:text="Forgot Password?"
             android:textColor="@color/design_default_color_primary"
-            android:textSize="@dimen/newsMoreTextSize" />
+            android:textSize="@dimen/newsMoreTextSize"
+            android:visibility="invisible"/>
 
         <Button
             android:id="@+id/cirLoginButton"

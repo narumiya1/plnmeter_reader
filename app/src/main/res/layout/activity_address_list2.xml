@@ -5,11 +5,13 @@
     android:orientation="vertical">
     <!--Top Header Layout-->
     <LinearLayout
-        android:background="#293859"
         android:id="@+id/topbars"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="0dp"
+        android:background="#293859"
         android:gravity="center_vertical"
         android:padding="2dp">
 
@@ -46,8 +48,8 @@
                 android:id="@+id/add_addressz2"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:layout_marginRight="4dp"
                 android:layout_centerInParent="true"
+                android:layout_marginRight="4dp"
                 android:padding="6dp"
                 android:src="@drawable/ic_baseline_add_circle_outline_24" />
 
@@ -59,8 +61,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_margin="8dp"
                 android:padding="4dp"
-                android:visibility="gone"
-                android:src="@drawable/circleyellowfil" />
+                android:src="@drawable/circleyellowfil"
+                android:visibility="gone" />
         </RelativeLayout>
 
     </LinearLayout>
