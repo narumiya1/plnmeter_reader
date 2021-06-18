@@ -58,6 +58,16 @@ public interface GhistorySpinner {
     @Query("SELECT * FROM tbHistory")
     Ghistoryi[] readDataHistory();
 
+    @Query("SELECT name FROM tbUserData")
+    String readDataUser();
+
+
+    @Query("SELECT id_user,username  FROM tbUserData WHERE id_user =18")
+    GUserData[] selectDataUser();
+
+    @Query("SELECT * FROM tbUserData WHERE id_user = :nim LIMIT 1")
+    GUserData selectDetailUserData(String nim);
+
     @Query("SELECT id_pelanggan FROM tbSpinner WHERE user_address_id=26")
     int selectIndeksSpinner();
 
