@@ -74,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     String jwt;
     String number;
+    String phoneNumb;
     final Handler handler = new Handler(Looper.getMainLooper());
     private String mImageFileLocation = "";
     @Override
@@ -106,10 +107,11 @@ public class LoginActivity extends AppCompatActivity {
                 String pw = editTextPasswordLogin.getText().toString();
                 String code = PhoneCourtyCode.countryAreaCodesz[spinner.getSelectedItemPosition()];
                 number = editTextPhoneLogin.getText().toString();
-                String phoneNumber = "+" + code + number;
+                phoneNumb = "+" + code + number;
+                Log.d("phoneNumb", " " +phoneNumb);
                 String id_user;
 
-                Query query = reference.child("User").child(number);
+                Query query = reference.child("User").child(phoneNumb);
                 Log.d("Body getUserId login", "login: "+  sessionPrefference.getUserId());
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -120,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d("accounts", "accounts: " + accounts.getPhone());
                             Log.d("accountsUser", "accounts.getId_user: " + accounts.getId_user());
 
-                            loginJwtApi(number, pw, accounts.getId_user());
+                            loginJwtApi(phoneNumb, pw, accounts.getId_user());
 
                         }
                     }
