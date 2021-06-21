@@ -424,7 +424,7 @@ public class HomeMenuFragment extends Fragment {
                         }
                     });
                     Log.d("DATA valueSpinner hyde", " valueSpinner 2: " + valueSpinner + "");
-                    spinner.setSelection(1);
+                    spinner.setSelection(0);
 
                     spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
