@@ -56,6 +56,9 @@
         <activity android:name="com.example.myapplicationpln.activities.UpdateUserData"/>
         <activity android:name=".caamera.PreviewActivity"/>
         <activity android:name=".activities.AddressListActivity2"/>
+        <activity android:name=".activities.ForgotPasswordActivity"/>
+        <activity android:name=".activities.VerifyPhoneActivity2"/>
+        <activity android:name=".activities.FormForgot"/>
         <activity
             android:name=".caamera.CameraDemoActivity"
             android:configChanges="keyboardHidden|orientation"
