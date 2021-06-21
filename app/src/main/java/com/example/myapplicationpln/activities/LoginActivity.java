@@ -27,6 +27,7 @@ import com.example.myapplicationpln.cookies.JavaNetCookieJar;
 import com.example.myapplicationpln.cookies.ReceivedCookiesInterceptor;
 import com.example.myapplicationpln.cookies.TokenInterceptor;
 import com.example.myapplicationpln.network_retrofit.ApiClient;
+import com.example.myapplicationpln.network_retrofit.Login;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.model.DataUser;
 import com.google.firebase.database.DataSnapshot;
@@ -59,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private Button login;
     private TextView signup;
+    private TextView forgot_pswrd;
     private EditText editTextPasswordLogin,editTextPhoneLogin;
     //Firebase
     DatabaseReference databaseReference;
@@ -88,7 +90,14 @@ public class LoginActivity extends AppCompatActivity {
         spinner.setGravity(12);
         login = findViewById(R.id.btn_login);
         signup = findViewById(R.id.textview_signup);
-
+        forgot_pswrd=findViewById(R.id.forgot_pasword);
+        forgot_pswrd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                startActivity(intent);
+            }
+        });
         editTextPhoneLogin = findViewById(R.id.editTextPhoneLogin);
         editTextPasswordLogin = findViewById(R.id.editTextPasswordLogin);
 
