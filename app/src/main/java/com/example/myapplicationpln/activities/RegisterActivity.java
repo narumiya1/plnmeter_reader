@@ -186,7 +186,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String userAddressId;
                 Log.d("DATA  id_auth regh", "id_auth: " + id_auth);
                 String id = id_auth;
-                userId = String.valueOf(maxIdUser+1);
+                userId = String.valueOf(maxIdUser+2);
                 userAddressId = String.valueOf(maxIdAddress+1);
                 idPelanggan = id_pelanggan.getText().toString();
                 name = nameA.getText().toString();
@@ -214,6 +214,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 //db1
+                Log.d("DATAz userId", "userId: " + userId);
                 DataUser accounts = new DataUser(id_auth,userId,idPelanggan, name,userName, userEmail, userAlamat,getPhone, passwordUser);
                 databaseReference.child(phone).setValue(accounts);
                 // user db room
