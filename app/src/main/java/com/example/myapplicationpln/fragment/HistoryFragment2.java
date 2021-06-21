@@ -43,7 +43,7 @@ public class HistoryFragment2 extends Fragment {
         db = Room.databaseBuilder(getActivity(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
-                .addMigrations(AppDatabase.MIGRATION_1_6)
+                .addMigrations(AppDatabase.MIGRATION_1_7)
                 .build();
 
         mRecyclerview = view.findViewById(R.id.recyclerViewHistory2);

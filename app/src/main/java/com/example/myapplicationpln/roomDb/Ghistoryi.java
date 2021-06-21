@@ -26,7 +26,8 @@ public class Ghistoryi implements Serializable {
     private String score_identfy;
     @ColumnInfo(name = "created_at")
     private String created_at;
-
+    @ColumnInfo(name = "imagez")
+    private String imagez;
     public Ghistoryi() {
     }
 
@@ -85,5 +86,13 @@ public class Ghistoryi implements Serializable {
 
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
+    }
+
+    public String getImagez() {
+        return imagez;
+    }
+
+    public void setImagez(String imagez) {
+        this.imagez = imagez;
     }
 }

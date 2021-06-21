@@ -54,7 +54,7 @@ public class EventDetailActivity extends AppCompatActivity {
         db = Room.databaseBuilder(getBaseContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
-                .addMigrations(AppDatabase.MIGRATION_1_6)
+                .addMigrations(AppDatabase.MIGRATION_1_7)
                 .build();
 
         int selection = db.gHistorySpinnerDao().selectIndeks(Integer.valueOf(userAddressId)) ;

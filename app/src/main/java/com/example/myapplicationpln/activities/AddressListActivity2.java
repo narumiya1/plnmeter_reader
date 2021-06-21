@@ -39,7 +39,7 @@ public class AddressListActivity2 extends AppCompatActivity {
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
-                .addMigrations(AppDatabase.MIGRATION_1_6)
+                .addMigrations(AppDatabase.MIGRATION_1_7)
                 .build();
 
         mRecyclerview = findViewById(R.id.recyclerView2);

@@ -62,7 +62,7 @@ public class UserDataFragment extends Fragment {
         db = Room.databaseBuilder(getContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
-                .addMigrations(AppDatabase.MIGRATION_1_6)
+                .addMigrations(AppDatabase.MIGRATION_1_7)
                 .build();
         listuser = new ArrayList<>();
         tvUserName = rootView.findViewById(R.id.tvUser);

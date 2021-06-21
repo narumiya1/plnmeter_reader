@@ -60,7 +60,7 @@ public class FormAddress extends AppCompatActivity {
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
-                .addMigrations(AppDatabase.MIGRATION_1_6)
+                .addMigrations(AppDatabase.MIGRATION_1_7)
                 .build();
         databaseReference2 = FirebaseDatabase.getInstance().getReference().child("Address");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();

@@ -6,17 +6,17 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Gspinner.class,GIndeksSpinner.class,Gimage.class,GCameraValue.class, GUserData.class,GmeterApi.class,Ghistoryi.class}, version = 22)
+@Database(entities = {Gspinner.class,GIndeksSpinner.class,Gimage.class,GCameraValue.class, GUserData.class,GmeterApi.class,Ghistoryi.class}, version = 7)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract GhistorySpinner gHistorySpinnerDao();
 
     //migrate for add table
     @VisibleForTesting
-    public static final Migration MIGRATION_1_6 = new Migration(1, 6) {
+    public static final Migration MIGRATION_1_7 = new Migration(1, 7) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE tbarang "
-                    + " ADD COLUMN image String");
+//            database.execSQL("ALTER TABLE tbHistory "
+//                    + " ADD COLUMN imagez String");
         }
     };
 }

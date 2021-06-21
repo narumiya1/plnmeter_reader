@@ -184,7 +184,7 @@ public class HomeMenuFragment extends Fragment {
         db = Room.databaseBuilder(getContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
-                .addMigrations(AppDatabase.MIGRATION_1_6)
+                .addMigrations(AppDatabase.MIGRATION_1_7)
                 .build();
         args = new Bundle();
         if(args == null){
@@ -1187,6 +1187,7 @@ public class HomeMenuFragment extends Fragment {
                         ghistoryi.setScore_identfy(idtfy);
                         ghistoryi.setCreated_at(text);
                         ghistoryi.setId_user(String.valueOf(sessionPrefference.getUserId()));
+                        ghistoryi.setImagez(mImageFileLocation);
                         insertDataHistory(ghistoryi);
 
 

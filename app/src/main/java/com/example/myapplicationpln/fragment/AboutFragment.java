@@ -438,7 +438,7 @@ public class AboutFragment extends Fragment implements View.OnClickListener, Act
         db = Room.databaseBuilder(getContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
-                .addMigrations(AppDatabase.MIGRATION_1_6)
+                .addMigrations(AppDatabase.MIGRATION_1_7)
                 .build();
 
         databaseReferenceCameraWidthHeight = FirebaseDatabase.getInstance().getReference().child("CameraVal").child(sessionPrefference.getPhone());
