@@ -109,7 +109,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
-                .addMigrations(AppDatabase.MIGRATION_1_6)
+                .addMigrations(AppDatabase.MIGRATION_1_7)
                 .build();
 
         sessionPrefference = new SessionPrefference(this);
