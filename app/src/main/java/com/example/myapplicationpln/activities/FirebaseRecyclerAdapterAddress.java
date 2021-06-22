@@ -19,7 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.model.Connection;
 import com.example.myapplicationpln.model.PelangganyAlamat;
+import com.example.myapplicationpln.model.Toastr;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -33,7 +35,7 @@ public class FirebaseRecyclerAdapterAddress extends AppCompatActivity {
     RecyclerView mRecyclerview;
     ImageView add_address, onBackPressezd;
     private FirebaseDatabase mDatabase;
-    private Query mUserDatabase,mUserDatabase2;
+    private Query mUserDatabase, mUserDatabase2;
     private FirebaseRecyclerAdapter firebaseRecyclerAdapter;
     private LinearLayoutManager mManager;
     private static final String TAG = FirebaseRecyclerAdapterAddress.class.getSimpleName();
@@ -118,9 +120,12 @@ public class FirebaseRecyclerAdapterAddress extends AppCompatActivity {
                 holder.setAname(model.getUser_address_id());
 
 
-                holder.cardView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                if (Connection.isConnect(getApplicationContext())) {
+
+
+                    holder.cardView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
 
                         /*
@@ -151,19 +156,21 @@ public class FirebaseRecyclerAdapterAddress extends AppCompatActivity {
                         });
                          */
 
-                        Context context = view.getContext();
-                        Intent intent = new Intent(context, EventDetailActivity.class);
-                        intent.putExtra("userAddress", model.getAlamat_pelanggan());
-                        intent.putExtra("userDetailId", model.getId_pelanggan());
-                        intent.putExtra("userAddressId", model.getUser_address_id());
+                            Context context = view.getContext();
+                            Intent intent = new Intent(context, EventDetailActivity.class);
+                            intent.putExtra("userAddress", model.getAlamat_pelanggan());
+                            intent.putExtra("userDetailId", model.getId_pelanggan());
+                            intent.putExtra("userAddressId", model.getUser_address_id());
 
-                        Log.d("Body model model", "model: "+model.getAlamat_pelanggan());
-                        context.startActivity(intent);
+                            Log.d("Body model model", "model: " + model.getAlamat_pelanggan());
+                            context.startActivity(intent);
 
 
-
-                    }
-                });
+                        }
+                    });
+                }else {
+                    Toastr.showToast(getApplicationContext(),"No internet connection");
+                }
             }
 
 
@@ -201,7 +208,7 @@ public class FirebaseRecyclerAdapterAddress extends AppCompatActivity {
         public UserViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            cardView=itemView.findViewById(R.id.cvMain_address);
+            cardView = itemView.findViewById(R.id.cvMain_address);
 
             /*
                         mView.setOnClickListener(new View.OnClickListener() {
@@ -232,6 +239,7 @@ public class FirebaseRecyclerAdapterAddress extends AppCompatActivity {
             TextView AName = (TextView) mView.findViewById(R.id.rvUserAddtressId);
             AName.setText(name);
         }
+
         public void setOrderSpinner(String status) {
 
         }
