@@ -981,9 +981,12 @@ public class HomeMenuFragment extends Fragment {
                     dialog.dismiss();
                     PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(photoView);
                     photoViewAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    if (grain_slected!=null) {
+                    if (grain_slected!=null && Connection.isConnect(getActivity())) {
                         uploadImage(converetdImage, grain_slected);
                         Log.d("Body uploadImage grain_slected", "grain_slected  : " + grain_slected);
+                    }else {
+                        // insert image to Tb image room
+                        Toastr.showToast(getActivity(), "NO INTERNET CONNECTION");
                     }
                       /*
                         cek jenis grain
