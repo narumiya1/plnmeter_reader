@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cvMain_addresss"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="70dp"
     android:layout_margin="2dp"
     android:background="@drawable/line_cardview"
     android:padding="2dp"
@@ -21,7 +21,7 @@
         <LinearLayout
             android:id="@+id/llMetr2"
             android:layout_marginLeft="4dp"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="2dp"
@@ -115,17 +115,27 @@
 
 
         </LinearLayout>
-        <com.github.chrisbanes.photoview.PhotoView
-            android:id="@+id/imgvx"
-            android:layout_marginLeft="8dp"
-            android:layout_below="@+id/llMetr2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"/>
+        <LinearLayout
+            android:layout_toRightOf="@+id/llMetr2"
+            android:id="@+id/llImage"
+            android:gravity="right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.github.chrisbanes.photoview.PhotoView
+                android:id="@+id/imgvx"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_below="@+id/llMetr2"
+                android:layout_width="40dp"
+                android:src="@drawable/metr"
+                android:layout_height="40dp"/>
+
+        </LinearLayout>
         <TextView
             android:id="@+id/txtDate2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imgvx"
+            android:layout_below="@+id/llImage"
             android:layout_gravity="right"
             android:layout_marginRight="2dp"
             android:gravity="bottom|right"
