@@ -90,7 +90,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
                     Gspinner idx = new Gspinner();
 //                    idx.setId_pelanggan(idpels);
-//                    updateSelectedGrain(idx);
+                    updateSelectedGrain(idx);
                     int id = selection;
                     int id_pelanggan = idx.setId_pelanggan(idpels);
                     String alamat = idx.setAddress_update(update_alamat);
