@@ -94,6 +94,8 @@ public interface GhistorySpinner {
 
     @Query("SELECT image FROM tbImage")
     List<String> getImageStorage();
+    @Query("SELECT imagez FROM tbHistory WHERE meter = :meter")
+    String getImageHistory(String meter);
     @Query("SELECT meter FROM tbMeterApi")
     List<String> getMetet();
 
