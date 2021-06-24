@@ -80,6 +80,7 @@ import com.example.myapplicationpln.roomDb.GIndeksSpinner;
 import com.example.myapplicationpln.roomDb.GUserData;
 import com.example.myapplicationpln.roomDb.Ghistoryi;
 import com.example.myapplicationpln.roomDb.Gimage;
+import com.example.myapplicationpln.roomDb.GimageUploaded;
 import com.example.myapplicationpln.roomDb.GmeterApi;
 import com.example.myapplicationpln.roomDb.Gspinner;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -109,6 +110,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -167,6 +169,7 @@ public class HomeMenuFragment extends Fragment {
     private Dialog dialog;
     ImageButton add_photo;
     Bundle  args;
+    private ArrayList<GimageUploaded> listImageStatus;
 
 
     @Override
@@ -196,7 +199,33 @@ public class HomeMenuFragment extends Fragment {
 //            String strtxt = getArguments().getString("edttext");
             Log.d("getIntens getbundle from IMAGE_SAVED_PATH "," " +args);
         }
+        ceklocation();
+        databaseReferenceHistory = FirebaseDatabase.getInstance().getReference().child("History");
+        DatabaseReference referenceHistory = FirebaseDatabase.getInstance().getReference();
         if (Connection.isConnect(getContext())){
+            databaseReferenceHistory.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        maxIdHistory = (snapshot.getChildrenCount());
+                        Log.d("",""+maxIdHistory);
+                        List<String> selectImageStatus = db.gHistorySpinnerDao().selectImageStatus();
+
+                        Log.d("selectiony "," " +selectImageStatus);
+                        for (int j = 0 ; j<selectImageStatus.size(); j++){
+                            mImageFileLocation = selectImageStatus.get(j);
+                            uploadImageFromRoom(mImageFileLocation);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
             Log.d("Internet Connectzed 1 "," " );
             DatabaseReference referenceMeter = FirebaseDatabase.getInstance().getReference();
             Query querymeter = referenceMeter.child("MeterApi").child(sessionPrefference.getPhone());
@@ -243,6 +272,20 @@ public class HomeMenuFragment extends Fragment {
         }else {
             Log.d("Connection "," Internet Connectzed 1 " );
         }
+
+        databaseReferenceHistory.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        maxIdHistory = (snapshot.getChildrenCount());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         add_photo = view.findViewById(R.id.imageview_add);
         photoView=view.findViewById(R.id.photo_view);
         hasilScore = view.findViewById(R.id.tv_scoreClassify);
@@ -281,7 +324,6 @@ public class HomeMenuFragment extends Fragment {
         Log.d("Body myArrays ", " myArrays : " + date + " ");
 
         dialog = new Dialog(getActivity());
-        ceklocation();
         permissions.add(ACCESS_FINE_LOCATION);
         permissions.add(ACCESS_COARSE_LOCATION);
         permissionsToRequest = findUnAskedPermissions(permissions);
@@ -302,21 +344,7 @@ public class HomeMenuFragment extends Fragment {
             if (permissionsToRequest.size() > 0)
                 requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
-        databaseReferenceHistory = FirebaseDatabase.getInstance().getReference().child("History");
-        DatabaseReference referenceHistory = FirebaseDatabase.getInstance().getReference();
-        databaseReferenceHistory.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    maxIdHistory = (snapshot.getChildrenCount());
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
         // 19 05
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -987,6 +1015,9 @@ public class HomeMenuFragment extends Fragment {
                     }else {
                         // insert image to Tb image room
                         Toastr.showToast(getActivity(), "NO INTERNET CONNECTION");
+                        GimageUploaded gimageUploaded=new GimageUploaded();
+                        gimageUploaded.setImage(mImageFileLocation);
+                        insertImageTemp(gimageUploaded);
                     }
                       /*
                         cek jenis grain
@@ -1017,6 +1048,24 @@ public class HomeMenuFragment extends Fragment {
 
         }
     }
+    private void insertImageTemp(GimageUploaded gimageUploaded) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertImageTemp(gimageUploaded);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " + status);
+            }
+        }.execute();
+    }
+
     protected String jwt;
     private void uploadImage(Bitmap converetdImage, String grain_slected) {
         String urlDomain = "http://110.50.85.28:8200";
@@ -1184,6 +1233,197 @@ public class HomeMenuFragment extends Fragment {
                             }
                         },1000);
 
+                        Ghistoryi ghistoryi = new Ghistoryi();
+                        ghistoryi.setMeter(m);
+                        ghistoryi.setScore_classfy(classfy);
+                        ghistoryi.setScore_identfy(idtfy);
+                        ghistoryi.setCreated_at(text);
+                        ghistoryi.setId_user(String.valueOf(sessionPrefference.getUserId()));
+                        ghistoryi.setImagez(mImageFileLocation);
+                        insertDataHistory(ghistoryi);
+
+
+
+                    } else {
+                        Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
+                        String jwtNull = "";
+                        sessionPrefference.setKeyApiJwt(jwtNull);
+                        sessionPrefference.setIsLogin(false);
+                        sessionPrefference.logoutUser();
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call call, Throwable t) {
+                    Toast.makeText(getActivity(), "TRY AGAINSZCH", Toast.LENGTH_LONG).show();
+
+                    /*
+                    String message = "";
+                    String jwtNull = "";
+                    Toast.makeText(getActivity(), "Status Login Time Out, silahkan login kembali", Toast.LENGTH_LONG).show();
+
+                    sessionPrefference.setKeyApiJwt(jwtNull);
+                    sessionPrefference.setIsLogin(false);
+                    sessionPrefference.logoutUser();
+                    */
+                }
+            });
+
+        } catch (Exception e) {
+            String errMessage = e.getMessage();
+        }
+
+    }
+    private void uploadImageFromRoom(String grain_slected) {
+        String urlDomain = "http://110.50.85.28:8200";
+        String jwtKey =  new SessionPrefference(getContext()).getKeyApiJwt();
+        Log.d("Body jwtKeys", "String jwtKey : " +jwtKey);
+        if (jwtKey.equals(jwt)){
+            sessionPrefference.setIsLogin(false);
+            sessionPrefference.logoutUser();
+        }
+        File file = new File(mImageFileLocation);
+        int length = (int) file.length();
+        Log.d("Upload length respons", "String respons length : " +length);
+        if (length>50000){
+
+        }
+        int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
+        try {
+            Log.d("Upload jwtKeys respons", "String respons jwtKey : " +jwtKey);
+
+            HttpLoggingInterceptor loggingInterceptor2 = new HttpLoggingInterceptor();
+            loggingInterceptor2.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+            TokenInterceptor tokenInterceptor = new TokenInterceptor(jwtKey);
+
+            OkHttpClient okHttpClient2 = new OkHttpClient.Builder()
+                    .addInterceptor(new AddCookiesInterceptor(getActivity()))
+                    .addInterceptor(new ReceivedCookiesInterceptor(getActivity()))
+                    .addInterceptor(loggingInterceptor2)
+                    .addInterceptor(tokenInterceptor)
+                    .build();
+
+            Gson gson2 = new GsonBuilder().serializeNulls().create();
+
+            //Retrofit retrofit = NetworkClient.getRetrofit();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(urlDomain)
+                    .addConverterFactory(GsonConverterFactory.create(gson2))
+                    .client(okHttpClient2)
+                    .build();
+
+            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+            MultipartBody.Part parts = MultipartBody.Part.createFormData("newimage", file.getName(), requestBody);
+            String name = "Rifqi";
+            double latitude = locationTracking.getLatitude();
+//            int val1=(int) latitude;
+            double longitude = locationTracking.getLongitude();
+//            int val2=(int) longitude;
+            Log.d("Upload longitudex", "String loc  : " +longitude+" - " +latitude+ " - ");
+
+            RequestBody req1 = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(name)); //change to phone number
+            RequestBody req2 = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(latitude));
+            RequestBody req3 = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(longitude));
+            ApiClient uploadApis = retrofit.create(ApiClient.class);
+            Call call = uploadApis.uploadImage(parts, req1, req2, req3);
+            call.enqueue(new Callback() {
+                @Override
+                public void onResponse(Call call, Response response) {
+                    if (response.code() == 200) {
+                        Object obj = response.body();
+                        PLNData plnData = (PLNData) response.body();
+                        Log.d("Upload plnData", "String plnData  : " +plnData);
+                        Log.d("Upload obj", "String obj  : " +obj);
+
+                        //insert room datbase gson, created_at
+                        //  22 2 21
+                        Date dates = new Date();
+                        String gson = new Gson().toJson(plnData);
+                        Log.d("Upload gson", "String gson  : " +gson);
+                        Date date = new Date();
+                        SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss",
+                                Locale.getDefault());
+                        String text = sfd.format(date);
+
+                        ZoneId zoneId = ZoneId.systemDefault();
+                        Instant instant = Instant.now();
+                        ZonedDateTime zDateTime = instant.atZone(zoneId);
+
+                        DayOfWeek day = zDateTime.getDayOfWeek();
+                        System.out.println(day.getDisplayName(TextStyle.SHORT, Locale.US));
+                        System.out.println(day.getDisplayName(TextStyle.NARROW, Locale.US));
+
+                        Month month = zDateTime.getMonth();
+                        System.out.println(month.getDisplayName(TextStyle.SHORT, Locale.US));
+                        System.out.println(month.getDisplayName(TextStyle.NARROW, Locale.US));
+                        System.out.println(month.getDisplayName(TextStyle.FULL, Locale.US));
+                        Log.d("Upload day createdAt", "createdAt  : " +day + " MONTH " +month +" textDate" +text);
+
+                        double meter = plnData.getMeterValue();
+                        double scoreId = plnData.getScoreIdentification();
+                        double scoreClass = plnData.getScoreClassification();
+                        mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("meter_value").setValue(String.valueOf(meter));
+                        mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("identify_value").setValue(String.valueOf(scoreId));
+                        mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("classify_long").setValue(String.valueOf(scoreClass));
+                        mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("created_at").setValue(String.valueOf(text));
+                        Log.d("Upload meter", "String meter  : " +meter+ " - "+scoreId +" - "+scoreClass+" ");
+                        String m = String.valueOf(meter);
+                        double total = scoreId + scoreClass;
+                        GmeterApi gmeterApi = new GmeterApi();
+
+                        if (total>=85){
+                            String meterfy = String.valueOf(meter);
+                            hasilMeter.setTextColor(getResources().getColor(R.color.yellow));
+                            hasilMeter.setText(meterfy);
+                            gmeterApi.setMeter(meterfy);
+                            gmeterApi.setType(1);
+                            insertMeterApi(gmeterApi);
+
+                            Log.d("Upload YELLOW", "String YELLOW  : ");
+
+                        }else {
+                            String meterfy = String.valueOf(meter);
+                            hasilMeter.setTextColor(getResources().getColor(R.color.yellow));
+                            hasilMeter.setText(meterfy);
+                            gmeterApi.setMeter(meterfy);
+                            gmeterApi.setType(1);
+                            insertMeterApi(gmeterApi);
+                        }
+                        Gimage gimage = new Gimage();
+                        gimage.setType(1);
+                        int rowImageType = db.gHistorySpinnerDao().getCountimage();
+                        if (rowImageType == 0 ){
+                            gimage.setId(1);
+                            gimage.setImage(mImageFileLocation);
+                            insertData(gimage);
+                        }else {
+                            gimage.setId(1);
+                            gimage.setImage(mImageFileLocation);
+                            updateImage(gimage);
+
+                        }
+
+//                        hasilMeter.setText(m);
+                        String maxIdHistoryi = String.valueOf(maxIdHistory);
+                        Log.d("",""+maxIdHistoryi);
+
+                        String idtfy = String.valueOf(scoreId);
+                        String classfy = String.valueOf(scoreClass);
+
+                        History history = new History(maxIdHistoryi,sessionPrefference.getUserId(),m, classfy,idtfy,text);
+                        databaseReferenceHistory.child(maxIdHistoryi).setValue(history);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+
+                            }
+                        },1000);
+                        GimageUploaded gUserData = new GimageUploaded();
+                        gUserData.setStatus(1);
+                        int status = 1;
+                        db.gHistorySpinnerDao().updateImageStatus(status);
                         Ghistoryi ghistoryi = new Ghistoryi();
                         ghistoryi.setMeter(m);
                         ghistoryi.setScore_classfy(classfy);
