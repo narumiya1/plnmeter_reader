@@ -32,6 +32,8 @@ public interface GhistorySpinner {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertHistoryiData(Ghistoryi ghistoryi);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertImageTemp(GimageUploaded gimageUploaded);
 
     @Query("SELECT value_int FROM tbIndeks WHERE type=1")
     int selectIndeks();
@@ -65,6 +67,9 @@ public interface GhistorySpinner {
     @Query("SELECT id_user,username  FROM tbUserData WHERE id_user =18")
     GUserData[] selectDataUser();
 
+    @Query("SELECT image FROM tbImageUploaded WHERE status =0")
+//    GimageUploaded[] selectImageStatus();
+    List<String> selectImageStatus();
     @Query("SELECT * FROM tbUserData WHERE id_user = :nim LIMIT 1")
     GUserData selectDetailUserData(String nim);
 
@@ -83,6 +88,8 @@ public interface GhistorySpinner {
     int updateUserData(GUserData gUserData);
     @Query("UPDATE tbUserData SET username = :username, email =:email WHERE id_user= :id")
     int updateDataUser(int id,String username, String email);
+    @Query("UPDATE tbImageUploaded SET status = :status")
+    int updateImageStatus(int status);
     @Update
     int updateGrainSelected(Gspinner gindeks);
 
