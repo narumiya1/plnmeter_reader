@@ -149,7 +149,9 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                             String id = String.valueOf(1);
                             String h = String.valueOf( imageVew.getLayoutParams().width = 400);
                             String w = String.valueOf(imageVew.getLayoutParams().height = 200);
-                            CameraVal cameraVal = new CameraVal(id, sessionPrefference.getUserId(), sessionPrefference.getPhone(), w, h, setX, setY);
+                            String getUserId = sessionPrefference.getUserId();
+                            String getPhone = sessionPrefference.getPhone();
+                            CameraVal cameraVal = new CameraVal(id,getUserId, getPhone, w, h, setX, setY);
                             databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
                             GCameraValue gCameraValue = new GCameraValue();
                             gCameraValue.setId_user(sessionPrefference.getUserId());
@@ -191,8 +193,10 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                             String setX = String.valueOf(cameraVal.getX());
                             String setY = String.valueOf(cameraVal.getY());
                             String id = String.valueOf(1);
-
-                            CameraVal cameraVal = new CameraVal(id, sessionPrefference.getUserId(), sessionPrefference.getPhone(), w, h, setX, setY);
+                            String getUserId = sessionPrefference.getUserId();
+                            String getPhone = sessionPrefference.getPhone();
+                            Log.d("getCamv"," >> "+cameraVal.getWidth());
+                            CameraVal cameraVal = new CameraVal(id,getUserId, getPhone, w, h, setX, setY);
                             databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
 
                             GCameraValue gCameraValue = new GCameraValue();
@@ -227,6 +231,23 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
 
 
 
+                    }else {
+                        databaseReferenceCameraWidthHeight = FirebaseDatabase.getInstance().getReference().child("CameraVal");
+                        imageVew.getLayoutParams().width = 400;
+                        imageVew.getLayoutParams().height = 200;
+                        int x = 250;
+                        imageVew.setX(x);
+                        int y = 250;
+                        imageVew.setX(y);
+                        String setX = String.valueOf(x);
+                        String setY = String.valueOf(y);
+                        String id = String.valueOf(1);
+                        String h = String.valueOf( imageVew.getLayoutParams().width = 400);
+                        String w = String.valueOf(imageVew.getLayoutParams().height = 200);
+                        String getUserId = sessionPrefference.getUserId();
+                        String getPhone = sessionPrefference.getPhone();
+                        CameraVal cameraVal = new CameraVal(id,getUserId, getPhone, w, h, setX, setY);
+                        databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
                     }
                 }
 
