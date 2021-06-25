@@ -186,8 +186,8 @@ public class RegisterActivity extends AppCompatActivity {
                 String userAddressId;
                 Log.d("DATA  id_auth regh", "id_auth: " + id_auth);
                 String id = id_auth;
-                userId = String.valueOf(maxIdUser+2);
-                userAddressId = String.valueOf(maxIdAddress+1);
+                userId = String.valueOf(maxIdUser);
+                userAddressId = String.valueOf(maxIdAddress);
                 idPelanggan = id_pelanggan.getText().toString();
                 name = nameA.getText().toString();
                 userName = username.getText().toString();
