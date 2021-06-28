@@ -26,6 +26,7 @@ import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.cookies.AddCookiesInterceptor;
 import com.example.myapplicationpln.cookies.ReceivedCookiesInterceptor;
 import com.example.myapplicationpln.cookies.TokenInterceptor;
+import com.example.myapplicationpln.model.Connection;
 import com.example.myapplicationpln.model.History;
 import com.example.myapplicationpln.network_retrofit.ApiClient;
 import com.example.myapplicationpln.network_retrofit.PLNData;
@@ -33,6 +34,7 @@ import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.Ghistoryi;
 import com.example.myapplicationpln.roomDb.Gimage;
+import com.example.myapplicationpln.roomDb.GimageUploaded;
 import com.example.myapplicationpln.roomDb.GmeterApi;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 import com.google.firebase.database.DataSnapshot;
@@ -133,7 +135,35 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         if (bitmap != null) {
             previewImage.setImageBitmap(bitmap);
         }
-        uploadImage(imageFilePath);
+        if (Connection.isConnect(getApplicationContext())){
+            uploadImage(imageFilePath);
+        }else {
+            GimageUploaded gimageUploaded=new GimageUploaded();
+            gimageUploaded.setImage(imageFilePath);
+            gimageUploaded.setStatus(0);
+            insertImageTemp(gimageUploaded);
+            Intent intent = new Intent(PreviewActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    private void insertImageTemp(GimageUploaded gimageUploaded) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertImageTemp(gimageUploaded);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " + status);
+            }
+        }.execute();
+
     }
 
     @Override
