@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Gspinner.class,GIndeksSpinner.class,Gimage.class,GCameraValue.class, GUserData.class,GmeterApi.class,Ghistoryi.class, GimageUploaded.class}, version = 11)
+@Database(entities = {Gspinner.class,GIndeksSpinner.class,Gimage.class,GCameraValue.class, GUserData.class, GMeterApi.class, GHistory.class, GimageUploaded.class}, version = 20)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract GhistorySpinner gHistorySpinnerDao();
 
