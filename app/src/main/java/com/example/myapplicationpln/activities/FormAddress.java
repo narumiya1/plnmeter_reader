@@ -16,7 +16,7 @@ import androidx.room.Room;
 
 import com.example.myapplicationpln.MainActivity;
 import com.example.myapplicationpln.R;
-import com.example.myapplicationpln.model.PelangganyAlamat;
+import com.example.myapplicationpln.model.MPelangganyAlamat;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.Gspinner;
@@ -37,7 +37,7 @@ public class FormAddress extends AppCompatActivity {
 
     SessionPrefference sessionPrefference;
 
-    PelangganyAlamat alamatPelanggan;
+    MPelangganyAlamat alamatPelanggan;
 
 
     long maxId;
@@ -56,7 +56,7 @@ public class FormAddress extends AppCompatActivity {
         Log.d("DATA intentz userIdea ", "idea: " +id);
 
         sessionPrefference = new SessionPrefference(this);
-        alamatPelanggan = new PelangganyAlamat();
+        alamatPelanggan = new MPelangganyAlamat();
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
@@ -142,8 +142,8 @@ public class FormAddress extends AppCompatActivity {
                 Log.d("DATA intentz userIdea ", "idea: " +alamatPelanggan.getAlamat_pelanggan());
                 Log.d("DATA intentzid_user id_user ", "id_user: " +id_user);
 
-                PelangganyAlamat pelangganyAlamat1 = new PelangganyAlamat(alamat,id_user,id_pelanggan,sessionPrefference.getPhone(), userAddressId);
-                databaseReference2.child(userAddressId).setValue(pelangganyAlamat1);
+                MPelangganyAlamat MPelangganyAlamat1 = new MPelangganyAlamat(alamat,id_user,id_pelanggan,sessionPrefference.getPhone(), userAddressId);
+                databaseReference2.child(userAddressId).setValue(MPelangganyAlamat1);
 
                 Intent intent1 = new Intent(FormAddress.this, MainActivity.class);
                 startActivity(intent1);

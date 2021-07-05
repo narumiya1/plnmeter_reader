@@ -20,9 +20,9 @@ import androidx.room.Room;
 
 import com.example.myapplicationpln.MainActivity;
 import com.example.myapplicationpln.R;
-import com.example.myapplicationpln.model.PelangganyAlamat;
+import com.example.myapplicationpln.model.MPelangganyAlamat;
 import com.example.myapplicationpln.preference.SessionPrefference;
-import com.example.myapplicationpln.model.DataUser;
+import com.example.myapplicationpln.model.MDataUser;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GUserData;
 import com.example.myapplicationpln.roomDb.Gspinner;
@@ -56,8 +56,8 @@ public class RegisterActivity extends AppCompatActivity {
     //room db
     private AppDatabase db;
 
-    DataUser accounts = new DataUser();
-    PelangganyAlamat pelangganyAlamat = new PelangganyAlamat();
+    MDataUser accounts = new MDataUser();
+    MPelangganyAlamat MPelangganyAlamat = new MPelangganyAlamat();
 
     SessionPrefference sessionPrefference ;
 
@@ -215,7 +215,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 //db1
                 Log.d("DATAz userId", "userId: " + userId);
-                DataUser accounts = new DataUser(id_auth,userId,idPelanggan, name,userName, userEmail, userAlamat,getPhone, passwordUser);
+                MDataUser accounts = new MDataUser(id_auth,userId,idPelanggan, name,userName, userEmail, userAlamat,getPhone, passwordUser);
                 databaseReference.child(phone).setValue(accounts);
                 // user db room
                 int staatus = 1;
@@ -232,8 +232,8 @@ public class RegisterActivity extends AppCompatActivity {
                 insertData(gUserData);
 
                 //db2 edit 19 05 2021
-                PelangganyAlamat pelangganyAlamat1 = new PelangganyAlamat(userAlamat,userId,idPelanggan,sessionPrefference.getPhone(), userAddressId);
-                databaseReference2.child(userAddressId).setValue(pelangganyAlamat1);
+                MPelangganyAlamat MPelangganyAlamat1 = new MPelangganyAlamat(userAlamat,userId,idPelanggan,sessionPrefference.getPhone(), userAddressId);
+                databaseReference2.child(userAddressId).setValue(MPelangganyAlamat1);
 //                PelangganyAlamat pelangganyAlamat1 = new PelangganyAlamat(userId,idPelanggan,userAlamat,userAddressId);
 //                databaseReference2.child(userAddressId).setValue(pelangganyAlamat1);
 
@@ -271,7 +271,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-                    accounts = snapshot.getValue(DataUser.class);
+                    accounts = snapshot.getValue(MDataUser.class);
                     nameA.setText(accounts.getUsername());
                     alamat.setText(accounts.getAddress());
                     email.setText(accounts.getEmail());

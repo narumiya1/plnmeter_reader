@@ -1,9 +1,6 @@
 package com.example.myapplicationpln.fragment;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,34 +12,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplicationpln.R;
-import com.example.myapplicationpln.model.History;
-import com.example.myapplicationpln.model.MeterApi;
+import com.example.myapplicationpln.model.MHistory;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.IMarker;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.MPPointF;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -124,14 +111,14 @@ public class HistoryFragment extends Fragment {
          */
 
 
-        FirebaseRecyclerOptions<History> options =
-                new FirebaseRecyclerOptions.Builder<History>().
-                        setQuery(mUserDatabase, History.class).
+        FirebaseRecyclerOptions<MHistory> options =
+                new FirebaseRecyclerOptions.Builder<MHistory>().
+                        setQuery(mUserDatabase, MHistory.class).
                         build();
 
-        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<History, UserViewHolder>(options) {
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<MHistory, UserViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull UserViewHolder holder, int position, @NonNull History model) {
+            protected void onBindViewHolder(@NonNull UserViewHolder holder, int position, @NonNull MHistory model) {
                 Log.d("stringset"," "+model.getMeter());
                 holder.setFname(model.getMeter());
                 holder.setLname(model.getScore_classfy());

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class IndeksSpinnrFirebase implements Serializable {
+public class MIndeksSpinnrFirebase implements Serializable {
     @SerializedName("id_user")
     private String id_user;
     @SerializedName("value")
@@ -12,10 +12,10 @@ public class IndeksSpinnrFirebase implements Serializable {
     @SerializedName("type")
     private String type;
 
-    public IndeksSpinnrFirebase() {
+    public MIndeksSpinnrFirebase() {
     }
 
-    public IndeksSpinnrFirebase(String id_user, String value, String valueOf) {
+    public MIndeksSpinnrFirebase(String id_user, String value, String valueOf) {
     }
 
     public String getId_user() {

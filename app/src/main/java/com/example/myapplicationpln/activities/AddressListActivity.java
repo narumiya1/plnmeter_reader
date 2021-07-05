@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplicationpln.R;
-import com.example.myapplicationpln.model.DataUser;
+import com.example.myapplicationpln.model.MDataUser;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -35,7 +35,7 @@ public class AddressListActivity extends AppCompatActivity {
     DatabaseReference mRef;
     DatabaseReference databaseReference;
     String name, address;
-    private ArrayList<DataUser> listGrainType;
+    private ArrayList<MDataUser> listGrainType;
 
 
 
@@ -78,7 +78,7 @@ public class AddressListActivity extends AppCompatActivity {
 
                     for (DataSnapshot dSnapshot : ds.getChildren()) {
 
-                        DataUser waterClass = dSnapshot.getValue(DataUser.class);
+                        MDataUser waterClass = dSnapshot.getValue(MDataUser.class);
 
                         Log.d("Show", waterClass.getName() == null ? "" : waterClass.getName());
                         Log.d("Show getAddress ", waterClass.getAddress() == null ? "" : waterClass.getAddress());

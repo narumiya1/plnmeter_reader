@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class History implements Serializable {
+public class MHistory implements Serializable {
     @SerializedName("id")
     private long id;
     @SerializedName("id_user")
@@ -18,12 +18,12 @@ public class History implements Serializable {
     @SerializedName("created_at")
     private String created_at;
 
-    public History() {
+    public MHistory() {
     }
 
     //20210702
     //ganti parameter type untuk created_at menjadi Date Time
-    public History(long id, String id_user, double meter, double score_classfy, double score_identfy, String created_at) {
+    public MHistory(long id, String id_user, double meter, double score_classfy, double score_identfy, String created_at) {
         this.id = id;
         this.id_user = id_user;
         this.meter = meter;

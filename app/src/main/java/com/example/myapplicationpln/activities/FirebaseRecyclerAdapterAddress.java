@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.model.Connection;
-import com.example.myapplicationpln.model.PelangganyAlamat;
+import com.example.myapplicationpln.model.MPelangganyAlamat;
 import com.example.myapplicationpln.model.Toastr;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -107,14 +107,14 @@ public class FirebaseRecyclerAdapterAddress extends AppCompatActivity {
          */
 
 
-        FirebaseRecyclerOptions<PelangganyAlamat> options =
-                new FirebaseRecyclerOptions.Builder<PelangganyAlamat>().
-                        setQuery(mUserDatabase, PelangganyAlamat.class).
+        FirebaseRecyclerOptions<MPelangganyAlamat> options =
+                new FirebaseRecyclerOptions.Builder<MPelangganyAlamat>().
+                        setQuery(mUserDatabase, MPelangganyAlamat.class).
                         build();
 
-        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<PelangganyAlamat, UserViewHolder>(options) {
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<MPelangganyAlamat, UserViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull UserViewHolder holder, int position, @NonNull PelangganyAlamat model) {
+            protected void onBindViewHolder(@NonNull UserViewHolder holder, int position, @NonNull MPelangganyAlamat model) {
                 holder.setFname(model.getId_pelanggan());
                 holder.setLname(model.getAlamat_pelanggan());
                 holder.setAname(model.getUser_address_id());

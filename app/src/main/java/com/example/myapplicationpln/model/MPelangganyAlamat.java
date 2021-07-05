@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class PelangganyAlamat implements Serializable {
+public class MPelangganyAlamat implements Serializable {
     @SerializedName("id_user")
     private String id_user;
     @SerializedName("id_pelanggan")
@@ -20,12 +20,12 @@ public class PelangganyAlamat implements Serializable {
     @SerializedName("user_address_id")
     private String user_address_id;
 
-    public PelangganyAlamat(){
+    public MPelangganyAlamat(){
     }
 
 
 
-    public PelangganyAlamat(String id_user,String id_pelanggan,String alamat_pelanggan,String nama_pelanggan) {
+    public MPelangganyAlamat(String id_user, String id_pelanggan, String alamat_pelanggan, String nama_pelanggan) {
         this.id_user = id_user;
         this.id_pelanggan=id_pelanggan;
         this.alamat_pelanggan = alamat_pelanggan;
@@ -34,7 +34,7 @@ public class PelangganyAlamat implements Serializable {
 
 
 
-    public PelangganyAlamat(String alamat, String id_user,String id_pelanggan,String user_phone, String user_address_id) {
+    public MPelangganyAlamat(String alamat, String id_user, String id_pelanggan, String user_phone, String user_address_id) {
         this.alamat_pelanggan = alamat;
         this.id_user = id_user;
         this.id_pelanggan = id_pelanggan;

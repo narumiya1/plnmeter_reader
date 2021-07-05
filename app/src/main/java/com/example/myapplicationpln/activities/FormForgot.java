@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplicationpln.MainActivity;
 import com.example.myapplicationpln.R;
-import com.example.myapplicationpln.model.DataUser;
+import com.example.myapplicationpln.model.MDataUser;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +29,7 @@ public class FormForgot extends AppCompatActivity {
     DatabaseReference databaseReference;
     String phone, passwordUser, id_auth;
     SessionPrefference sessionPrefference;
-    DataUser accounts = new DataUser();
+    MDataUser accounts = new MDataUser();
     FirebaseAuth mAuth;
 
 
@@ -54,7 +54,7 @@ public class FormForgot extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()){
-                            accounts = snapshot.getValue(DataUser.class);
+                            accounts = snapshot.getValue(MDataUser.class);
                             String userId,idPelanggan, name,userName, userEmail, userAlamat,getPhone;
                             userId = accounts.getId_user();
                             idPelanggan = accounts.getId_pelanggan();
@@ -65,7 +65,7 @@ public class FormForgot extends AppCompatActivity {
                             Log.d("Body NAME", "onDataChange: "+accounts.getUsername());
                             passwordUser = et_insert_forgot_password.getText().toString();
                             id_auth = mAuth.getCurrentUser().getUid();
-                            DataUser accounts = new DataUser(id_auth,userId,idPelanggan, name,userName, userEmail, userAlamat,phone,passwordUser);
+                            MDataUser accounts = new MDataUser(id_auth,userId,idPelanggan, name,userName, userEmail, userAlamat,phone,passwordUser);
                             accounts.setPassword(et_insert_forgot_password.getText().toString());
                             databaseReference.child(phone).setValue(accounts);
                             Intent intent = new Intent(FormForgot.this, MainActivity.class);

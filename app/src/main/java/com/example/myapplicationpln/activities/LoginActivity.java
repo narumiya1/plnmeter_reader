@@ -27,9 +27,8 @@ import com.example.myapplicationpln.cookies.JavaNetCookieJar;
 import com.example.myapplicationpln.cookies.ReceivedCookiesInterceptor;
 import com.example.myapplicationpln.cookies.TokenInterceptor;
 import com.example.myapplicationpln.network_retrofit.ApiClient;
-import com.example.myapplicationpln.network_retrofit.Login;
 import com.example.myapplicationpln.preference.SessionPrefference;
-import com.example.myapplicationpln.model.DataUser;
+import com.example.myapplicationpln.model.MDataUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -64,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextPasswordLogin,editTextPhoneLogin;
     //Firebase
     DatabaseReference databaseReference;
-    DataUser accounts = new DataUser();
+    MDataUser accounts = new MDataUser();
     SessionPrefference sessionPrefference;
     private Spinner spinner;
     private static final Pattern PW_PATTERN =
@@ -127,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()){
                             Log.d("DATA CHANGEt", "onDataChange: " + snapshot.getValue());
-                            accounts = snapshot.getValue(DataUser.class);
+                            accounts = snapshot.getValue(MDataUser.class);
                             Log.d("accounts", "accounts: " + accounts.getPhone());
                             Log.d("accountsUser", "accounts.getId_user: " + accounts.getId_user());
 

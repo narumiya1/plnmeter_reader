@@ -1,6 +1,6 @@
 package com.example.myapplicationpln.model;
 
-public class PLNDataModel {
+public class MPLNDataModel {
     private double MeterValue ;
     private double ScoreClassification ;
     private double ScoreIdentification ;
