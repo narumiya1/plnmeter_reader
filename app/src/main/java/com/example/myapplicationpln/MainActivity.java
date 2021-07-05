@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myapplicationpln.activities.LoginActivity;
-import com.example.myapplicationpln.fragment.AboutFragment;
 import com.example.myapplicationpln.fragment.AboutFragment2;
 import com.example.myapplicationpln.fragment.HistoryFragment;
 import com.example.myapplicationpln.fragment.HistoryFragment2;
@@ -28,7 +27,7 @@ import com.example.myapplicationpln.fragment.UserDataFragment;
 import com.example.myapplicationpln.model.Connection;
 import com.example.myapplicationpln.model.Toastr;
 import com.example.myapplicationpln.preference.SessionPrefference;
-import com.example.myapplicationpln.model.DataUser;
+import com.example.myapplicationpln.model.MDataUser;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ImageView nav_header_imageView;
     DrawerLayout drawerLayout;
     SessionPrefference sessionPrefference;
-    DataUser dataUser ;
+    MDataUser MDataUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         sessionPrefference = new SessionPrefference(getApplicationContext());
 
-        dataUser = new DataUser();
+        MDataUser = new MDataUser();
         if (!sessionPrefference.isLoggedIn()) {
             String jwtNull = "";
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -80,9 +79,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     Log.d("DATA CHANGEt", "onDataChange: " + dataSnapshot.getValue());
-                    dataUser = dataSnapshot.getValue(DataUser.class);
+                    MDataUser = dataSnapshot.getValue(MDataUser.class);
 //                    headerTxt.setText(dataUser.getEmail());
-                    Log.d("dataUser getAddress", "get: " + dataUser.getEmail());
+                    Log.d("dataUser getAddress", "get: " + MDataUser.getEmail());
                 }
             }
 
