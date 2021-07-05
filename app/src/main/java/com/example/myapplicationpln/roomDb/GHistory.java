@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity(tableName = "tbHistory")
-public class Ghistoryi implements Serializable {
+public class GHistory implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int id;
@@ -28,16 +28,19 @@ public class Ghistoryi implements Serializable {
     private String created_at;
     @ColumnInfo(name = "imagez")
     private String imagez;
-    public Ghistoryi() {
+    @ColumnInfo(name = "status")
+    private int status;
+    public GHistory() {
     }
 
-    public Ghistoryi(int id, String id_user, String meter, String score_classfy, String score_identfy, String created_at) {
+    public GHistory(int id, String id_user, String meter, String score_classfy, String score_identfy, String created_at, int status) {
         this.id = id;
         this.id_user = id_user;
         this.meter = meter;
         this.score_classfy = score_classfy;
         this.score_identfy = score_identfy;
         this.created_at = created_at;
+        this.status=status;
     }
 
     public int getId() {
@@ -94,5 +97,13 @@ public class Ghistoryi implements Serializable {
 
     public void setImagez(String imagez) {
         this.imagez = imagez;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

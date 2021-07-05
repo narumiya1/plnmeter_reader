@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "tbMeterApi")
-public class GmeterApi {
+public class GMeterApi {
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
     public int id;
@@ -18,10 +18,10 @@ public class GmeterApi {
     @ColumnInfo(name = "type")
     public int type;
 
-    public GmeterApi() {
+    public GMeterApi() {
     }
 
-    public GmeterApi(String meter, String idfy, String classify, int type) {
+    public GMeterApi(String meter, String idfy, String classify, int type) {
         this.meter = meter;
         this.idfy = idfy;
         this.classify = classify;

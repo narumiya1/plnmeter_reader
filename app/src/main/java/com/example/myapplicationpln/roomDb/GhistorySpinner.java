@@ -1,6 +1,7 @@
 package com.example.myapplicationpln.roomDb;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -27,10 +28,10 @@ public interface GhistorySpinner {
     long insertUserData(GUserData userData);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertMeterData(GmeterApi gmeterApi);
+    long insertMeterData(GMeterApi gmeterApi);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertHistoryiData(Ghistoryi ghistoryi);
+    long insertHistoryiData(GHistory GHistory);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertImageTemp(GimageUploaded gimageUploaded);
@@ -57,8 +58,12 @@ public interface GhistorySpinner {
     @Query("SELECT * FROM tbSpinner")
     Gspinner[] readDataAddress();
 
-    @Query("SELECT * FROM tbHistory")
-    Ghistoryi[] readDataHistory();
+    @Query("SELECT * FROM tbHistory ORDER BY status ASC ")
+    GHistory[] readDataHistory();
+//    @Query("SELECT id_user,score_classfy,id  FROM tbHistory WHERE id_user =18")
+//    Ghistoryi[] readDataHistoryn();
+    @Query("SELECT * FROM tbImageUploaded WHERE status = 0")
+    GimageUploaded[] readDataHistoryStatusNol();
 
     @Query("SELECT name FROM tbUserData")
     String readDataUser();
@@ -70,6 +75,17 @@ public interface GhistorySpinner {
     @Query("SELECT image FROM tbImageUploaded WHERE status =0")
 //    GimageUploaded[] selectImageStatus();
     List<String> selectImageStatus();
+
+    //20210702
+    //get history where row is uncomoleted (status<>3)
+    @Query("SELECT id_user,imagez FROM tbHistory WHERE status <>3 " )
+    GHistory[] selectHistoryUncomplete();
+
+    @Query("SELECT imagez FROM tbHistory WHERE status =1")
+     List<String> selectImageStatusfromRoomHistory();
+//    @Query("SELECT id FROM tbHistory WHERE status =1")
+    @Query("SELECT id FROM tbHistory WHERE status in (1,2)")
+    List<Integer> selectIdfromRoomHistory();
     @Query("SELECT * FROM tbUserData WHERE id_user = :nim LIMIT 1")
     GUserData selectDetailUserData(String nim);
 
@@ -90,11 +106,15 @@ public interface GhistorySpinner {
     int updateDataUser(int id,String username, String email);
     @Query("UPDATE tbImageUploaded SET status = :status")
     int updateImageStatus(int status);
+    @Query("UPDATE tbHistory SET status = :status, meter =:meter,score_classfy =:clsfy,score_identfy =:idtfy")
+    int updateImageStatusFromhistory( int status, String meter,String clsfy,String idtfy);
     @Update
     int updateGrainSelected(Gspinner gindeks);
 
     @Update
     int updateGrainSelectedGspinner(GIndeksSpinner gindeks);
+    @Update
+    int updateHistoryFroomRoom(GHistory gindeks);
 
     @Query("UPDATE tbSpinner SET id_pelanggan = :id_pelanggan, address =:address WHERE user_address_id = :id")
     int updateIndeks(int id, String address, int id_pelanggan);
@@ -103,6 +123,10 @@ public interface GhistorySpinner {
     List<String> getImageStorage();
     @Query("SELECT imagez FROM tbHistory WHERE meter = :meter")
     String getImageHistory(String meter);
+    @Delete
+    void delete(GHistory model);
+    @Query("DELETE FROM tbHistory WHERE imagez= :imagezNull")
+    void deleteByUserId(String imagezNull);
     @Query("SELECT meter FROM tbMeterApi")
     List<String> getMetet();
 
@@ -113,7 +137,12 @@ public interface GhistorySpinner {
     @Update
     int updateImageSelected(Gimage gimage);
     @Update
-    int updateMeterApiVal(GmeterApi gmeterApi);
+    int updateMeterApiVal(GMeterApi gmeterApi);
     @Update
     int updateCameraValue(GCameraValue gCameraValue);
+
+    @Query("SELECT * FROM tbHistory ORDER BY status ASC")
+    List<GHistory> getPersonsSortByDescLastName();
+    @Query("delete from tbHistory where status = 1")
+    int deleteImageColumnWhereStaus1();
 }
