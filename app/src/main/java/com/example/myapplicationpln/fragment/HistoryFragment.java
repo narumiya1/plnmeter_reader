@@ -132,11 +132,13 @@ public class HistoryFragment extends Fragment {
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<History, UserViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull UserViewHolder holder, int position, @NonNull History model) {
+                Log.d("stringset"," "+model.getMeter());
                 holder.setFname(model.getMeter());
                 holder.setLname(model.getScore_classfy());
                 holder.setAname(model.getScore_identfy());
                 holder.setDate(model.getCreated_at());
-
+                int status = 1;
+                holder.setStatusName(1);
                 Log.d("get getMeter ", " : " + model.getMeter());
                 dialog = new Dialog(getActivity());
                 holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +151,7 @@ public class HistoryFragment extends Fragment {
                         pieChart = dialog.findViewById(R.id.chart1);
                         pieChart.setUsePercentValues(true);
                         ArrayList<PieEntry> yvalues = new ArrayList<PieEntry>();
-                        float f = Float.parseFloat(model.getMeter());
+                        float f = Float.parseFloat(String.valueOf(model.getMeter()));
                         yvalues.add(new PieEntry((float) f, model.getMeter()));
                         PieDataSet dataSet = new PieDataSet(yvalues, getString(R.string.gcm_defaultSenderId));
                         PieData data = new PieData(dataSet);
@@ -253,20 +255,43 @@ public class HistoryFragment extends Fragment {
              */
         }
 
-        public void setFname(String name) {
+        public void setStatusName(int status){
+            TextView status0 = (TextView) mView.findViewById(R.id.status0);
+            TextView status1 = (TextView) mView.findViewById(R.id.status1);
+            ImageView imageView = mView.findViewById(R.id.img_check_done);
+            ImageView imageView2 = mView.findViewById(R.id.img_check_done_all);
+            if (status<=0){
+                status0.setVisibility(View.GONE);
+                status1.setVisibility(View.GONE);
+                imageView.setVisibility(View.VISIBLE);
+                imageView2.setVisibility(View.GONE);
+
+            }else{
+                status0.setVisibility(View.GONE);
+                status1.setVisibility(View.GONE);
+                imageView.setVisibility(View.GONE);
+                imageView2.setVisibility(View.VISIBLE);
+            }
+        }
+        public void setFname(double name) {
             TextView FName = (TextView) mView.findViewById(R.id.rMeter);
-            FName.setText(name);
+            String s=Double.toString(name);
+            FName.setText(s);
         }
 
 
-        public void setLname(String name) {
+        public void setLname(double name) {
             TextView LName = (TextView) mView.findViewById(R.id.rIdentify);
-            LName.setText(name);
+            String s=Double.toString(name);
+            Log.d("stringset"," "+s);
+            LName.setText(s);
         }
 
-        public void setAname(String name) {
+        public void setAname(double name) {
             TextView AName = (TextView) mView.findViewById(R.id.rClassify);
-            AName.setText(name);
+            String s=Double.toString(name);
+            Log.d("stringset"," "+s);
+            AName.setText(s);
         }
 
         public void setDate(String d) {

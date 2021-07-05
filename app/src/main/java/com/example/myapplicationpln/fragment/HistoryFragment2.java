@@ -1,12 +1,10 @@
 package com.example.myapplicationpln.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,14 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.myapplicationpln.R;
-import com.example.myapplicationpln.activities.AddressListActivity2;
-import com.example.myapplicationpln.activities.FormAddress;
-import com.example.myapplicationpln.adapter.AddressAdapter;
 import com.example.myapplicationpln.adapter.HistoryAdapter2;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
-import com.example.myapplicationpln.roomDb.Ghistoryi;
-import com.example.myapplicationpln.roomDb.Gspinner;
+import com.example.myapplicationpln.roomDb.GHistory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +26,7 @@ public class HistoryFragment2 extends Fragment {
     RecyclerView mRecyclerview;
     private RecyclerView.LayoutManager layoutManager;
     private AppDatabase db;
-    private ArrayList<Ghistoryi> listHistory;
+    private ArrayList<GHistory> listHistory;
     private RecyclerView.Adapter adapter;
     SessionPrefference session;
     @Nullable
