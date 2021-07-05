@@ -39,7 +39,6 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,9 +49,7 @@ import androidx.fragment.app.Fragment;
 import androidx.room.Room;
 
 import com.example.myapplicationpln.R;
-import com.example.myapplicationpln.model.CameraVal;
-import com.example.myapplicationpln.model.History;
-import com.example.myapplicationpln.model.MeterApi;
+import com.example.myapplicationpln.model.MCameraVal;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GCameraValue;
@@ -87,7 +84,7 @@ public class AboutFragment extends Fragment implements View.OnClickListener, Act
 
     long maxIdHistory;
     SessionPrefference sessionPrefference;
-    CameraVal cameraVal = new CameraVal();
+    MCameraVal cameraVal = new MCameraVal();
     int height ,  widjth;
     String h,w;
     ImageView image_kotak;
@@ -448,7 +445,7 @@ public class AboutFragment extends Fragment implements View.OnClickListener, Act
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     maxIdHistory = (snapshot.getChildrenCount());
-                    cameraVal = snapshot.getValue(CameraVal.class);
+                    cameraVal = snapshot.getValue(MCameraVal.class);
                     if (cameraVal.getY().equals(null)){
                         Log.d("DATA setValuey y ", " : 100" );
                         cameraVal.setX(String.valueOf(100));
@@ -483,7 +480,7 @@ public class AboutFragment extends Fragment implements View.OnClickListener, Act
                     String setY = String.valueOf(y);
                     String maxIdCam = String.valueOf(maxIdHistory);
                     Log.d("DATA image_kotak", ": " + x + " ----- " + y + " -------- " );
-                    CameraVal cameraVal = new CameraVal(maxIdCam, sessionPrefference.getUserId(), sessionPrefference.getPhone(), h, w, setX, setY);
+                    MCameraVal cameraVal = new MCameraVal(maxIdCam, sessionPrefference.getUserId(), sessionPrefference.getPhone(), h, w, setX, setY);
                     databaseReferenceCameraWidthHeight.child(sessionPrefference.getPhone()).setValue(cameraVal);
 
 

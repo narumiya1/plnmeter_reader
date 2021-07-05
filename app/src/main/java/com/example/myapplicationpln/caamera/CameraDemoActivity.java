@@ -34,7 +34,7 @@ import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import com.example.myapplicationpln.R;
-import com.example.myapplicationpln.model.CameraVal;
+import com.example.myapplicationpln.model.MCameraVal;
 import com.example.myapplicationpln.model.Connection;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
@@ -50,7 +50,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -71,7 +70,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
     private int rotation;
     private ImageView imageVew;
     private File imageFile;
-    CameraVal cameraVal = new CameraVal();
+    MCameraVal cameraVal = new MCameraVal();
     SessionPrefference sessionPrefference;
     DatabaseReference databaseReferenceCameraWidthHeight;
     private AppDatabase db;
@@ -131,7 +130,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
-                        cameraVal = snapshot.getValue(CameraVal.class);
+                        cameraVal = snapshot.getValue(MCameraVal.class);
                         Log.d("DATA getHeight", "onDataChange: " + cameraVal.getX());
                         Log.d("DATA getWidth", "onDataChange: " + cameraVal.getY());
 
@@ -151,7 +150,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                             String w = String.valueOf(imageVew.getLayoutParams().height = 200);
                             String getUserId = sessionPrefference.getUserId();
                             String getPhone = sessionPrefference.getPhone();
-                            CameraVal cameraVal = new CameraVal(id,getUserId, getPhone, w, h, setX, setY);
+                            MCameraVal cameraVal = new MCameraVal(id,getUserId, getPhone, w, h, setX, setY);
                             databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
                             GCameraValue gCameraValue = new GCameraValue();
                             gCameraValue.setId_user(sessionPrefference.getUserId());
@@ -196,7 +195,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                             String getUserId = sessionPrefference.getUserId();
                             String getPhone = sessionPrefference.getPhone();
                             Log.d("getCamv"," >> "+cameraVal.getWidth());
-                            CameraVal cameraVal = new CameraVal(id,getUserId, getPhone, w, h, setX, setY);
+                            MCameraVal cameraVal = new MCameraVal(id,getUserId, getPhone, w, h, setX, setY);
                             databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
 
                             GCameraValue gCameraValue = new GCameraValue();
@@ -246,7 +245,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                         String w = String.valueOf(imageVew.getLayoutParams().height = 200);
                         String getUserId = sessionPrefference.getUserId();
                         String getPhone = sessionPrefference.getPhone();
-                        CameraVal cameraVal = new CameraVal(id,getUserId, getPhone, w, h, setX, setY);
+                        MCameraVal cameraVal = new MCameraVal(id,getUserId, getPhone, w, h, setX, setY);
                         databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
                     }
                 }

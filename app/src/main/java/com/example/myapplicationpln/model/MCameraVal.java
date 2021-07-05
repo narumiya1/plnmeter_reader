@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class CameraVal implements Serializable {
+public class MCameraVal implements Serializable {
     @SerializedName("id")
     private String id;
     @SerializedName("id_user")
@@ -19,10 +19,10 @@ public class CameraVal implements Serializable {
     private String x;
     @SerializedName("y")
     private String y;
-    public CameraVal() {
+    public MCameraVal() {
     }
 
-    public CameraVal(String id, String id_user, String user_phone, String width, String height, String x, String y) {
+    public MCameraVal(String id, String id_user, String user_phone, String width, String height, String x, String y) {
         this.id = id;
         this.id_user = id_user;
         this.user_phone = user_phone;
