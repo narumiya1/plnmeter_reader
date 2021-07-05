@@ -1,7 +1,6 @@
 package com.example.myapplicationpln.caamera;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,15 +27,15 @@ import com.example.myapplicationpln.cookies.ReceivedCookiesInterceptor;
 import com.example.myapplicationpln.cookies.TokenInterceptor;
 import com.example.myapplicationpln.model.Connection;
 import com.example.myapplicationpln.model.History;
+import com.example.myapplicationpln.model.Toastr;
 import com.example.myapplicationpln.network_retrofit.ApiClient;
 import com.example.myapplicationpln.network_retrofit.PLNData;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
-import com.example.myapplicationpln.roomDb.Ghistoryi;
+import com.example.myapplicationpln.roomDb.GHistory;
 import com.example.myapplicationpln.roomDb.Gimage;
 import com.example.myapplicationpln.roomDb.GimageUploaded;
-import com.example.myapplicationpln.roomDb.GmeterApi;
-import com.github.chrisbanes.photoview.PhotoViewAttacher;
+import com.example.myapplicationpln.roomDb.GMeterApi;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -138,6 +137,22 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         if (Connection.isConnect(getApplicationContext())){
             uploadImage(imageFilePath);
         }else {
+
+            Date date = new Date();
+            SimpleDateFormat sfd = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy",
+                    Locale.getDefault());
+            String text = sfd.format(date);
+            GHistory GHistory = new GHistory();
+            GHistory.setId_user(sessionPrefference.getUserId());
+            GHistory.setCreated_at(text);
+            GHistory.setScore_identfy(String.valueOf(0));
+            GHistory.setScore_classfy(String.valueOf(0));
+            GHistory.setMeter(String.valueOf(0));
+            GHistory.setStatus(1);
+            GHistory.setImagez(imageFilePath);
+            insertDataHistory2(GHistory);
+            Toastr.showToast(getApplicationContext(), "NO INTERNET CONNECTION");
+
             GimageUploaded gimageUploaded=new GimageUploaded();
             gimageUploaded.setImage(imageFilePath);
             gimageUploaded.setStatus(0);
@@ -145,6 +160,24 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             Intent intent = new Intent(PreviewActivity.this, MainActivity.class);
             startActivity(intent);
         }
+    }
+    private void insertDataHistory2(GHistory GHistory) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertHistoryiData(GHistory);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " +status);
+            }
+        }.execute();
+
     }
 
     private void insertImageTemp(GimageUploaded gimageUploaded) {
@@ -382,7 +415,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                             hasilmetergenereate.setText(m);
                         }
                         List<String> metersCount = db.gHistorySpinnerDao().getMetet();
-                        GmeterApi gmeterApi = new GmeterApi();
+                        GMeterApi gmeterApi = new GMeterApi();
                         if (metersCount.equals(0)){
                             gmeterApi.setMeter(m);
                             gmeterApi.setType(1);
@@ -412,8 +445,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
                         String idtfy = String.valueOf(scoreId);
                         String classfy = String.valueOf(scoreClass);
-
-                        History history = new History(maxIdHistoryi,sessionPrefference.getUserId(),m, classfy,idtfy,text);
+                        History history = new History(maxIdHistory, sessionPrefference.getUserId(), meter, scoreId, scoreClass, text);
                         databaseReferenceHistory.child(maxIdHistoryi).setValue(history);
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -422,13 +454,13 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                             }
                         },1000);
 
-                        Ghistoryi ghistoryi= new Ghistoryi();
-                        ghistoryi.setMeter(m);
-                        ghistoryi.setId_user(sessionPrefference.getUserId());
-                        ghistoryi.setCreated_at(text);
-                        ghistoryi.setScore_classfy(classfy);
-                        ghistoryi.setScore_identfy(idtfy);
-                        insertDataHistory(ghistoryi);
+                        GHistory GHistory = new GHistory();
+                        GHistory.setMeter(m);
+                        GHistory.setId_user(sessionPrefference.getUserId());
+                        GHistory.setCreated_at(text);
+                        GHistory.setScore_classfy(classfy);
+                        GHistory.setScore_identfy(idtfy);
+                        insertDataHistory(GHistory);
                     } else {
                         Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_LONG).show();
                         String jwtNull = "";
@@ -463,11 +495,11 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    private void insertDataHistory(Ghistoryi ghistoryi) {
+    private void insertDataHistory(GHistory GHistory) {
         new AsyncTask<Void, Void, Long>() {
             @Override
             protected Long doInBackground(Void... voids) {
-                long status = db.gHistorySpinnerDao().insertHistoryiData(ghistoryi);
+                long status = db.gHistorySpinnerDao().insertHistoryiData(GHistory);
                 return status;
             }
 
@@ -481,7 +513,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         }.execute();
     }
 
-    private void updateMeterApiVal(GmeterApi gmeterApi) {
+    private void updateMeterApiVal(GMeterApi gmeterApi) {
         new AsyncTask<Void, Void, Long>() {
             @Override
             protected Long doInBackground(Void... voids) {
@@ -500,7 +532,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    private void insertMeterApiVal(GmeterApi gmeterApi) {
+    private void insertMeterApiVal(GMeterApi gmeterApi) {
         new AsyncTask<Void, Void, Long>() {
             @Override
             protected Long doInBackground(Void... voids) {
