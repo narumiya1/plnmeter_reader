@@ -6,22 +6,24 @@ import java.io.Serializable;
 
 public class History implements Serializable {
     @SerializedName("id")
-    private String id;
+    private long id;
     @SerializedName("id_user")
     private String id_user;
     @SerializedName("meter")
-    private String meter;
+    private double meter;
     @SerializedName("score_classfy")
-    private String score_classfy;
+    private double score_classfy;
     @SerializedName("score_identfy")
-    private String score_identfy;
+    private double score_identfy;
     @SerializedName("created_at")
     private String created_at;
 
     public History() {
     }
 
-    public History(String id, String id_user, String meter, String score_classfy, String score_identfy, String created_at) {
+    //20210702
+    //ganti parameter type untuk created_at menjadi Date Time
+    public History(long id, String id_user, double meter, double score_classfy, double score_identfy, String created_at) {
         this.id = id;
         this.id_user = id_user;
         this.meter = meter;
@@ -31,11 +33,11 @@ public class History implements Serializable {
     }
 
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -47,27 +49,27 @@ public class History implements Serializable {
         this.id_user = id_user;
     }
 
-    public String getMeter() {
+    public double getMeter() {
         return meter;
     }
 
-    public void setMeter(String meter) {
+    public void setMeter(double meter) {
         this.meter = meter;
     }
 
-    public String getScore_classfy() {
+    public double getScore_classfy() {
         return score_classfy;
     }
 
-    public void setScore_classfy(String score_classfy) {
+    public void setScore_classfy(double score_classfy) {
         this.score_classfy = score_classfy;
     }
 
-    public String getScore_identfy() {
+    public double getScore_identfy() {
         return score_identfy;
     }
 
-    public void setScore_identfy(String score_identfy) {
+    public void setScore_identfy(double score_identfy) {
         this.score_identfy = score_identfy;
     }
 
