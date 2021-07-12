@@ -5,26 +5,15 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Typeface;
-import android.graphics.pdf.PdfDocument;
 import android.media.ExifInterface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -51,38 +40,29 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.room.Room;
 
-import com.example.myapplicationpln.MainActivity;
 import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.activities.CamsActivity;
-import com.example.myapplicationpln.activities.UpdateUserData;
 import com.example.myapplicationpln.caamera.CameraDemoActivity;
 import com.example.myapplicationpln.cookies.AddCookiesInterceptor;
 import com.example.myapplicationpln.cookies.ReceivedCookiesInterceptor;
 import com.example.myapplicationpln.cookies.TokenInterceptor;
 import com.example.myapplicationpln.location.LocationTracking;
-import com.example.myapplicationpln.model.Connection;
-import com.example.myapplicationpln.model.DataUser;
-import com.example.myapplicationpln.model.History;
+import com.example.myapplicationpln.model.MConnection;
+import com.example.myapplicationpln.model.MHistory;
 import com.example.myapplicationpln.model.MeterApi;
-import com.example.myapplicationpln.model.PLNDataModel;
-import com.example.myapplicationpln.model.PelangganyAlamat;
-import com.example.myapplicationpln.model.SpinnerSelection;
-import com.example.myapplicationpln.model.SpinnerSelectx;
-import com.example.myapplicationpln.model.Toastr;
+import com.example.myapplicationpln.model.MSpinnerSelectx;
+import com.example.myapplicationpln.model.MToastr;
 import com.example.myapplicationpln.network_retrofit.ApiClient;
 import com.example.myapplicationpln.network_retrofit.PLNData;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
+import com.example.myapplicationpln.roomDb.GHistory;
 import com.example.myapplicationpln.roomDb.GIndeksSpinner;
-import com.example.myapplicationpln.roomDb.GUserData;
-import com.example.myapplicationpln.roomDb.Ghistoryi;
 import com.example.myapplicationpln.roomDb.Gimage;
 import com.example.myapplicationpln.roomDb.GimageUploaded;
-import com.example.myapplicationpln.roomDb.GmeterApi;
-import com.example.myapplicationpln.roomDb.Gspinner;
+import com.example.myapplicationpln.roomDb.GMeterApi;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 import com.google.firebase.database.DataSnapshot;
@@ -100,17 +80,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -140,36 +122,29 @@ public class HomeMenuFragment extends Fragment {
     private ArrayList<String> permissionsRejected = new ArrayList();
     private ArrayList<String> permissions = new ArrayList();
     private final static int ALL_PERMISSIONS_RESULT = 101;
-    private ArrayList<Gspinner> listGrainType;
     private AppDatabase db;
     String grain_slected;
     String valueSpinner;
-    int spinnrVal;
-    private static final String TAG = "CalculatorFragment";
     LocationTracking locationTracking;
-    StringBuilder input, top;
     TextView hasilMeter, hasilScore, hasilIdentify;
     DatabaseReference databaseReferenceHistory;
     DatabaseReference mDatabaseRefApiMeter;
-    long maxIdHistory;
-    View layout;
-    boolean eqlFlag = false;
-    ArrayList<String> arrayListz;
-    private FirebaseDatabase mDatabase;
-    private Query mUserDatabase, mUserDatabase2;
-    PelangganyAlamat dataUser = new PelangganyAlamat();
+
+    //20210702
+    //di explore agar bisa ditaruh di local variable
+    long maxIdHistoryGlobal;
+    long maxIdHistoryFromRoomGlobal;
+
     MeterApi meterApi = new MeterApi();
-//    SpinnerSelection spinnerSelection = new SpinnerSelection();
-    SpinnerSelectx spinnerSelectx = new SpinnerSelectx();
+    MSpinnerSelectx MSpinnerSelectx = new MSpinnerSelectx();
     SessionPrefference sessionPrefference;
-    String selectedValue;
     PhotoView photoView;
     private Uri image_uri;
     private String mImageFileLocation = "";
     private Dialog dialog;
     ImageButton add_photo;
-    Bundle  args;
-    private ArrayList<GimageUploaded> listImageStatus;
+    //20210706
+    String urlDomain = "http://110.50.85.28:8200";
 
 
     @Override
@@ -177,11 +152,11 @@ public class HomeMenuFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_menu, container, false);
-//        layout =inflater.inflate(R.layout.fragment_home_menu, container,false);
         hasilMeter=view.findViewById(R.id.tv_meter);
         sessionPrefference = new SessionPrefference(getActivity());
         db = Room.databaseBuilder(getContext(), AppDatabase.class, "tbGrainHistory")
@@ -189,44 +164,25 @@ public class HomeMenuFragment extends Fragment {
                 .fallbackToDestructiveMigration()
                 .addMigrations(AppDatabase.MIGRATION_1_7)
                 .build();
-        args = new Bundle();
-        if(args == null){
-            Toast.makeText(getActivity(), "arguments is null " , Toast.LENGTH_LONG).show();
-
-        }else {
-            Toast.makeText(getActivity(), "text " + args , Toast.LENGTH_LONG).show();
-            putArgs(args);
-//            String strtxt = getArguments().getString("edttext");
-            Log.d("getIntens getbundle from IMAGE_SAVED_PATH "," " +args);
-        }
         ceklocation();
         databaseReferenceHistory = FirebaseDatabase.getInstance().getReference().child("History");
         DatabaseReference referenceHistory = FirebaseDatabase.getInstance().getReference();
-        if (Connection.isConnect(getContext())){
-            databaseReferenceHistory.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()){
-                        maxIdHistory = (snapshot.getChildrenCount());
-                        Log.d("",""+maxIdHistory);
-                        List<String> selectImageStatus = db.gHistorySpinnerDao().selectImageStatus();
 
-                        Log.d("selectiony "," " +selectImageStatus);
-                        for (int j = 0 ; j<selectImageStatus.size(); j++){
-                            mImageFileLocation = selectImageStatus.get(j);
-                            uploadImageFromRoom(mImageFileLocation);
-                        }
-                    }
-                }
+        if (MConnection.isConnect(getContext())){
+            //20200706
+            //menggunakan objek Ghistory untuk get table list
+            List<GHistory> listHistory = db.gHistorySpinnerDao().selectHistoryfromRoom();
+            //iterasi untuk membaca table tbHistory dengan status 1, 2
+            for (int i = 0 ; i<listHistory.size(); i++){
+                //String fileImage = listHistory.get(i).getImagez(); // get image file
+                //20210702
+                //int idRoomHist = listHistory.get(i).getId();// get id file
+                GHistory history = listHistory.get(i);
+                //uploadImageFromRoom(fileImage, idRoomHist);
+                uploadImageFromRoom(history);
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-
-            Log.d("Internet Connectzed 1 "," " );
+            // 20210707 get last meter api value
             DatabaseReference referenceMeter = FirebaseDatabase.getInstance().getReference();
             Query querymeter = referenceMeter.child("MeterApi").child(sessionPrefference.getPhone());
             querymeter.addValueEventListener(new ValueEventListener() {
@@ -235,17 +191,7 @@ public class HomeMenuFragment extends Fragment {
                     if (dataSnapshot.exists()) {
                         Log.d("DATA CHANGEt", "onDataChange: " + dataSnapshot.getValue());
                         meterApi = dataSnapshot.getValue(MeterApi.class);
-                        Log.d("DATA getMeter_value", "onDataChange: " + meterApi.getMeter_value());
-                        String meter = meterApi.getMeter_value();
-                        String clasfy = meterApi.getClassify_long();
-                        String idfy = meterApi.getIdentify_value();
-                        String created = meterApi.getCreated_at();
-                        Log.d("DATA meterApi", "meterApi: " +meter );
-                        Log.d("DATA createdAt", "created: " +created );
-                        hasilMeter.setText(meter);
-                        hasilScore.setText(clasfy);
-                        hasilIdentify.setText(idfy);
-
+                        setMessage01(meterApi);
                     }
                 }
 
@@ -267,17 +213,11 @@ public class HomeMenuFragment extends Fragment {
 
 
         }
-        if (!Connection.isConnect(getContext())){
-            Log.d("Not Connectzed , Call db room "," " );
-        }else {
-            Log.d("Connection "," Internet Connectzed 1 " );
-        }
-
         databaseReferenceHistory.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()){
-                        maxIdHistory = (snapshot.getChildrenCount());
+                        maxIdHistoryGlobal = (snapshot.getChildrenCount());
                     }
                 }
 
@@ -293,25 +233,14 @@ public class HomeMenuFragment extends Fragment {
         DatabaseReference referenceMeter = FirebaseDatabase.getInstance().getReference();
 
 
-
+        //20210706 get meter value from firebase table MterApi
         Query querymeter = referenceMeter.child("MeterApi").child(sessionPrefference.getPhone());
         querymeter.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    Log.d("DATA CHANGEt", "onDataChange: " + dataSnapshot.getValue());
                     meterApi = dataSnapshot.getValue(MeterApi.class);
-                    Log.d("DATA getMeter_value", "onDataChange: " + meterApi.getMeter_value());
-                    String meter = meterApi.getMeter_value();
-                    String clasfy = meterApi.getClassify_long();
-                    String idfy = meterApi.getIdentify_value();
-                    String created = meterApi.getCreated_at();
-                    Log.d("DATA meterApi", "meterApi: " +meter );
-                    Log.d("DATA createdAt", "created: " +created );
-                    hasilMeter.setText(meter);
-                    hasilScore.setText(clasfy);
-                    hasilIdentify.setText(idfy);
-
+                    setMessage01(meterApi);
                 }
             }
 
@@ -320,8 +249,6 @@ public class HomeMenuFragment extends Fragment {
 
             }
         });
-        Date date = new Date();
-        Log.d("Body myArrays ", " myArrays : " + date + " ");
 
         dialog = new Dialog(getActivity());
         permissions.add(ACCESS_FINE_LOCATION);
@@ -335,12 +262,9 @@ public class HomeMenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 selectImages();
-//                showDialog();
             }
         });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-
             if (permissionsToRequest.size() > 0)
                 requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
@@ -353,42 +277,32 @@ public class HomeMenuFragment extends Fragment {
         mDatabaseRefApiMeter = database.getReference();
         locationTracking = new LocationTracking(getActivity());
         final Spinner list = view.findViewById(R.id.listItemz);
-        //1 Arraylist
-        arrayListz = new ArrayList<>();
-        arrayListz.add("1123456");
-        arrayListz.add("9876542");
-        arrayListz.add("4345679");
 
-        listGrainType = new ArrayList<>();
-
-//        List<Integer> lables = db.gHistorySpinnerDao().getAllLItems();
+        //20210706 check image storeage
         List<String> statusImg = db.gHistorySpinnerDao().getImageStorage();
         statusImg.size();
         if(statusImg.size()==0&&statusImg.size()<0){
             Log.d("AAABL", "No file");
-
-
         }
         else if(statusImg.size()>0) {
-            Log.d("statusImg", "y statusImg"+statusImg);
-
-            mImageFileLocation =  statusImg.get(statusImg.size()-1);
-            File imgFile = new File(mImageFileLocation);
+            //var string untuk menampung image //20210706
+            String imageFile ;
+            imageFile =  statusImg.get(statusImg.size()-1);
+            File imgFile = new File(imageFile);
             int length = (int) imgFile.length();
             Log.d("Upload length respons", "String respons length : " +length);
             if (imgFile.exists())
             {
                 Bitmap bitmap ;
                 BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-                bitmap = BitmapFactory.decodeFile(mImageFileLocation,
+                bitmap = BitmapFactory.decodeFile(imageFile,
                         bitmapOptions);
                 bitmap = Bitmap.createScaledBitmap(bitmap, 200,200, true);
 
                 encodeTobase64(bitmap);
-//                decodeBase64(mImageFileLocation);
                 photoView = (PhotoView) view.findViewById(R.id.photo_view);
                 photoView.setVisibility(View.VISIBLE);
-                photoView.setImageBitmap(BitmapFactory.decodeFile(mImageFileLocation));
+                photoView.setImageBitmap(BitmapFactory.decodeFile(imageFile));
 
                 PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(photoView);
                 photoViewAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -400,15 +314,11 @@ public class HomeMenuFragment extends Fragment {
         }
 
         Integer[] myArrays = db.gHistorySpinnerDao().getAllLItemsArray();
-        Log.d("Body myArrays ", " myArrays : " + myArrays + " ");
-        if (Connection.isConnect(getActivity())) {
-
-            Toastr.showToast(getActivity(), "internet connected");
+        if (MConnection.isConnect(getActivity())) {
+            MToastr.showToast(getActivity(), "internet connected");
             // call spinner from firebase
             String id_user = sessionPrefference.getUserId();
             String jwtTokensz = sessionPrefference.getKeyApiJwt();
-            Log.d("Body id_userid_user ", " id_user : " + id_user + " ");
-            Log.d("Body jwtTokensz ", " jwtTokensz : " + jwtTokensz + " ");
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             Query query = reference.child("Address").orderByChild("id_user").equalTo(id_user);
             query.addValueEventListener(new ValueEventListener() {
@@ -417,11 +327,9 @@ public class HomeMenuFragment extends Fragment {
                     final List<String> areasList = new ArrayList<String>();
 
                     int lenght = (int) dataSnapshot.getChildrenCount();
-                    Log.d("Body lenght ", " lenght : " + lenght + " ");
 
                     for (DataSnapshot spinnerSnapshot : dataSnapshot.getChildren()) {
                         String idName = spinnerSnapshot.child("id_pelanggan").getValue(String.class);
-                        Log.d("Body idName ", " idName : " + idName + " ");
                         areasList.add(idName);
                     }
 
@@ -436,11 +344,11 @@ public class HomeMenuFragment extends Fragment {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
-                                Log.d("DATA CHANGEx", "onDataChange: " + dataSnapshot.getValue(SpinnerSelectx.class));
-                                spinnerSelectx = dataSnapshot.getValue(SpinnerSelectx.class);
-                                Log.d("DATA Yosikhi hyde", " : " + spinnerSelectx.getSpinner_value());
-                                String hyde = spinnerSelectx.getSpinner_long();
-                                valueSpinner = spinnerSelectx.getSpinner_value();
+                                Log.d("DATA CHANGEx", "onDataChange: " + dataSnapshot.getValue(MSpinnerSelectx.class));
+                                MSpinnerSelectx = dataSnapshot.getValue(MSpinnerSelectx.class);
+                                Log.d("DATA Yosikhi hyde", " : " + MSpinnerSelectx.getSpinner_value());
+                                String hyde = MSpinnerSelectx.getSpinner_long();
+                                valueSpinner = MSpinnerSelectx.getSpinner_value();
                                 Log.d("DATA CHANGE hyde", " : " + hyde + " valueSpinner : " + valueSpinner + "");
 
                             }
@@ -458,13 +366,11 @@ public class HomeMenuFragment extends Fragment {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             Toast.makeText(getActivity(), " " + areasAdapter.getItem(i) + " choosen ", Toast.LENGTH_SHORT).show();
-                            Log.d("DATA CHANGE choosen", "choosen: " + areasAdapter.getItem(i) + " choosen");
                             grain_slected = areasAdapter.getItem(i);
                             mDatabaseRefs.child("SpinnerDbx").child(sessionPrefference.getPhone()).child("spinner_value").setValue(String.valueOf(i));
                             mDatabaseRefs.child("SpinnerDbx").child(sessionPrefference.getPhone()).child("spinner_long").setValue(String.valueOf(grain_slected));
-                            spinnerSelectx.setSpinner_value(String.valueOf(i));
-                            spinnerSelectx.setSpinner_long(areasAdapter.getItem(i));
-                            Log.d("DATA CHANGE grain_slected", "grain_slected: " + areasAdapter.getItem(i) + " choosen");
+                            MSpinnerSelectx.setSpinner_value(String.valueOf(i));
+                            MSpinnerSelectx.setSpinner_long(areasAdapter.getItem(i));
 
                             adapterView.setTag(grain_slected);
                             String value = areasAdapter.getItem(i);
@@ -479,27 +385,6 @@ public class HomeMenuFragment extends Fragment {
 
                             }
 
-                            // 140-161 insert to room db
-//                        GIndeksSpinner gIndeksSpinner = new GIndeksSpinner();
-//                        gIndeksSpinner.setType(1);
-//                        gIndeksSpinner.setId_idx(6);
-//                        gIndeksSpinner.setValue(areasAdapter.getItem(i));
-//
-//                        int rowCount = db.gHistorySpinnerDao().getCountIdx();
-//                        Log.d("DATA CHANGE rowCount", "rowCount: " + rowCount);
-//
-//                        if (rowCount == 0) {
-//                            Log.d("AAABL", "idx " + rowCount);
-//                            insertIdxSpinner(gIndeksSpinner);
-//                        } else {
-////                            cara-1, dengan fungsi
-//                            gIndeksSpinner.setType(1);
-//                            gIndeksSpinner.setId_idx(6);
-//                            gIndeksSpinner.setValue(areasAdapter.getItem(i));
-//                            Log.d("AAVAIL", " i " + i);
-//                            updateSelectedGrain(gIndeksSpinner);
-//                        }
-
                         }
 
                         @Override
@@ -507,27 +392,6 @@ public class HomeMenuFragment extends Fragment {
 
                         }
                     });
-
-
-                    // call spinner from firebase 2
-//                for (DataSnapshot areaSnapshot: dataSnapshot.getChildren()) {
-//
-//                    dataUser = dataSnapshot.getValue(PelangganyAlamat.class);
-//
-//                    String ids = areaSnapshot.child("id_user").getValue(String.class);
-//                    Log.d("DATA CHANGE id_user", "id_user: " +ids);
-//                    String areaName = areaSnapshot.child("id_pelanggan").getValue(String.class);
-//                    Log.d("DATA CHANGE areaName", "areaName: " + areaName);
-//                    String idsz = areaSnapshot.child("alamat_pelanggan").getValue(String.class);
-//                    Log.d("DATA CHANGE alamat_pelanggan", "alamat_pelanggan: " +idsz);
-//
-//
-//                    Spinner areaSpinner = (Spinner) view.findViewById(R.id.listItemz);
-//                    final String[] areas = {areaName};
-//                    ArrayAdapter<String> areasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, areas);
-//                    areasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                    areaSpinner.setAdapter(areasAdapter);
-//                }
 
 
                 }
@@ -546,25 +410,18 @@ public class HomeMenuFragment extends Fragment {
 
             //get selection from db room
             int selection = db.gHistorySpinnerDao().selectIndeks() ;
-            Log.d("Body selectionsz ", " selection : "+selection+" ");
             list.setSelection(selection);
 
             list.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    String selectedValue;
                     Toast.makeText(getActivity()," "+adapter.getItem(i)+" choosen", Toast.LENGTH_SHORT).show();
-                    Log.d("DATA CHANGE choosen", "choosen: " + adapter.getItem(i)+" choosen");
                     selectedValue=adapter.getItem(i).toString();
-                    String id_user = sessionPrefference.getUserId();
                     // 140-161 insert to room db
                     String val = adapter.getItem(i).toString();
-                    Log.d("DATA CHANGE rowCount", "rowCount: " +val);
-
-                    GIndeksSpinner gIndeksSpinner = new GIndeksSpinner();
-                    gIndeksSpinner.setType(1);
-                    gIndeksSpinner.setId_idx(1);
-                    gIndeksSpinner.setValue(val);
-                    gIndeksSpinner.setValue_int(i);
+                    //20210706
+                    GIndeksSpinner gIndeksSpinner = new GIndeksSpinner(1, 1, val, i);
 
                     int rowCount = db.gHistorySpinnerDao().getCountIdx();
                     Log.d("DATA CHANGE rowCount", "rowCount: " +rowCount);
@@ -576,7 +433,7 @@ public class HomeMenuFragment extends Fragment {
 
                     }
                     else{
-//                            cara-1, dengan fungsi
+                        // cara-1, dengan fungsi
                         String vals = adapter.getItem(i).toString();
                         gIndeksSpinner.setType(1);
                         gIndeksSpinner.setId_idx(1);
@@ -596,96 +453,20 @@ public class HomeMenuFragment extends Fragment {
             });
         }
 
-
-
-
-
-        //code : 16:40
-        /*
-
-        // call spinner from room
-        ArrayAdapter adapter = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, myArrays);
-        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        adapter.notifyDataSetChanged();
-        list.setAdapter(adapter);
-
-        //get selection from db room
-        int selection = db.gHistorySpinnerDao().selectIndeks() ;
-        Log.d("Body selectionsz ", " selection : "+selection+" ");
-        list.setSelection(selection);
-
-        list.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity()," "+adapter.getItem(i)+" choosen", Toast.LENGTH_SHORT).show();
-                Log.d("DATA CHANGE choosen", "choosen: " + adapter.getItem(i)+" choosen");
-                selectedValue=adapter.getItem(i).toString();
-                String id_user = sessionPrefference.getUserId();
-                // 140-161 insert to room db
-                String val = adapter.getItem(i).toString();
-                Log.d("DATA CHANGE rowCount", "rowCount: " +val);
-
-                GIndeksSpinner gIndeksSpinner = new GIndeksSpinner();
-                gIndeksSpinner.setType(1);
-                gIndeksSpinner.setId_idx(1);
-                gIndeksSpinner.setValue(val);
-                gIndeksSpinner.setValue_int(i);
-
-                int rowCount = db.gHistorySpinnerDao().getCountIdx();
-                Log.d("DATA CHANGE rowCount", "rowCount: " +rowCount);
-
-                if(rowCount==0){
-                    Log.d("AAABL", "idx "+rowCount);
-                    Toast.makeText(getActivity(), "index kosong",Toast.LENGTH_SHORT).show();
-                    insertIdxSpinner(gIndeksSpinner);
-
-                }
-                else{
-//                            cara-1, dengan fungsi
-                    String vals = adapter.getItem(i).toString();
-                    gIndeksSpinner.setType(1);
-                    gIndeksSpinner.setId_idx(1);
-                    gIndeksSpinner.setValue(vals);
-                    gIndeksSpinner.setValue_int(i);
-                    Log.d("AAVAIL", " i "+vals);
-                    updateSelectedGrain(gIndeksSpinner);
-                }
-                Log.d("DATA CHANGE selectedValue", "selectedValue: " + selectedValue+" choosen");
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-         */
-
-
         return view;
     }
-    private void putArgs(Bundle args) {
-        String myValue = args.getString("edttext");
-        Log.d("getIntens getbundle from IMAGE_SAVED_PATH "," " +myValue);
 
-    }
-
-    /*
-     if isConnected -> connect to firebase
-     else -> check local
-     */
-    private boolean isConnected() {
-        boolean connected = false;
-        try {
-            ConnectivityManager cm = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo nInfo = cm.getActiveNetworkInfo();
-            connected = nInfo != null && nInfo.isAvailable() && nInfo.isConnected();
-            return connected;
-        } catch (Exception e) {
-            Log.e("Connectivity Exception", e.getMessage());
-        }
-        return connected;
-
+    private void setMessage01(MeterApi meterApi) {
+        Log.d("DATA getMeter_value", "onDataChange: " + meterApi.getMeter_value());
+        String meter = meterApi.getMeter_value();
+        String clasfy = meterApi.getClassify_long();
+        String idfy = meterApi.getIdentify_value();
+        String created = meterApi.getCreated_at();
+        Log.d("DATA meterApi", "meterApi: " +meter );
+        Log.d("DATA createdAt", "created: " +created );
+        hasilMeter.setText(meterApi.getMeter_value());
+        hasilScore.setText(clasfy);
+        hasilIdentify.setText(idfy);
     }
     private void selectImages() {
         dialog.setTitle("Image");
@@ -780,11 +561,6 @@ public class HomeMenuFragment extends Fragment {
 
         dialog.show();
     }
-
-    private void openCustomCams() {
-
-    }
-
     private void openCamera() {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "New Picture");
@@ -799,9 +575,6 @@ public class HomeMenuFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
-        //cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
         image_uri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", photoFile);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
 
@@ -880,68 +653,6 @@ public class HomeMenuFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-                /*
-                File f = new File(Environment.getExternalStorageDirectory().toString());
-                for (File temp : f.listFiles()) {
-                    if (temp.getName().equals("temp.jpg")) {
-                        f = temp;
-                        break;
-                    }
-                }
-                try {
-                    Bitmap bitmap;
-                    BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-                    bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(),
-                            bitmapOptions);
-                    viewImage.setImageBitmap(bitmap);
-                    String path = android.os.Environment
-                            .getExternalStorageDirectory()
-                            + File.separator
-                            + "Phoenix" + File.separator + "default";
-                    f.delete();
-                    OutputStream outFile = null;
-                    File file = new File(path, String.valueOf(System.currentTimeMillis()) + ".jpg");
-                    try {
-                        outFile = new FileOutputStream(file);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, outFile);
-                        outFile.flush();
-                        outFile.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } */
-
-                //viewImage.setImageURI(image_uri);
-
-                /*
-                Uri selectedImage = image_uri; //data.getData();
-                String[] filePath = { MediaStore.Images.Media.DATA };
-                Cursor c = getContentResolver().query(selectedImage,filePath, null, null, null);
-                c.moveToFirst();
-                int columnIndex = c.getColumnIndex(filePath[0]);
-                String picturePath = mImageFileLocation; //c.getString(columnIndex);
-                c.close();
-                BitmapFactory.Options options = new BitmapFactory.Options ();
-                options.inSampleSize=4; // InSampleSize = 4;
-
-                Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath, options));
-                Log.w("path of image from gallery......******************.........", picturePath+"");
-                viewImage.setImageBitmap(thumbnail);
-
-                try {
-                    InputStream inputStream = getContentResolver().openInputStream(data.getData());
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    viewImage.setImageBitmap(bitmap);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } */
-
             } else if (requestCode == 2) {
                 Uri selectedImage = data.getData();
                 String[] filePath = {MediaStore.Images.Media.DATA};
@@ -971,10 +682,6 @@ public class HomeMenuFragment extends Fragment {
                 c.close();
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 4; // InSampleSize = 4;
-                /*
-                Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath, options));
-                Log.w("path of image from gallery......******************.........", picturePath+"");
-                viewImage.setImageBitmap(thumbnail); */
 
                 try {
                     InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
@@ -987,34 +694,39 @@ public class HomeMenuFragment extends Fragment {
                     Log.d("Body length", "length : "+length);
                     Bitmap converetdImage = getResizedBitmap(bitmap, 650);
 
-
-
                     photoView.setImageBitmap(converetdImage);
                     encodeTobase64(converetdImage);
-//                    decodeBase64(mImageFileLocation);
-                    /*
-                    //draw circle
-                    Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                    Paint paint = new Paint();                          //define paint and paint color
-                    paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                    paint.setColor(Color.RED);
-                    paint.setStyle(Paint.Style.STROKE);
-                    //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
-                    Canvas canvas =new Canvas(mutableBitmap);
-                    canvas.drawCircle(50, 50, 50, paint);
-                    //invalidate to update bitmap in imageview
-                    viewImage.setImageBitmap(mutableBitmap);
-                    viewImage.invalidate(); */
 
                     dialog.dismiss();
                     PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(photoView);
                     photoViewAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    if (grain_slected!=null && Connection.isConnect(getActivity())) {
-                        uploadImage(converetdImage, grain_slected);
+                    if (grain_slected!=null && MConnection.isConnect(getActivity())) {
+                        List<Integer> selectIdFromHistory = db.gHistorySpinnerDao().selectIdfromRoomHistoryCount();
+                        int countHistory = selectIdFromHistory.size();
+                        int countAdd = countHistory+1;
+                        //20210706
+                        uploadImage(converetdImage, grain_slected,countAdd );
                         Log.d("Body uploadImage grain_slected", "grain_slected  : " + grain_slected);
                     }else {
                         // insert image to Tb image room
-                        Toastr.showToast(getActivity(), "NO INTERNET CONNECTION");
+                        Date date = new Date();
+                        SimpleDateFormat sfd = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy",
+                                Locale.getDefault());
+                        String text = sfd.format(date);
+                        String datetime = sfd.format(date);
+                        GHistory GHistory = new GHistory();
+                        GHistory.setId_user(sessionPrefference.getUserId());
+                        GHistory.setDate_time(date);
+                        GHistory.setCreated_at(text);
+                        GHistory.setScoreClassfification(0.0);
+                        GHistory.setScoreIdentification(0.0);
+                        GHistory.setMeter(0.0);
+//                        ghistoryi.setStatus(2);
+                        GHistory.setStatus(1);
+                        GHistory.setImagez(mImageFileLocation);
+                        insertDataHistory2(GHistory);
+
+                        MToastr.showToast(getActivity(), "NO INTERNET CONNECTION");
                         GimageUploaded gimageUploaded=new GimageUploaded();
                         gimageUploaded.setImage(mImageFileLocation);
                         insertImageTemp(gimageUploaded);
@@ -1041,9 +753,6 @@ public class HomeMenuFragment extends Fragment {
 
             }else if (requestCode == 4){
                 String respuesta = data.getStringExtra(CamsActivity.EXTRA_NOMBRE);
-//                String name=this.getArguments().getString("NAME_KEY").toString();
-//                int year=this.getArguments().getInt("YEAR_KEY");
-//                Log.d("getIntens year name "," "+name+ " " +year+ " " +respuesta);
             }
 
         }
@@ -1067,8 +776,10 @@ public class HomeMenuFragment extends Fragment {
     }
 
     protected String jwt;
-    private void uploadImage(Bitmap converetdImage, String grain_slected) {
-        String urlDomain = "http://110.50.85.28:8200";
+
+    //20210702
+    //perhatikan parameter variable converetdImage dan grain_slected sepertinya tidak terpakai malah menggunakan global variable
+    private void uploadImage(Bitmap converetdImage, String grain_slected, int countAdd) {
         String jwtKey =  new SessionPrefference(getContext()).getKeyApiJwt();
         Log.d("Body jwtKeys", "String jwtKey : " +jwtKey);
         if (jwtKey.equals(jwt)){
@@ -1077,6 +788,21 @@ public class HomeMenuFragment extends Fragment {
         }
         File file = new File(mImageFileLocation);
         int length = (int) file.length();
+//        String dateFr = file.getPath();
+        //20210708
+        FileTime fileTime;
+        try {
+            Path path = Paths.get(mImageFileLocation);
+            BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
+            fileTime = attrs.creationTime();
+            String obj = " ";
+        }catch (Exception e){
+            Log.d("file time created fail", e.getMessage());
+        }
+
+//        Date dateCreated = file
+        Date lastModDate = new Date(file.lastModified());
+//        Log.d("Body dateFr", " : " +dateFr + " lastModDate : " +lastModDate );
         Log.d("Upload length respons", "String respons length : " +length);
         if (length>50000){
 
@@ -1135,10 +861,10 @@ public class HomeMenuFragment extends Fragment {
                         String gson = new Gson().toJson(plnData);
                         Log.d("Upload gson", "String gson  : " +gson);
                         Date date = new Date();
-                        SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss",
+                        SimpleDateFormat sfd = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy",
                                 Locale.getDefault());
                         String text = sfd.format(date);
-
+                        String datetime = sfd.format(date);
                         ZoneId zoneId = ZoneId.systemDefault();
                         Instant instant = Instant.now();
                         ZonedDateTime zDateTime = instant.atZone(zoneId);
@@ -1162,43 +888,19 @@ public class HomeMenuFragment extends Fragment {
                         mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("created_at").setValue(String.valueOf(text));
                         Log.d("Upload meter", "String meter  : " +meter+ " - "+scoreId +" - "+scoreClass+" ");
                         String m = String.valueOf(meter);
-                        double total = scoreId + scoreClass;
-                        GmeterApi gmeterApi = new GmeterApi();
+                        double total = 85;
+                        GMeterApi gmeterApi = new GMeterApi();
 
-                        if (total>=85){
-                             /*
-                             String classfy = String.valueOf(scoreClass);
-                            hasilScore.setTextColor(getResources().getColor(R.color.yellow));
-                            hasilScore.setText(classfy);
-
-                            String idtfy = String.valueOf(scoreId);
-                            hasilIdentify.setTextColor(getResources().getColor(R.color.yellow));
-                            hasilIdentify.setText(idtfy);
-                              */
-
+                        if (scoreClass >=85 && scoreId >=85){
                             String meterfy = String.valueOf(meter);
                             hasilMeter.setTextColor(getResources().getColor(R.color.yellow));
                             hasilMeter.setText(meterfy);
                             gmeterApi.setMeter(meterfy);
                             gmeterApi.setType(1);
                             insertMeterApi(gmeterApi);
-
-                            Log.d("Upload YELLOW", "String YELLOW  : ");
-
                         }else {
-                            /*
-                            String classfy = String.valueOf(scoreClass);
-                            hasilScore.setTextColor(getResources().getColor(R.color.de_la_red));
-                            hasilScore.setText(classfy);
-
-                            String idtfy = String.valueOf(scoreId);
-                            hasilIdentify.setTextColor(getResources().getColor(R.color.de_la_red));
-                            hasilIdentify.setText(idtfy);
-
-                            Log.d("Upload RED", "String RED  : ");
-                            */
                             String meterfy = String.valueOf(meter);
-                            hasilMeter.setTextColor(getResources().getColor(R.color.yellow));
+                            hasilMeter.setTextColor(getResources().getColor(R.color.de_la_red));
                             hasilMeter.setText(meterfy);
                             gmeterApi.setMeter(meterfy);
                             gmeterApi.setType(1);
@@ -1218,29 +920,22 @@ public class HomeMenuFragment extends Fragment {
 
                         }
 
-//                        hasilMeter.setText(m);
-                        String maxIdHistoryi = String.valueOf(maxIdHistory);
 
-                        String idtfy = String.valueOf(scoreId);
-                        String classfy = String.valueOf(scoreClass);
-
-                        History history = new History(maxIdHistoryi,sessionPrefference.getUserId(),m, classfy,idtfy,text);
-                        databaseReferenceHistory.child(maxIdHistoryi).setValue(history);
+                        double longitudeVal,latitudeVal;
+                        longitudeVal = locationTracking.getLongitude();
+                        latitudeVal = locationTracking.getLatitude();
+                        MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter, scoreClass, scoreId,longitudeVal, latitudeVal, date);
+                        databaseReferenceHistory.child(String.valueOf(countAdd)).setValue(MHistory);
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
 
                             }
                         },1000);
-
-                        Ghistoryi ghistoryi = new Ghistoryi();
-                        ghistoryi.setMeter(m);
-                        ghistoryi.setScore_classfy(classfy);
-                        ghistoryi.setScore_identfy(idtfy);
-                        ghistoryi.setCreated_at(text);
-                        ghistoryi.setId_user(String.valueOf(sessionPrefference.getUserId()));
-                        ghistoryi.setImagez(mImageFileLocation);
-                        insertDataHistory(ghistoryi);
+                        double longitudeValue = locationTracking.getLatitude();
+                        double langitudeValue = locationTracking.getLongitude();
+                        GHistory gHistory = new GHistory(countAdd,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,mImageFileLocation,3);
+                        insertDataHistory(gHistory);
 
 
 
@@ -1256,17 +951,27 @@ public class HomeMenuFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
-                    Toast.makeText(getActivity(), "TRY AGAINSZCH", Toast.LENGTH_LONG).show();
-
+                    Toast.makeText(getActivity(), " ", Toast.LENGTH_LONG).show();
+                    Date date = new Date();
+                    SimpleDateFormat sfd = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy",
+                            Locale.getDefault());
+                    String text = sfd.format(date);
+                    String datetime = sfd.format(date);
+                    double longitudeValue = locationTracking.getLatitude();
+                    double langitudeValue = locationTracking.getLongitude();
+                    GHistory GHistory = new GHistory(countAdd,sessionPrefference.getUserId(),0.0,0.0,0.0,longitudeValue, langitudeValue,date,text,mImageFileLocation,2);
                     /*
-                    String message = "";
-                    String jwtNull = "";
-                    Toast.makeText(getActivity(), "Status Login Time Out, silahkan login kembali", Toast.LENGTH_LONG).show();
+                    GHistory.setId_user(sessionPrefference.getUserId());
+                    GHistory.setCreated_at(text);
+                    GHistory.setScore_identfy(String.valueOf(0));
+                    GHistory.setScore_classfy(String.valueOf(0));
+                    GHistory.setMeter(String.valueOf(0));
+                    GHistory.setStatus(2);
+                    GHistory.setImagez(mImageFileLocation);
+                     */
+                    Toast.makeText(getActivity(), "server error, db inserted to local db", Toast.LENGTH_LONG).show();
+                    insertDataHistory2(GHistory);
 
-                    sessionPrefference.setKeyApiJwt(jwtNull);
-                    sessionPrefference.setIsLogin(false);
-                    sessionPrefference.logoutUser();
-                    */
                 }
             });
 
@@ -1275,20 +980,27 @@ public class HomeMenuFragment extends Fragment {
         }
 
     }
-    private void uploadImageFromRoom(String grain_slected) {
-        String urlDomain = "http://110.50.85.28:8200";
+    private void uploadImageFromRoom(GHistory history) {  //String fileImage, int idRoomHist) {
+        String fileImage = history.getImagez();
+        int idRoomHist = history.getId();
+        Date dateFrRoom = history.getDate_time();
+
         String jwtKey =  new SessionPrefference(getContext()).getKeyApiJwt();
         Log.d("Body jwtKeys", "String jwtKey : " +jwtKey);
         if (jwtKey.equals(jwt)){
             sessionPrefference.setIsLogin(false);
             sessionPrefference.logoutUser();
         }
-        File file = new File(mImageFileLocation);
+        File file = new File(fileImage);
         int length = (int) file.length();
-        Log.d("Upload length respons", "String respons length : " +length);
-        if (length>50000){
+        String imageName = file.getName();
 
+        //cek mengapa coding ini berisi blok kosong
+        //jika sedang melakukan pengetesan, harap dituliskan keterangan testing dan deskripsi
+        if (length>50000){
+            // check file image size
         }
+        //starting mengirim gambar ke web api
         int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
         try {
             Log.d("Upload jwtKeys respons", "String respons jwtKey : " +jwtKey);
@@ -1318,9 +1030,7 @@ public class HomeMenuFragment extends Fragment {
             MultipartBody.Part parts = MultipartBody.Part.createFormData("newimage", file.getName(), requestBody);
             String name = "Rifqi";
             double latitude = locationTracking.getLatitude();
-//            int val1=(int) latitude;
             double longitude = locationTracking.getLongitude();
-//            int val2=(int) longitude;
             Log.d("Upload longitudex", "String loc  : " +longitude+" - " +latitude+ " - ");
 
             RequestBody req1 = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(name)); //change to phone number
@@ -1334,46 +1044,36 @@ public class HomeMenuFragment extends Fragment {
                     if (response.code() == 200) {
                         Object obj = response.body();
                         PLNData plnData = (PLNData) response.body();
-                        Log.d("Upload plnData", "String plnData  : " +plnData);
-                        Log.d("Upload obj", "String obj  : " +obj);
 
                         //insert room datbase gson, created_at
                         //  22 2 21
-                        Date dates = new Date();
-                        String gson = new Gson().toJson(plnData);
-                        Log.d("Upload gson", "String gson  : " +gson);
                         Date date = new Date();
-                        SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss",
+                        SimpleDateFormat sfd = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy",
                                 Locale.getDefault());
                         String text = sfd.format(date);
+                        String datetime = sfd.format(date);
 
-                        ZoneId zoneId = ZoneId.systemDefault();
-                        Instant instant = Instant.now();
-                        ZonedDateTime zDateTime = instant.atZone(zoneId);
-
-                        DayOfWeek day = zDateTime.getDayOfWeek();
-                        System.out.println(day.getDisplayName(TextStyle.SHORT, Locale.US));
-                        System.out.println(day.getDisplayName(TextStyle.NARROW, Locale.US));
-
-                        Month month = zDateTime.getMonth();
-                        System.out.println(month.getDisplayName(TextStyle.SHORT, Locale.US));
-                        System.out.println(month.getDisplayName(TextStyle.NARROW, Locale.US));
-                        System.out.println(month.getDisplayName(TextStyle.FULL, Locale.US));
-                        Log.d("Upload day createdAt", "createdAt  : " +day + " MONTH " +month +" textDate" +text);
-
+                        //angka meter hasil pembacaan oleh web api beserta nilai score-score
                         double meter = plnData.getMeterValue();
                         double scoreId = plnData.getScoreIdentification();
                         double scoreClass = plnData.getScoreClassification();
+
+                        //insert angka meter dan score-score  ke firebase
                         mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("meter_value").setValue(String.valueOf(meter));
                         mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("identify_value").setValue(String.valueOf(scoreId));
                         mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("classify_long").setValue(String.valueOf(scoreClass));
                         mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("created_at").setValue(String.valueOf(text));
-                        Log.d("Upload meter", "String meter  : " +meter+ " - "+scoreId +" - "+scoreClass+" ");
-                        String m = String.valueOf(meter);
-                        double total = scoreId + scoreClass;
-                        GmeterApi gmeterApi = new GmeterApi();
 
-                        if (total>=85){
+                        Log.d("Upload meter", "String meter  : " +meter+ " - "+scoreId +" - "+scoreClass+" ");
+
+                        //insert angka meter ke lokal
+                        String m = String.valueOf(meter);
+                        GMeterApi gmeterApi = new GMeterApi();
+
+                        //cek apabila salah satu score<85 maka akan diberi notifikasi (warna, dll)
+                        //20210702
+                        double minimumScore = 85.0;
+                        if (scoreId>=minimumScore && scoreClass> minimumScore){
                             String meterfy = String.valueOf(meter);
                             hasilMeter.setTextColor(getResources().getColor(R.color.yellow));
                             hasilMeter.setText(meterfy);
@@ -1381,58 +1081,49 @@ public class HomeMenuFragment extends Fragment {
                             gmeterApi.setType(1);
                             insertMeterApi(gmeterApi);
 
-                            Log.d("Upload YELLOW", "String YELLOW  : ");
 
                         }else {
+                            //salah satu score < 85
                             String meterfy = String.valueOf(meter);
-                            hasilMeter.setTextColor(getResources().getColor(R.color.yellow));
+                            hasilMeter.setTextColor(getResources().getColor(R.color.de_la_red));
                             hasilMeter.setText(meterfy);
                             gmeterApi.setMeter(meterfy);
                             gmeterApi.setType(1);
                             insertMeterApi(gmeterApi);
                         }
+
                         Gimage gimage = new Gimage();
                         gimage.setType(1);
                         int rowImageType = db.gHistorySpinnerDao().getCountimage();
                         if (rowImageType == 0 ){
                             gimage.setId(1);
-                            gimage.setImage(mImageFileLocation);
+                            gimage.setImage(fileImage);
                             insertData(gimage);
                         }else {
                             gimage.setId(1);
-                            gimage.setImage(mImageFileLocation);
+                            gimage.setImage(fileImage);
                             updateImage(gimage);
 
                         }
 
-//                        hasilMeter.setText(m);
-                        String maxIdHistoryi = String.valueOf(maxIdHistory);
-                        Log.d("",""+maxIdHistoryi);
-
                         String idtfy = String.valueOf(scoreId);
                         String classfy = String.valueOf(scoreClass);
 
-                        History history = new History(maxIdHistoryi,sessionPrefference.getUserId(),m, classfy,idtfy,text);
-                        databaseReferenceHistory.child(maxIdHistoryi).setValue(history);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-
-                            }
-                        },1000);
                         GimageUploaded gUserData = new GimageUploaded();
                         gUserData.setStatus(1);
-                        int status = 1;
+                        int status = 3;
                         db.gHistorySpinnerDao().updateImageStatus(status);
-                        Ghistoryi ghistoryi = new Ghistoryi();
-                        ghistoryi.setMeter(m);
-                        ghistoryi.setScore_classfy(classfy);
-                        ghistoryi.setScore_identfy(idtfy);
-                        ghistoryi.setCreated_at(text);
-                        ghistoryi.setId_user(String.valueOf(sessionPrefference.getUserId()));
-                        ghistoryi.setImagez(mImageFileLocation);
-                        insertDataHistory(ghistoryi);
 
+                        //20210502
+                        double longitudeValue = locationTracking.getLatitude();
+                        double langitudeValue = locationTracking.getLongitude();
+                        GHistory item = new GHistory(idRoomHist,sessionPrefference.getUserId(),meter,scoreClass,scoreId,longitudeValue,langitudeValue,dateFrRoom,text,fileImage,3);
+                        updateHistoryFroomRoom(item);
+                        double longitudeVal,latitudeVal;
+                        longitudeVal = locationTracking.getLongitude();
+                        latitudeVal = locationTracking.getLatitude();
+                        MHistory history = new MHistory(idRoomHist,sessionPrefference.getUserId(),meter, scoreClass,scoreId,longitudeVal, latitudeVal,dateFrRoom);
+                        databaseReferenceHistory.child(String.valueOf(idRoomHist)).setValue(history);
 
 
                     } else {
@@ -1448,16 +1139,6 @@ public class HomeMenuFragment extends Fragment {
                 @Override
                 public void onFailure(Call call, Throwable t) {
                     Toast.makeText(getActivity(), "TRY AGAINSZCH", Toast.LENGTH_LONG).show();
-
-                    /*
-                    String message = "";
-                    String jwtNull = "";
-                    Toast.makeText(getActivity(), "Status Login Time Out, silahkan login kembali", Toast.LENGTH_LONG).show();
-
-                    sessionPrefference.setKeyApiJwt(jwtNull);
-                    sessionPrefference.setIsLogin(false);
-                    sessionPrefference.logoutUser();
-                    */
                 }
             });
 
@@ -1466,12 +1147,11 @@ public class HomeMenuFragment extends Fragment {
         }
 
     }
-
-    private void insertDataHistory(Ghistoryi ghistoryi) {
+    private void insertDataHistory2(GHistory GHistory) {
         new AsyncTask<Void, Void, Long>() {
             @Override
             protected Long doInBackground(Void... voids) {
-                long status = db.gHistorySpinnerDao().insertHistoryiData(ghistoryi);
+                long status = db.gHistorySpinnerDao().insertHistoryiData(GHistory);
                 return status;
             }
 
@@ -1486,7 +1166,26 @@ public class HomeMenuFragment extends Fragment {
 
     }
 
-    private void insertMeterApi(GmeterApi gmeterApi) {
+    private void insertDataHistory(GHistory GHistory) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertHistoryiData(GHistory);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " +status);
+            }
+        }.execute();
+
+    }
+
+    private void insertMeterApi(GMeterApi gmeterApi) {
         new AsyncTask<Void, Void, Long>() {
             @Override
             protected Long doInBackground(Void... voids) {
@@ -1554,7 +1253,10 @@ public class HomeMenuFragment extends Fragment {
         photoView.setImageBitmap(rotateBitmap);
         PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(photoView);
         photoViewAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        uploadImage(rotateBitmap, grain_slected);
+        List<Integer> selectIdFromHistory = db.gHistorySpinnerDao().selectIdfromRoomHistoryCount();
+        int countHistory = selectIdFromHistory.size();
+        int countAdd = countHistory+1;
+        uploadImage(rotateBitmap, grain_slected, countAdd);
         dialog.dismiss();
 
     }
@@ -1629,7 +1331,23 @@ public class HomeMenuFragment extends Fragment {
             }
         }.execute();
     }
+    private void updateHistoryFroomRoom(GHistory item) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().updateHistoryFroomRoom(item);
+                return status;
+            }
 
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " + status);
+            }
+        }.execute();
+    }
     private void updateSelectedGrain(GIndeksSpinner gIndeksSpinner) {
         new AsyncTask<Void, Void, Long>() {
             @Override

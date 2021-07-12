@@ -1,4 +1,4 @@
-package com.example.myapplicationpln.date;
+package com.example.myapplicationpln.utils;
 
 import androidx.room.TypeConverter;
 
@@ -7,14 +7,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class TimeStampConverters {
+public class ServrValue {
     private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @TypeConverter
     public static Date fromTimestamp(String value){
         if (value !=null) {
             try {
-                TimeZone timeZone = TimeZone.getTimeZone("CXT");
+                TimeZone timeZone = TimeZone.getTimeZone("IST");
                 df.setTimeZone(timeZone);
                 return  df.parse(value);
             } catch (Exception e) {

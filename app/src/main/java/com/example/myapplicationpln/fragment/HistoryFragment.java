@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.model.MHistory;
+import com.example.myapplicationpln.model.PointValue;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -36,8 +37,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class HistoryFragment extends Fragment {
 
@@ -121,9 +127,13 @@ public class HistoryFragment extends Fragment {
             protected void onBindViewHolder(@NonNull UserViewHolder holder, int position, @NonNull MHistory model) {
                 Log.d("stringset"," "+model.getMeter());
                 holder.setFname(model.getMeter());
-                holder.setLname(model.getScore_classfy());
-                holder.setAname(model.getScore_identfy());
-                holder.setDate(model.getCreated_at());
+                holder.setLname(model.getScoreClassification());
+                holder.setAname(model.getScoreIdentification());
+                Date timeCreated = model.getCreatedAt() ;
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                String strTimeCreated = formatter.format(timeCreated);
+                String dateVal = String.valueOf(model.getCreatedAt());
+                holder.setDate(strTimeCreated);
                 int status = 1;
                 holder.setStatusName(1);
                 Log.d("get getMeter ", " : " + model.getMeter());
@@ -203,6 +213,10 @@ public class HistoryFragment extends Fragment {
         mRecyclerview.setAdapter(firebaseRecyclerAdapter);
 
         return view;
+    }
+
+    private void setListener() {
+
     }
 
     @Override

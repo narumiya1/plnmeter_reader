@@ -1,8 +1,14 @@
 package com.example.myapplicationpln.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.TypeConverters;
+
+import com.example.myapplicationpln.date.TimeStampConverters;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MHistory implements Serializable {
     @SerializedName("id")
@@ -11,24 +17,35 @@ public class MHistory implements Serializable {
     private String id_user;
     @SerializedName("meter")
     private double meter;
-    @SerializedName("score_classfy")
-    private double score_classfy;
-    @SerializedName("score_identfy")
-    private double score_identfy;
+    @SerializedName("scoreClassification")
+    private double scoreClassification;
+    @SerializedName("scoreIdentification")
+    private double scoreIdentification;
+    @SerializedName("longitude")
+    private double longitude;
+    @SerializedName("latitude")
+    private double latitude;
+    @ColumnInfo(name = "created_at")
+    @TypeConverters({TimeStampConverters.class})
+    private Date created_at;
+    /*
     @SerializedName("created_at")
-    private String created_at;
+    private String created_at;//datetime
 
+     */
     public MHistory() {
     }
 
     //20210702
     //ganti parameter type untuk created_at menjadi Date Time
-    public MHistory(long id, String id_user, double meter, double score_classfy, double score_identfy, String created_at) {
+    public MHistory(long id, String id_user, double meter, double score_classfy, double score_identfy, double longitude,double latitude,Date created_at) {
         this.id = id;
         this.id_user = id_user;
         this.meter = meter;
-        this.score_classfy = score_classfy;
-        this.score_identfy = score_identfy;
+        this.scoreClassification = score_classfy;
+        this.scoreIdentification = score_identfy;
+        this.longitude = longitude;
+        this.latitude = latitude;
         this.created_at = created_at;
     }
 
@@ -57,27 +74,55 @@ public class MHistory implements Serializable {
         this.meter = meter;
     }
 
-    public double getScore_classfy() {
-        return score_classfy;
+    public double getScoreClassification() {
+        return scoreClassification;
     }
 
-    public void setScore_classfy(double score_classfy) {
-        this.score_classfy = score_classfy;
+    public void setScoreClassification(double scoreClassification) {
+        this.scoreClassification = scoreClassification;
     }
 
-    public double getScore_identfy() {
-        return score_identfy;
+    public double getScoreIdentification() {
+        return scoreIdentification;
     }
 
-    public void setScore_identfy(double score_identfy) {
-        this.score_identfy = score_identfy;
+    public void setScoreIdentification(double scoreIdentification) {
+        this.scoreIdentification = scoreIdentification;
     }
 
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    /*
     public String getCreated_at() {
         return created_at;
     }
 
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
+    }
+
+     */
+
+    public Date getCreatedAt() {
+        return created_at;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.created_at = createdAt;
     }
 }

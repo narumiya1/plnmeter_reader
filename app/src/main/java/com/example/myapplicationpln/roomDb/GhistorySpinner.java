@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -78,14 +79,19 @@ public interface GhistorySpinner {
 
     //20210702
     //get history where row is uncomoleted (status<>3)
-    @Query("SELECT id_user,imagez FROM tbHistory WHERE status <>3 " )
-    GHistory[] selectHistoryUncomplete();
+//    @Query("SELECT id_user,imagez FROM tbHistory WHERE status <>3 " )
+//    GHistory[] selectHistoryUncomplete();
 
-    @Query("SELECT imagez FROM tbHistory WHERE status =1")
+    @Query("SELECT * FROM tbHistory WHERE status in (1,2)")
+    List<GHistory> selectHistoryfromRoom();
+
+    @Query("SELECT imagez FROM tbHistory WHERE status in (1,2)")
      List<String> selectImageStatusfromRoomHistory();
 //    @Query("SELECT id FROM tbHistory WHERE status =1")
     @Query("SELECT id FROM tbHistory WHERE status in (1,2)")
     List<Integer> selectIdfromRoomHistory();
+    @Query("SELECT id FROM tbHistory")
+    List<Integer> selectIdfromRoomHistoryCount();
     @Query("SELECT * FROM tbUserData WHERE id_user = :nim LIMIT 1")
     GUserData selectDetailUserData(String nim);
 
@@ -141,8 +147,11 @@ public interface GhistorySpinner {
     @Update
     int updateCameraValue(GCameraValue gCameraValue);
 
+    //query untuk mengambil status paling atas histiry bla bla bla
     @Query("SELECT * FROM tbHistory ORDER BY status ASC")
     List<GHistory> getPersonsSortByDescLastName();
+
+    //query untuk delete bla bla bla
     @Query("delete from tbHistory where status = 1")
     int deleteImageColumnWhereStaus1();
 }

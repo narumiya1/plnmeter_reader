@@ -35,7 +35,7 @@ import androidx.room.Room;
 
 import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.model.MCameraVal;
-import com.example.myapplicationpln.model.Connection;
+import com.example.myapplicationpln.model.MConnection;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GCameraValue;
@@ -112,7 +112,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                 .build();
 
         sessionPrefference = new SessionPrefference(this);
-        if (!Connection.isConnect(getApplicationContext())){
+        if (!MConnection.isConnect(getApplicationContext())){
             //  20210616
             // pupulasi koordinat & ukuran kotak kamera
             // isi width, height, x, y dari room database

@@ -2,11 +2,13 @@ package com.example.myapplicationpln.caamera;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import com.example.myapplicationpln.MainActivity;
@@ -25,9 +28,10 @@ import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.cookies.AddCookiesInterceptor;
 import com.example.myapplicationpln.cookies.ReceivedCookiesInterceptor;
 import com.example.myapplicationpln.cookies.TokenInterceptor;
-import com.example.myapplicationpln.model.Connection;
-import com.example.myapplicationpln.model.History;
-import com.example.myapplicationpln.model.Toastr;
+import com.example.myapplicationpln.location.LocationTracking;
+import com.example.myapplicationpln.model.MConnection;
+import com.example.myapplicationpln.model.MHistory;
+import com.example.myapplicationpln.model.MToastr;
 import com.example.myapplicationpln.network_retrofit.ApiClient;
 import com.example.myapplicationpln.network_retrofit.PLNData;
 import com.example.myapplicationpln.preference.SessionPrefference;
@@ -48,12 +52,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.Month;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -69,9 +68,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 public class PreviewActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = PreviewActivity.class.getSimpleName();
+    LocationTracking locationTracking;
 
     private ImageView previewImage;
     private String imageFilePath;
@@ -82,11 +85,17 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
     DatabaseReference mDatabaseRefApiMeter;
     long maxIdHistory;
     private AppDatabase db;
+    String urlDomain = "http://110.50.85.28:8200";
+    private ArrayList<String> permissionsToRequest;
+    private ArrayList<String> permissionsRejected = new ArrayList();
+    private ArrayList<String> permissions = new ArrayList();
+    private final static int ALL_PERMISSIONS_RESULT = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
+        locationTracking = new LocationTracking(getApplicationContext());
 
         sessionPrefference = new SessionPrefference(getApplicationContext());
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -119,7 +128,6 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 //        imageFilePath = bundle.getString("camera_image_folder");
         imageFilePath = bundle.getString("camera_img");
         Log.d(TAG, "Image File Path:\t" + imageFilePath);
-//        Log.d(TAG, "camera_image_folder File Path:\t" + imageFilePath);
 
         previewImage = (ImageView) findViewById(R.id.previewImage);
         hasilmetergenereate = findViewById(R.id.hasilmetergenereate);
@@ -129,12 +137,10 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);
 
 
-//        Bitmap bitmap = BitmapFactory.decodeByteArray(camera, 0, camera.length);
-//
         if (bitmap != null) {
             previewImage.setImageBitmap(bitmap);
         }
-        if (Connection.isConnect(getApplicationContext())){
+        if (MConnection.isConnect(getApplicationContext())){
             uploadImage(imageFilePath);
         }else {
 
@@ -142,7 +148,12 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             SimpleDateFormat sfd = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy",
                     Locale.getDefault());
             String text = sfd.format(date);
-            GHistory GHistory = new GHistory();
+            String dateTime = sfd.format(date);
+            //2021 07 07 add id +1
+            GHistory gHistoryItem = new GHistory(sessionPrefference.getUserId(),0.0, 0.0, 0.0,date,text,imageFilePath,1);
+
+            /*
+
             GHistory.setId_user(sessionPrefference.getUserId());
             GHistory.setCreated_at(text);
             GHistory.setScore_identfy(String.valueOf(0));
@@ -150,8 +161,11 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             GHistory.setMeter(String.valueOf(0));
             GHistory.setStatus(1);
             GHistory.setImagez(imageFilePath);
-            insertDataHistory2(GHistory);
-            Toastr.showToast(getApplicationContext(), "NO INTERNET CONNECTION");
+
+             */
+
+            insertDataHistory2(gHistoryItem);
+            MToastr.showToast(getApplicationContext(), "NO INTERNET CONNECTION, SAVED TO LOCAL DB");
 
             GimageUploaded gimageUploaded=new GimageUploaded();
             gimageUploaded.setImage(imageFilePath);
@@ -218,20 +232,6 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         switch (view.getId()) {
             case R.id.generate:
                 Log.d(TAG, "ONCLIcK Image File Path:\t" + imageFilePath);
-//                Intent intent = new Intent(PreviewActivity.this, MainActivity.class);
-//                startActivity(intent);h
-//                try {
-//                    Bitmap bitmap;
-//                    BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-//                    bitmap = BitmapFactory.decodeFile(imageFilePath,
-//                            bitmapOptions);
-//
-//                    rotateImage(setReducedImageSize());
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//                rotateImage(setReducedImageSize());
                 break;
             case R.id.previewImage:
                 Log.d(TAG, "ONCLIcK Image File Path:\t" + imageFilePath);
@@ -301,7 +301,6 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void uploadImage(String imageFilePath) {
-        String urlDomain = "http://110.50.85.28:8200";
         String jwtKey =  new SessionPrefference(getApplicationContext()).getKeyApiJwt();
         Log.d("Body jwtKeys", "String jwtKey : " +jwtKey);
         String jwt = "";
@@ -311,6 +310,9 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         }
         File file = new File(imageFilePath);
         int length = (int) file.length();
+        String dateFr = file.getPath();
+        Date lastModDate = new Date(file.lastModified());
+        Log.d("Body dateFr Preview", " : " +dateFr + " lastModDate Preview : " +lastModDate );
         Log.d("Upload length respons", "String respons length : " +length);
         if (length>50000){
 
@@ -374,7 +376,9 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                         SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss",
                                 Locale.getDefault());
                         String text = sfd.format(date);
+                        String dateTime = sfd.format(date);
 
+                        /*
                         ZoneId zoneId = ZoneId.systemDefault();
                         Instant instant = Instant.now();
                         ZonedDateTime zDateTime = instant.atZone(zoneId);
@@ -389,6 +393,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                         System.out.println(month.getDisplayName(TextStyle.FULL, Locale.US));
                         Log.d("Upload day createdAt", "createdAt  : " +day + " MONTH " +month +" textDate" +text);
 
+                         */
                         double meter = plnData.getMeterValue();
                         double scoreId = plnData.getScoreIdentification();
                         double scoreClass = plnData.getScoreClassification();
@@ -398,11 +403,10 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                         mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("created_at").setValue(String.valueOf(text));
                         Log.d("Upload meter", "String meter  : " +meter+ " - "+scoreId +" - "+scoreClass+" ");
                         String m = String.valueOf(meter);
-                        double total = scoreId + scoreClass;
+                        double totalMinimum = 85;
 
-                        if (total>=85){
+                        if (scoreId>=85 && scoreClass >=85){
 
-                            String meterfy = String.valueOf(total);
                             hasilmetergenereate.setTextColor(getResources().getColor(R.color.yellow));
                             hasilmetergenereate.setText(m);
 
@@ -410,7 +414,6 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
                         }else {
 
-                            String meterfy = String.valueOf(total);
                             hasilmetergenereate.setTextColor(getResources().getColor(R.color.yellow));
                             hasilmetergenereate.setText(m);
                         }
@@ -445,22 +448,28 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
                         String idtfy = String.valueOf(scoreId);
                         String classfy = String.valueOf(scoreClass);
-                        History history = new History(maxIdHistory, sessionPrefference.getUserId(), meter, scoreId, scoreClass, text);
-                        databaseReferenceHistory.child(maxIdHistoryi).setValue(history);
+                        double longitudeVal,latitudeVal;
+                        longitudeVal = locationTracking.getLongitude();
+                        latitudeVal = locationTracking.getLatitude();
+                        MHistory MHistory = new MHistory(maxIdHistory, sessionPrefference.getUserId(), meter, scoreId, scoreClass,longitudeVal, latitudeVal, date);
+                        databaseReferenceHistory.child(maxIdHistoryi).setValue(MHistory);
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
 
                             }
                         },1000);
-
-                        GHistory GHistory = new GHistory();
+                        GHistory itesm = new GHistory(sessionPrefference.getUserId(), meter, scoreClass, scoreId, longitudeVal, latitudeVal, date, text, imageFilePath, 3);
+//                        GHistory item = new GHistory(sessionPrefference.getUserId(),meter,scoreClass,scoreId,longitudeVal, latitudeVal,date,text,imageFilePath,3);
+                        /*
                         GHistory.setMeter(m);
                         GHistory.setId_user(sessionPrefference.getUserId());
                         GHistory.setCreated_at(text);
                         GHistory.setScore_classfy(classfy);
                         GHistory.setScore_identfy(idtfy);
-                        insertDataHistory(GHistory);
+
+                         */
+                        insertDataHistory(itesm);
                     } else {
                         Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_LONG).show();
                         String jwtNull = "";
@@ -587,6 +596,49 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
+    private void ceklocation() {
+        permissions.add(ACCESS_FINE_LOCATION);
+        permissions.add(ACCESS_COARSE_LOCATION);
+        permissionsToRequest = findUnAskedPermissions(permissions);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
+
+            if (permissionsToRequest.size() > 0)
+                requestPermissions((String[]) permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
+        }
+
+
+        locationTracking = new LocationTracking(getApplicationContext());
+
+        if (locationTracking.canGetLocation()) {
+            double longitude = locationTracking.getLongitude();
+            double latitude = locationTracking.getLatitude();
+            Log.d("Body Longitude", "longitude : " + longitude + "& " + latitude);
+        } else {
+            locationTracking.showSettingsAlert();
+        }
+    }
+    private ArrayList findUnAskedPermissions(ArrayList wanted) {
+        ArrayList result = new ArrayList();
+
+        for (Object perm : wanted) {
+            if (!hasPermission((String) perm)) {
+                result.add(perm);
+            }
+        }
+
+        return result;
+    }
+    private boolean hasPermission(String permission) {
+        if (canMakeSmores()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return (ContextCompat.checkSelfPermission(getApplicationContext(), permission) == PackageManager.PERMISSION_GRANTED);
+            }
+        }
+        return true;
+    }
+    private boolean canMakeSmores() {
+        return (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1);
+    }
 }
 

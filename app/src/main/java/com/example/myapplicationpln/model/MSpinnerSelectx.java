@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class SpinnerSelectx implements Serializable {
+public class MSpinnerSelectx implements Serializable {
     @SerializedName("spinner_value")
     private String spinner_value;
     @SerializedName("spinner_long")
     private String spinner_long;
 
-    public SpinnerSelectx() {
+    public MSpinnerSelectx() {
     }
 
     public String getSpinner_value() {

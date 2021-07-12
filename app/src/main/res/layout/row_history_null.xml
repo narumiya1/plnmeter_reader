@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cvMain_historiy"
+    android:id="@+id/cvMain_addresss"
     android:layout_width="match_parent"
     android:layout_height="70dp"
     android:layout_margin="2dp"
-    android:background="@drawable/line_cardview"
+    android:background="@drawable/bg_gradient"
     android:padding="2dp"
     app:cardCornerRadius="5dp"
     app:cardElevation="2dp"
     app:cardUseCompatPadding="true">
 
     <RelativeLayout
+        android:background="@drawable/bg_gradient"
         android:id="@+id/tlMetr"
         android:layout_gravity="center"
         android:layout_margin="2dp"
@@ -49,89 +50,20 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/rTextMeter2"
+                android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/rvUserAddtressId"
-                android:text="Meter: "
+                android:text="Status : "
                 android:textColor="#000"
-                android:textSize="18sp" />
-
-            <TextView
-
-                android:id="@+id/rMeter2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/rTextMeter"
-                android:text=" "
-                android:textColor="#000"
-                android:textSize="18sp" />
-
-
-            <TextView
-                android:id="@+id/kurung"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" ("
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/rClassify2"
-                android:text=" "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rMeter"
-                android:layout_toRightOf="@+id/txtrClassify"
-                android:textColor="#000"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/koma"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtrClassify"
-                android:text=" , "
-                android:textColor="#000"
-
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/rIdentify2"
-                android:layout_width="wrap_content"
-
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rClassify"
-                android:layout_toRightOf="@+id/txtrIdentifiy"
-                android:text=" "
-                android:textColor="#000"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/kurung2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=")"
                 android:textSize="18sp" />
 
 
             <ImageView
-                android:id="@+id/chekclist_done"
+                android:layout_width="12dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:src="@drawable/ic_baseline_done_24"
-                android:layout_width="20dp"
-                android:layout_height="match_parent"/>
-            <ImageView
-                android:id="@+id/chekclist_done_all"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/ic_baseline_done_all_24"
-                android:layout_width="20dp"
-                android:layout_height="match_parent"/>
-            <ImageView
-                android:id="@+id/pending"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/pending"
-                android:layout_width="20dp"
-                android:layout_height="match_parent"/>
+                android:src="@drawable/ic_baseline_done_24" />
         </LinearLayout>
         <LinearLayout
             android:layout_toRightOf="@+id/llMetr2"
@@ -151,7 +83,6 @@
 
         </LinearLayout>
         <TextView
-            android:textColor="@color/black_overlay"
             android:id="@+id/txtDate2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

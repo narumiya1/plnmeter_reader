@@ -22,13 +22,12 @@ import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.activities.AddressListActivity2;
 import com.example.myapplicationpln.activities.FirebaseRecyclerAdapterAddress;
 import com.example.myapplicationpln.activities.UpdateUserData;
-import com.example.myapplicationpln.model.Connection;
-import com.example.myapplicationpln.model.Toastr;
+import com.example.myapplicationpln.model.MConnection;
+import com.example.myapplicationpln.model.MToastr;
 import com.example.myapplicationpln.preference.SessionPrefference;
-import com.example.myapplicationpln.model.DataUser;
+import com.example.myapplicationpln.model.MDataUser;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GUserData;
-import com.example.myapplicationpln.roomDb.Ghistoryi;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -49,7 +48,7 @@ public class UserDataFragment extends Fragment {
     ImageView imageView_address;
 
     SessionPrefference session;
-    DataUser dataUser = new DataUser();
+    MDataUser MDataUser = new MDataUser();
 
     public UserDataFragment() {
 
@@ -75,7 +74,7 @@ public class UserDataFragment extends Fragment {
 
         imageView_address = rootView.findViewById(R.id.imageView_address);
         //checking connection here
-        if (!Connection.isConnect(getActivity())){
+        if (!MConnection.isConnect(getActivity())){
             imageView_address.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -123,7 +122,7 @@ public class UserDataFragment extends Fragment {
          one to many
         firebase.database().ref('works').orderBy('customerKey').equalTo('customerKey2')
         */
-        if (Connection.isConnect(getActivity())) {
+        if (MConnection.isConnect(getActivity())) {
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             Query query = reference.child("User").child(String.valueOf(numberPhone));
             query.addValueEventListener(new ValueEventListener() {
@@ -131,25 +130,25 @@ public class UserDataFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         Log.d("DATA CHANGEt", "onDataChange: " + dataSnapshot.getValue());
-                        dataUser = dataSnapshot.getValue(DataUser.class);
-                        Log.d("DATA CHANGE detail", "onDataChange: " + dataUser.getAddress());
-                        tvUserName.setText(dataUser.getUsername());
-                        tv_realname.setText(dataUser.getName());
-                        tvEmail.setText(dataUser.getEmail());
-                        tvPhone.setText(dataUser.getPhone());
-                        tvAddress.setText(dataUser.getAddress());
-                        tv_id_pel.setText(dataUser.getId_pelanggan());
+                        MDataUser = dataSnapshot.getValue(MDataUser.class);
+                        Log.d("DATA CHANGE detail", "onDataChange: " + MDataUser.getAddress());
+                        tvUserName.setText(MDataUser.getUsername());
+                        tv_realname.setText(MDataUser.getName());
+                        tvEmail.setText(MDataUser.getEmail());
+                        tvPhone.setText(MDataUser.getPhone());
+                        tvAddress.setText(MDataUser.getAddress());
+                        tv_id_pel.setText(MDataUser.getId_pelanggan());
 
-                        String id_pel = dataUser.getId_user();
+                        String id_pel = MDataUser.getId_user();
                         session.setUserId(id_pel);
                         tvUserEdit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 //                selectImage();
                                 Intent intent = new Intent(getActivity(), UpdateUserData.class);
-                                intent.putExtra("userEmail", dataUser.getEmail());
-                                intent.putExtra("userName", dataUser.getUsername());
-                                intent.putExtra("userPhone", dataUser.getPhone());
+                                intent.putExtra("userEmail", MDataUser.getEmail());
+                                intent.putExtra("userName", MDataUser.getUsername());
+                                intent.putExtra("userPhone", MDataUser.getPhone());
 
                                 startActivity(intent);
                             }
@@ -173,9 +172,9 @@ public class UserDataFragment extends Fragment {
                 GUserData gUserData = db.gHistorySpinnerDao().selectDetailUserData(session.getUserId());
                 Log.d("selectionlistuser  ","name "+selectionu +" ? ");
                 Log.d("selectionsx  ","name "+selection);
-                Log.d("gUserData  ","gUserData "+gUserData.getUsername());
+//                Log.d("gUserData  ","gUserData "+gUserData.getUsername());
                 tvUserName.setText(selection);
-                tv_realname.setText(String.valueOf(gUserData.getUsername()));
+//                tv_realname.setText(String.valueOf(gUserData.getUsername()));
                 tvPhone.setText(String.valueOf(gUserData.getPhone()));
                 tvEmail.setText(String.valueOf(gUserData.getEmail()));
                 tvAddress.setText(String.valueOf(gUserData.getAddress()));
@@ -183,11 +182,11 @@ public class UserDataFragment extends Fragment {
                 tvUserEdit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toastr.showToast(getActivity(), "Cant edited, turn on connection");
+                        MToastr.showToast(getActivity(), "Cant edited, turn on connection");
                     }
                 });
             }else {
-                Toastr.showToast(getActivity(), "no connection");
+                MToastr.showToast(getActivity(), "no connection");
             }
 
         }

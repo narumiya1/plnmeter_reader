@@ -17,6 +17,14 @@ public class GIndeksSpinner implements Serializable {
     @ColumnInfo(name = "value_int")
     public int value_int;
 
+    //constructor
+    public GIndeksSpinner(int id_idx, int type, String value, int value_int) {
+        this.id_idx = id_idx;
+        this.type = type;
+        this.value = value;
+        this.value_int = value_int;
+    }
+
     public int getId_idx() {
         return id_idx;
     }

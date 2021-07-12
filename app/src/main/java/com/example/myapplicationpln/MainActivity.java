@@ -24,8 +24,8 @@ import com.example.myapplicationpln.fragment.HistoryFragment2;
 import com.example.myapplicationpln.fragment.HomeMenuFragment;
 import com.example.myapplicationpln.fragment.LogoutFragment;
 import com.example.myapplicationpln.fragment.UserDataFragment;
-import com.example.myapplicationpln.model.Connection;
-import com.example.myapplicationpln.model.Toastr;
+import com.example.myapplicationpln.model.MConnection;
+import com.example.myapplicationpln.model.MToastr;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.model.MDataUser;
 import com.google.android.material.navigation.NavigationView;
@@ -126,12 +126,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fg = new HomeMenuFragment();
                 break;
             case R.id.nav_history:
-                if (!Connection.isConnect(getApplicationContext())){
-                    Toastr.showToast(getApplicationContext(), "sorry, no internet connection");
+                if (!MConnection.isConnect(getApplicationContext())){
+                    MToastr.showToast(getApplicationContext(), "sorry, no internet connection");
                     fg = new HistoryFragment2();
                 }else {
                     fg = new HistoryFragment();
-                    Toastr.showToast(getApplicationContext(), " internet connected");
+                    MToastr.showToast(getApplicationContext(), " internet connected");
 
                 }
                 break;

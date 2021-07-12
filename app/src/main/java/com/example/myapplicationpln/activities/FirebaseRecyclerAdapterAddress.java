@@ -19,9 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplicationpln.R;
-import com.example.myapplicationpln.model.Connection;
+import com.example.myapplicationpln.model.MConnection;
 import com.example.myapplicationpln.model.MPelangganyAlamat;
-import com.example.myapplicationpln.model.Toastr;
+import com.example.myapplicationpln.model.MToastr;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -120,7 +120,7 @@ public class FirebaseRecyclerAdapterAddress extends AppCompatActivity {
                 holder.setAname(model.getUser_address_id());
 
 
-                if (Connection.isConnect(getApplicationContext())) {
+                if (MConnection.isConnect(getApplicationContext())) {
 
 
                     holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -128,33 +128,6 @@ public class FirebaseRecyclerAdapterAddress extends AppCompatActivity {
                         public void onClick(View view) {
 
 
-                        /*
-                        dialog.setTitle(("Update User"));
-                        dialog.setContentView(R.layout.dialog_custom);
-                        EditText address_update = dialog.findViewById(R.id.address_update);
-                        EditText id_pel_update = dialog.findViewById(R.id.user_number_update);
-                        Button oke = dialog.findViewById(R.id.action_oke);
-                        oke.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                String alamat, id_pelanggan ;
-                                alamat =address_update.getText().toString();
-                                id_pelanggan = id_pel_update.getText().toString();
-
-                                Log.d("DATA intentz userIdea ", "idea: " +alamat+"");
-                                Log.d("DATA intentzid_user id_user ", "id_user: " +id_pelanggan);
-                                databaseReference2 = FirebaseDatabase.getInstance().getReference().child("Address");
-                                PelangganyAlamat pelangganyAlamat1 = new PelangganyAlamat(alamat,userId,id_pelanggan);
-                                databaseReference2.child(idUserAddress).setValue(pelangganyAlamat1);
-
-                                Context context = view.getContext();
-                                Intent intent = new Intent(context, MainActivity.class);
-                                 context.startActivity(intent);
-
-
-                            }
-                        });
-                         */
 
                             Context context = view.getContext();
                             Intent intent = new Intent(context, EventDetailActivity.class);
@@ -169,7 +142,7 @@ public class FirebaseRecyclerAdapterAddress extends AppCompatActivity {
                         }
                     });
                 }else {
-                    Toastr.showToast(getApplicationContext(),"No internet connection");
+                    MToastr.showToast(getApplicationContext(),"No internet connection");
                 }
             }
 

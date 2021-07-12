@@ -5,8 +5,13 @@
     android:layout_margin="4dp"
     android:orientation="vertical">
 
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/jjoe"
+        android:layout_width="200dp"
+        android:layout_height="200dp"/>
     <!--RecyclerView-->
     <LinearLayout
+        android:layout_below="@id/jjoe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="1dp">
