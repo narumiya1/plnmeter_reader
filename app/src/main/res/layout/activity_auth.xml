@@ -64,7 +64,7 @@
                 android:layout_weight="2"
                 android:digits="0123456789"
                 android:fontFamily="@font/ubunturegular"
-                android:hint=" 81320696782"
+                android:hint=" "
                 android:inputType="phone"
                 android:maxLength="13" />
 

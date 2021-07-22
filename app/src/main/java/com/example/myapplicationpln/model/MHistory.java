@@ -49,6 +49,9 @@ public class MHistory implements Serializable {
         this.created_at = created_at;
     }
 
+    public MHistory(double meter, double scoreClassification) {
+    }
+
 
     public long getId() {
         return id;

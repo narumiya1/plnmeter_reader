@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -320,7 +321,7 @@ public class HomeMenuFragment extends Fragment {
             String id_user = sessionPrefference.getUserId();
             String jwtTokensz = sessionPrefference.getKeyApiJwt();
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            Query query = reference.child("Address").orderByChild("id_user").equalTo(id_user);
+            Query query = reference.child("Address").child(sessionPrefference.getPhone());
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -365,7 +366,7 @@ public class HomeMenuFragment extends Fragment {
                     spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            Toast.makeText(getActivity(), " " + areasAdapter.getItem(i) + " choosen ", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getActivity(), " " + areasAdapter.getItem(i) + " choosen ", Toast.LENGTH_SHORT).show();
                             grain_slected = areasAdapter.getItem(i);
                             mDatabaseRefs.child("SpinnerDbx").child(sessionPrefference.getPhone()).child("spinner_value").setValue(String.valueOf(i));
                             mDatabaseRefs.child("SpinnerDbx").child(sessionPrefference.getPhone()).child("spinner_long").setValue(String.valueOf(grain_slected));
@@ -373,6 +374,7 @@ public class HomeMenuFragment extends Fragment {
                             MSpinnerSelectx.setSpinner_long(areasAdapter.getItem(i));
 
                             adapterView.setTag(grain_slected);
+                            ((TextView)adapterView.getChildAt(0)).setTextColor(Color.BLUE);
                             String value = areasAdapter.getItem(i);
                             String id_user = sessionPrefference.getUserId();
 
@@ -381,7 +383,7 @@ public class HomeMenuFragment extends Fragment {
                                 Log.d("DATA CHANGE insertz", "insertz: ");
                             } else {
                                 Log.d("DATA CHANGE updatez", "updatez: ");
-                                Toast.makeText(getActivity().getApplicationContext(), "value if " + value + " choosen", Toast.LENGTH_LONG).show();
+//                                Toast.makeText(getActivity().getApplicationContext(), "value if " + value + " choosen", Toast.LENGTH_LONG).show();
 
                             }
 
@@ -416,7 +418,7 @@ public class HomeMenuFragment extends Fragment {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     String selectedValue;
-                    Toast.makeText(getActivity()," "+adapter.getItem(i)+" choosen", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity()," "+adapter.getItem(i)+" choosen", Toast.LENGTH_SHORT).show();
                     selectedValue=adapter.getItem(i).toString();
                     // 140-161 insert to room db
                     String val = adapter.getItem(i).toString();
@@ -428,7 +430,7 @@ public class HomeMenuFragment extends Fragment {
 
                     if(rowCount==0){
                         Log.d("AAABL", "idx "+rowCount);
-                        Toast.makeText(getActivity(), "index kosong",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getActivity(), "index kosong",Toast.LENGTH_SHORT).show();
                         insertIdxSpinner(gIndeksSpinner);
 
                     }
@@ -726,7 +728,7 @@ public class HomeMenuFragment extends Fragment {
                         GHistory.setImagez(mImageFileLocation);
                         insertDataHistory2(GHistory);
 
-                        MToastr.showToast(getActivity(), "NO INTERNET CONNECTION");
+//                        MToastr.showToast(getActivity(), "NO INTERNET CONNECTION");
                         GimageUploaded gimageUploaded=new GimageUploaded();
                         gimageUploaded.setImage(mImageFileLocation);
                         insertImageTemp(gimageUploaded);
@@ -925,7 +927,9 @@ public class HomeMenuFragment extends Fragment {
                         longitudeVal = locationTracking.getLongitude();
                         latitudeVal = locationTracking.getLatitude();
                         MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter, scoreClass, scoreId,longitudeVal, latitudeVal, date);
-                        databaseReferenceHistory.child(String.valueOf(countAdd)).setValue(MHistory);
+                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf(countAdd)).setValue(MHistory);
+
+//                        databaseReferenceHistory.child(String.valueOf(countAdd)).setValue(MHistory);
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -940,7 +944,7 @@ public class HomeMenuFragment extends Fragment {
 
 
                     } else {
-                        Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
                         String jwtNull = "";
                         sessionPrefference.setKeyApiJwt(jwtNull);
                         sessionPrefference.setIsLogin(false);
@@ -951,7 +955,7 @@ public class HomeMenuFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
-                    Toast.makeText(getActivity(), " ", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getActivity(), " ", Toast.LENGTH_LONG).show();
                     Date date = new Date();
                     SimpleDateFormat sfd = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy",
                             Locale.getDefault());
@@ -969,7 +973,7 @@ public class HomeMenuFragment extends Fragment {
                     GHistory.setStatus(2);
                     GHistory.setImagez(mImageFileLocation);
                      */
-                    Toast.makeText(getActivity(), "server error, db inserted to local db", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getActivity(), "server error, db inserted to local db", Toast.LENGTH_LONG).show();
                     insertDataHistory2(GHistory);
 
                 }
@@ -1123,11 +1127,13 @@ public class HomeMenuFragment extends Fragment {
                         longitudeVal = locationTracking.getLongitude();
                         latitudeVal = locationTracking.getLatitude();
                         MHistory history = new MHistory(idRoomHist,sessionPrefference.getUserId(),meter, scoreClass,scoreId,longitudeVal, latitudeVal,dateFrRoom);
-                        databaseReferenceHistory.child(String.valueOf(idRoomHist)).setValue(history);
+                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf(idRoomHist)).setValue(history);
+
+//                        databaseReferenceHistory.child(String.valueOf(idRoomHist)).setValue(history);
 
 
                     } else {
-                        Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
                         String jwtNull = "";
                         sessionPrefference.setKeyApiJwt(jwtNull);
                         sessionPrefference.setIsLogin(false);

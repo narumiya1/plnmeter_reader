@@ -93,7 +93,10 @@
                     android:textStyle="bold" />
 
                 <Spinner
+                    android:background="@drawable/line_background"
+
                     android:id="@+id/listItemz"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="12dp"
@@ -213,12 +216,15 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                                 <androidx.cardview.widget.CardView
+                                    app:cardBackgroundColor="@color/black"
                                     android:layout_width="80dp"
+                                    android:outlineAmbientShadowColor="@color/black"
+                                    android:outlineSpotShadowColor="@color/black"
                                     android:layout_height="70dp"
                                     android:layout_gravity="bottom|right"
                                     android:layout_margin="4dp"
                                     android:layout_marginBottom="60dp"
-                                    android:background="@drawable/line_background2"
+                                    android:background="@drawable/line_backgroundblack"
                                     app:cardCornerRadius="8dp"
                                     app:cardElevation="4dp">
 
@@ -228,7 +234,7 @@
                                         android:layout_height="70dp"
                                         android:layout_marginRight="6dp"
                                         android:layout_marginBottom="37dp"
-                                        android:background="@drawable/line_background"
+                                        android:background="#2196F3"
                                         android:src="@drawable/ic_baseline_add_a_photo_24"
                                         android:visibility="visible" />
 

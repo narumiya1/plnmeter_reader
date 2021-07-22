@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             sessionPrefference.logoutUser();
         }
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
 
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();

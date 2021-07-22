@@ -141,7 +141,7 @@
             android:layout_height="wrap_content">
             <com.github.chrisbanes.photoview.PhotoView
                 android:id="@+id/imgvx"
-                android:visibility="invisible"
+                android:visibility="visible"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_below="@+id/llMetr2"

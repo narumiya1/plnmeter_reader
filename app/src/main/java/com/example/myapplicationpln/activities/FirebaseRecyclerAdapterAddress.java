@@ -95,7 +95,7 @@ public class FirebaseRecyclerAdapterAddress extends AppCompatActivity {
             }
         });
         mDatabase = FirebaseDatabase.getInstance();
-        mUserDatabase = mDatabase.getReference().child("Address").orderByChild("id_user").equalTo(userId);
+        mUserDatabase = mDatabase.getReference().child("Address").child(session.getPhone()).child(idUserAddress).orderByChild("id_pelanggan");
         mUserDatabase2 = mDatabase.getReference().child("Address");
 
         /*

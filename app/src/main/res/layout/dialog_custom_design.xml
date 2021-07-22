@@ -6,9 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="4dp"
-    android:background="@color/white"
+    android:background="@drawable/line_backgroundblack"
     android:padding="4dp"
-    app:cardBackgroundColor="@color/cardview_light_background"
     app:cardCornerRadius="16dp"
     app:cardElevation="16dp">
 
@@ -21,14 +20,16 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="6dp"
             android:padding="4dp"
+            app:cardCornerRadius="6dp"
             app:cardElevation="6dp">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:padding="9dp">
+
                 <TextView
                     android:id="@+id/gallery"
                     android:layout_width="match_parent"
@@ -36,7 +37,7 @@
                     android:gravity="center"
                     android:padding="16dp"
                     android:text="Choose From Gallery"
-                    android:textColor="#000"
+                    android:textColor="@color/black"
                     android:textSize="18sp" />
 
                 <TextView
@@ -45,12 +46,12 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/gallery"
                     android:layout_marginTop="7dp"
-                    android:visibility="gone"
                     android:gravity="center"
                     android:padding="16dp"
                     android:text="Take Camera"
                     android:textColor="#000"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/cammera2"
@@ -60,14 +61,12 @@
                     android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:padding="16dp"
-                    android:text="Take Camera 2"
-                    android:textColor="#000"
+                    android:text="Take Camera "
+                    android:textColor="@color/black"
                     android:textSize="18sp" />
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
-
-
 
 
     </RelativeLayout>

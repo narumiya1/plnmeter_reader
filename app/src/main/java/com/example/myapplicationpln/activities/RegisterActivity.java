@@ -233,7 +233,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 //db2 edit 19 05 2021
                 MPelangganyAlamat MPelangganyAlamat1 = new MPelangganyAlamat(userAlamat,userId,idPelanggan,sessionPrefference.getPhone(), userAddressId);
-                databaseReference2.child(userAddressId).setValue(MPelangganyAlamat1);
+                databaseReference2.child(sessionPrefference.getPhone()).child(userAddressId).setValue(MPelangganyAlamat1);
 //                PelangganyAlamat pelangganyAlamat1 = new PelangganyAlamat(userId,idPelanggan,userAlamat,userAddressId);
 //                databaseReference2.child(userAddressId).setValue(pelangganyAlamat1);
 

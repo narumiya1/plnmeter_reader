@@ -112,7 +112,16 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                 .build();
 
         sessionPrefference = new SessionPrefference(this);
-        if (!MConnection.isConnect(getApplicationContext())){
+        if (MConnection.isConnect(getApplicationContext())){
+
+            imageVew.requestLayout();
+            imageVew.getLayoutParams().width = 450;
+            imageVew.getLayoutParams().height = 200;
+            int x = 250;
+            imageVew.setX(x);
+            int y = 200;
+            imageVew.setX(y);
+        }else {
             //  20210616
             // pupulasi koordinat & ukuran kotak kamera
             // isi width, height, x, y dari room database
@@ -123,8 +132,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
             imageVew.setX(x);
             int y = 250;
             imageVew.setX(y);
-
-        }else {
+            /*
             databaseReferenceCameraWidthHeight = FirebaseDatabase.getInstance().getReference().child("CameraVal").child(sessionPrefference.getUserId());
             databaseReferenceCameraWidthHeight.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -151,7 +159,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                             String getUserId = sessionPrefference.getUserId();
                             String getPhone = sessionPrefference.getPhone();
                             MCameraVal cameraVal = new MCameraVal(id,getUserId, getPhone, w, h, setX, setY);
-                            databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
+                            databaseReferenceCameraWidthHeight.child(sessionPrefference.getPhone()).setValue(cameraVal);
                             GCameraValue gCameraValue = new GCameraValue();
                             gCameraValue.setId_user(sessionPrefference.getUserId());
                             gCameraValue.setUser_phone(sessionPrefference.getPhone());
@@ -196,7 +204,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                             String getPhone = sessionPrefference.getPhone();
                             Log.d("getCamv"," >> "+cameraVal.getWidth());
                             MCameraVal cameraVal = new MCameraVal(id,getUserId, getPhone, w, h, setX, setY);
-                            databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
+                            databaseReferenceCameraWidthHeight.child(sessionPrefference.getPhone()).setValue(cameraVal);
 
                             GCameraValue gCameraValue = new GCameraValue();
                             gCameraValue.setId_user(sessionPrefference.getUserId());
@@ -231,7 +239,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
 
 
                     }else {
-                        databaseReferenceCameraWidthHeight = FirebaseDatabase.getInstance().getReference().child("CameraVal");
+//                        databaseReferenceCameraWidthHeight = FirebaseDatabase.getInstance().getReference().child("CameraVal");
                         imageVew.getLayoutParams().width = 400;
                         imageVew.getLayoutParams().height = 200;
                         int x = 250;
@@ -246,7 +254,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                         String getUserId = sessionPrefference.getUserId();
                         String getPhone = sessionPrefference.getPhone();
                         MCameraVal cameraVal = new MCameraVal(id,getUserId, getPhone, w, h, setX, setY);
-                        databaseReferenceCameraWidthHeight.child(sessionPrefference.getUserId()).setValue(cameraVal);
+                        databaseReferenceCameraWidthHeight.child(sessionPrefference.getPhone()).setValue(cameraVal);
                     }
                 }
 
@@ -255,6 +263,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
 
                 }
             });
+             */
         }
 
     }

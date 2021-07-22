@@ -23,14 +23,21 @@ import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GHistory;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
+import com.jjoe64.graphview.DefaultLabelFormatter;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,6 +52,9 @@ public class HistoryFragment2 extends Fragment {
     private RecyclerView.Adapter adapter;
     SessionPrefference session;
     private LineChart mChart;
+    GraphView graphView;
+    LineGraphSeries<DataPoint> series ;
+    SimpleDateFormat sdf = new SimpleDateFormat("HH: mm");
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,6 +65,20 @@ public class HistoryFragment2 extends Fragment {
                 .fallbackToDestructiveMigration()
                 .addMigrations(AppDatabase.MIGRATION_1_7)
                 .build();
+        graphView = view.findViewById(R.id.graph);
+        series = new LineGraphSeries<> (getDataPoint());
+        graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
+            @Override
+            public String formatLabel(double value, boolean isValueX) {
+                if (isValueX){
+                    return sdf.format(new Date((long)value));
+                }else {
+                    return super.formatLabel(value, isValueX);
+
+                }
+            }
+        });
+        graphView.addSeries(series);
         mChart = view.findViewById(R.id.line_chart);
         mChart.setTouchEnabled(true);
         mChart.setPinchZoom(true);
@@ -79,6 +103,22 @@ public class HistoryFragment2 extends Fragment {
         return view;
     }
 
+    private DataPoint[] getDataPoint() {
+        DataPoint[] dataPoints = new DataPoint[]{
+                new DataPoint(new Date().getTime(),1),
+                new DataPoint(new Date().getTime(),22),
+                new DataPoint(new Date().getTime(),3),
+                new DataPoint(new Date().getTime(),14),
+                new DataPoint(new Date().getTime(),9),
+                new DataPoint(new Date().getTime(),16),
+                new DataPoint(new Date().getTime(),8),
+                new DataPoint(new Date().getTime(),2),
+                new DataPoint(new Date().getTime(),11),
+                new DataPoint(new Date().getTime(),7)
+        };
+        return dataPoints;
+    }
+
     private void showData(GHistory[] gHistory) {
 
         double x, y;
@@ -91,28 +131,34 @@ public class HistoryFragment2 extends Fragment {
             y = gHistory[i].getMeter();
             x = gHistory[i].getScoreClassfification();
             float c = (float)y;
-            LimitLine llXAxis = new LimitLine(20f, "Index 10");
-            llXAxis.setLineWidth(4f);
-            llXAxis.enableDashedLine(c, c, 0f);
-            llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-            llXAxis.setTextSize(10f);
 
-            XAxis xAxis = mChart.getXAxis();
-            xAxis.enableGridDashedLine(c, c, 0f);
-            xAxis.setAxisMaximum(c);
-            xAxis.setAxisMinimum(70f);
-            xAxis.setDrawLimitLinesBehindData(true);
+            YAxis leftAxis = mChart.getAxisLeft();
+            leftAxis.removeAllLimitLines();
 
+            leftAxis.setAxisMaximum(300);
+            leftAxis.setAxisMinimum(90);
+            leftAxis.enableGridDashedLine(c, c, 0f);
+            leftAxis.setDrawZeroLine(false);
+            leftAxis.setDrawLimitLinesBehindData(false);
+            leftAxis.setValueFormatter(new MyValueFormatter());
         }
 
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.removeAllLimitLines();
+        /*
+        LimitLine llXAxis = new LimitLine(20f, "Index 10");
+        llXAxis.setLineWidth(4f);
+        llXAxis.enableDashedLine(400f, 400f, 0f);
+        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+        llXAxis.setTextSize(10f);
 
-        leftAxis.setAxisMaximum(400f);
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.enableGridDashedLine(427f, 427f, 0f);
-        leftAxis.setDrawZeroLine(false);
-        leftAxis.setDrawLimitLinesBehindData(false);
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.enableGridDashedLine(400f, 400f, 0f);
+        xAxis.setValueFormatter(new MyAxisValueFormatter());
+        xAxis.setAxisMaximum(400f);
+        xAxis.setAxisMinimum(70f);
+        xAxis.setDrawLimitLinesBehindData(true);
+
+         */
+
 
         mChart.getAxisRight().setEnabled(false);
         setData(gHistory);
@@ -141,8 +187,6 @@ public class HistoryFragment2 extends Fragment {
             } else {
                 set1 = new LineDataSet(values, "History Data");
                 set1.setDrawIcons(false);
-//                set1.enableDashedLine(10f, 5f, 0f);
-//                set1.enableDashedHighlightLine(10f, 5f, 0f);
                 set1.setColor(Color.GREEN);
                 set1.setCircleColor(Color.GREEN);
                 set1.setLineWidth(1f);
@@ -151,7 +195,6 @@ public class HistoryFragment2 extends Fragment {
                 set1.setValueTextSize(9f);
                 set1.setDrawFilled(true);
                 set1.setFormLineWidth(1f);
-//                set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
                 set1.setFormSize(15.f);
                 if (Utils.getSDKInt() >= 18) {
                     Drawable drawable = ContextCompat.getDrawable(getActivity(), R.drawable.fade_blue);
@@ -167,5 +210,14 @@ public class HistoryFragment2 extends Fragment {
             mChart.setData(data);
         }
 
+    }
+
+    private class MyAxisValueFormatter extends ValueFormatter implements IAxisValueFormatter{
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            axis.setLabelCount(3,true);
+            return " Day " +value;
+        }
     }
 }

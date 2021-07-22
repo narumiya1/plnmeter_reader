@@ -5,10 +5,10 @@
     <dimen name="activity_horizontal_margin">14dp</dimen>
     <dimen name="nav_header_vertical_spacing">14dp</dimen>
     <dimen name="headerTextSize">22sp</dimen>
-    <dimen name="newsMoreTextSize">12sp</dimen>
+    <dimen name="newsMoreTextSize">16sp</dimen>
     <dimen name="loginCardRadius">20dp</dimen>
     <dimen name="loginViewsMargin">20dp</dimen>
-    <dimen name="signup_text_margin_top">10dp</dimen>
+    <dimen name="signup_text_margin_top">4dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="dots_height">30dp</dimen>
     <dimen name="dots_margin_bottom">20dp</dimen>

@@ -143,7 +143,7 @@ public class FormAddress extends AppCompatActivity {
                 Log.d("DATA intentzid_user id_user ", "id_user: " +id_user);
 
                 MPelangganyAlamat MPelangganyAlamat1 = new MPelangganyAlamat(alamat,id_user,id_pelanggan,sessionPrefference.getPhone(), userAddressId);
-                databaseReference2.child(userAddressId).setValue(MPelangganyAlamat1);
+                databaseReference2.child(sessionPrefference.getPhone()).child(userAddressId).setValue(MPelangganyAlamat1);
 
                 Intent intent1 = new Intent(FormAddress.this, MainActivity.class);
                 startActivity(intent1);

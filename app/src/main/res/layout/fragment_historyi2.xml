@@ -18,9 +18,15 @@
         android:layout_height="200dp"
         android:background="@color/white"
         android:layout_margin="6dp"/>
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/graph"
+        android:visibility="gone"
+        android:layout_below="@id/line_chart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"/>
     <!--RecyclerView-->
     <LinearLayout
-        android:layout_below="@id/line_chart"
+        android:layout_below="@id/graph"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="1dp">

@@ -1,6 +1,8 @@
 package com.example.myapplicationpln.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,7 +21,9 @@ import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GHistory;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -135,7 +139,7 @@ public class HistoryAdapter2 extends RecyclerView.Adapter<HistoryAdapter2.ViewHo
         holder.done.setVisibility(View.VISIBLE);
         holder.doneAll.setVisibility(View.GONE);
         holder.pending.setVisibility(View.GONE);
-        holder.DateCreated.setGravity(Gravity.RIGHT);
+        holder.DateCreated.setGravity(Gravity.LEFT);
         holder.koma.setVisibility(View.GONE);
         holder.kurung.setVisibility(View.GONE);
         holder.kurung2.setVisibility(View.GONE);
@@ -143,10 +147,11 @@ public class HistoryAdapter2 extends RecyclerView.Adapter<HistoryAdapter2.ViewHo
         holder.Classify.setVisibility(View.GONE);
         holder.Identify.setVisibility(View.GONE);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 90, 16, 0);
+        params.setMargins(30, 40, 16, 0);
         holder.DateCreated.setLayoutParams(params);
     }
     private void showStatus2Visible(ViewHolder holder, String strTimeCreated) {
+
         holder.DateCreated.setText(strTimeCreated);
             /*
             holder.Meter.setText(meter);
@@ -156,7 +161,7 @@ public class HistoryAdapter2 extends RecyclerView.Adapter<HistoryAdapter2.ViewHo
         holder.done.setVisibility(View.GONE);
         holder.doneAll.setVisibility(View.GONE);
         holder.pending.setVisibility(View.VISIBLE);
-        holder.DateCreated.setGravity(Gravity.RIGHT);
+        holder.DateCreated.setGravity(Gravity.LEFT);
         holder.koma.setVisibility(View.GONE);
         holder.kurung.setVisibility(View.GONE);
         holder.kurung2.setVisibility(View.GONE);
@@ -164,10 +169,28 @@ public class HistoryAdapter2 extends RecyclerView.Adapter<HistoryAdapter2.ViewHo
         holder.Classify.setVisibility(View.GONE);
         holder.Identify.setVisibility(View.GONE);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 90, 16, 0);
+        params.setMargins(30, 90, 16, 0);
         holder.DateCreated.setLayoutParams(params);
     }
     private void showStatus3Visible(GHistory history, ViewHolder holder, String strTimeCreated) {
+        AppDatabase db;
+        db = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "tbGrainHistory")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .addMigrations(AppDatabase.MIGRATION_1_7)
+                .build();
+        String mImageFileLocation;
+
+        mImageFileLocation = db.gHistorySpinnerDao().getImageHistory(String.valueOf(history.getMeter()));
+        File imgFile = new File(mImageFileLocation);
+        Log.d("image makeover", ""+mImageFileLocation);
+        Bitmap bitmap;
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmap = BitmapFactory.decodeFile(mImageFileLocation,
+                bitmapOptions);
+        bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+        holder.imgv.setImageBitmap(BitmapFactory.decodeFile(mImageFileLocation));
+
         holder.Meter.setText(String.valueOf(history.getMeter()));
         holder.DateCreated.setText(strTimeCreated);
         holder.Classify.setText(String.valueOf(history.getScoreClassfification()));
@@ -178,9 +201,9 @@ public class HistoryAdapter2 extends RecyclerView.Adapter<HistoryAdapter2.ViewHo
         holder.koma.setVisibility(View.VISIBLE);
         holder.kurung.setVisibility(View.VISIBLE);
         holder.kurung2.setVisibility(View.VISIBLE);
-        holder.DateCreated.setGravity(Gravity.RIGHT);
+        holder.DateCreated.setGravity(Gravity.LEFT);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 90, 16, 0);
+        params.setMargins(30, 90, 0, 0);
         holder.DateCreated.setLayoutParams(params);
     }
 

@@ -141,7 +141,12 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             previewImage.setImageBitmap(bitmap);
         }
         if (MConnection.isConnect(getApplicationContext())){
-            uploadImage(imageFilePath);
+            //20210714
+            //add db room id
+            List<Integer> selectIdFromHistory = db.gHistorySpinnerDao().selectIdfromRoomHistoryCount();
+            int countHistory = selectIdFromHistory.size();
+            int countAdd = countHistory+1;
+            uploadImage(imageFilePath, countAdd);
         }else {
 
             Date date = new Date();
@@ -261,7 +266,11 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         Bitmap rotateBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
         previewImage.setImageBitmap(rotateBitmap);
-        uploadImage(imageFilePath);
+        List<Integer> selectIdFromHistory = db.gHistorySpinnerDao().selectIdfromRoomHistoryCount();
+        int countHistory = selectIdFromHistory.size();
+        int countAdd = countHistory+1;
+        //20210706
+        uploadImage(imageFilePath, countAdd);
 
     }
     private Bitmap setReducedImageSize() {
@@ -300,7 +309,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         return compressedOri;
     }
 
-    private void uploadImage(String imageFilePath) {
+    private void uploadImage(String imageFilePath, int countAdd) {
         String jwtKey =  new SessionPrefference(getApplicationContext()).getKeyApiJwt();
         Log.d("Body jwtKeys", "String jwtKey : " +jwtKey);
         String jwt = "";
@@ -451,8 +460,10 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                         double longitudeVal,latitudeVal;
                         longitudeVal = locationTracking.getLongitude();
                         latitudeVal = locationTracking.getLatitude();
-                        MHistory MHistory = new MHistory(maxIdHistory, sessionPrefference.getUserId(), meter, scoreId, scoreClass,longitudeVal, latitudeVal, date);
-                        databaseReferenceHistory.child(maxIdHistoryi).setValue(MHistory);
+                        MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter, scoreId, scoreClass,longitudeVal, latitudeVal, date);
+                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf(countAdd)).setValue(MHistory);
+
+//                        databaseReferenceHistory.child(maxIdHistoryi).setValue(MHistory);
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {

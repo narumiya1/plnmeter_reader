@@ -61,6 +61,8 @@ public interface GhistorySpinner {
 
     @Query("SELECT * FROM tbHistory ORDER BY status ASC ")
     GHistory[] readDataHistory();
+    @Query("SELECT * FROM tbHistory WHERE status = 3 ORDER BY status ASC")
+    GHistory[] readDataHistory3();
 //    @Query("SELECT id_user,score_classfy,id  FROM tbHistory WHERE id_user =18")
 //    Ghistoryi[] readDataHistoryn();
     @Query("SELECT * FROM tbImageUploaded WHERE status = 0")
@@ -84,8 +86,11 @@ public interface GhistorySpinner {
 
     @Query("SELECT * FROM tbHistory WHERE status in (1,2)")
     List<GHistory> selectHistoryfromRoom();
-
+    @Query("SELECT * FROM tbHistory WHERE status in (3)")
+    List<GHistory> selectHistoryfromRoom3();
     @Query("SELECT imagez FROM tbHistory WHERE status in (1,2)")
+    String selectHistoryfromRoomImage();
+    @Query("SELECT imagez FROM tbHistory")
      List<String> selectImageStatusfromRoomHistory();
 //    @Query("SELECT id FROM tbHistory WHERE status =1")
     @Query("SELECT id FROM tbHistory WHERE status in (1,2)")
@@ -129,6 +134,8 @@ public interface GhistorySpinner {
     List<String> getImageStorage();
     @Query("SELECT imagez FROM tbHistory WHERE meter = :meter")
     String getImageHistory(String meter);
+    @Query("SELECT imagez FROM tbHistory WHERE id = :id")
+    String getImageHistoryId(int id);
     @Delete
     void delete(GHistory model);
     @Query("DELETE FROM tbHistory WHERE imagez= :imagezNull")
