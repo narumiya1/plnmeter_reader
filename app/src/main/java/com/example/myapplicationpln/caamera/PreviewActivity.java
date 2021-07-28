@@ -103,7 +103,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         DatabaseReference mDatabaseRef = database.getReference();
         DatabaseReference mDatabaseRefs = database.getReference();
         mDatabaseRefApiMeter = database.getReference();
-        databaseReferenceHistory = FirebaseDatabase.getInstance().getReference().child("History");
+        databaseReferenceHistory = FirebaseDatabase.getInstance().getReference().child("HistoryMeter");
         DatabaseReference referenceHistory = FirebaseDatabase.getInstance().getReference();
         databaseReferenceHistory.addValueEventListener(new ValueEventListener() {
             @Override
@@ -462,7 +462,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                         longitudeVal = locationTracking.getLongitude();
                         latitudeVal = locationTracking.getLatitude();
                         MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter, scoreId, scoreClass,longitudeVal, latitudeVal, date);
-                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf(countAdd)).setValue(MHistory);
+//                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf(countAdd)).setValue(MHistory);
+                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("ElectricCity")).child(sessionPrefference.getIdPelanggan()).child(String.valueOf(countAdd)).setValue(MHistory);
 
 //                        databaseReferenceHistory.child(maxIdHistoryi).setValue(MHistory);
                         new Handler().postDelayed(new Runnable() {

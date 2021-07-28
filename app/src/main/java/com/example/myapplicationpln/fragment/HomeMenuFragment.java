@@ -167,7 +167,7 @@ public class HomeMenuFragment extends Fragment {
                 .addMigrations(AppDatabase.MIGRATION_1_7)
                 .build();
         ceklocation();
-        databaseReferenceHistory = FirebaseDatabase.getInstance().getReference().child("History");
+        databaseReferenceHistory = FirebaseDatabase.getInstance().getReference().child("HistoryMeter");
         DatabaseReference referenceHistory = FirebaseDatabase.getInstance().getReference();
 
         if (MConnection.isConnect(getContext())){
@@ -784,6 +784,7 @@ public class HomeMenuFragment extends Fragment {
     //perhatikan parameter variable converetdImage dan grain_slected sepertinya tidak terpakai malah menggunakan global variable
     private void uploadImage(Bitmap converetdImage, String grain_slected, int countAdd) {
         String jwtKey =  new SessionPrefference(getContext()).getKeyApiJwt();
+        sessionPrefference.setIdPelanggan(grain_slected);
         Log.d("Body jwtKeys", "String jwtKey : " +jwtKey);
         if (jwtKey.equals(jwt)){
             sessionPrefference.setIsLogin(false);
@@ -928,7 +929,7 @@ public class HomeMenuFragment extends Fragment {
                         longitudeVal = locationTracking.getLongitude();
                         latitudeVal = locationTracking.getLatitude();
                         MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter, scoreClass, scoreId,longitudeVal, latitudeVal, date);
-                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf(countAdd)).setValue(MHistory);
+                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("ElectricCity")).child(grain_slected).child(String.valueOf(countAdd)).setValue(MHistory);
 
 //                        databaseReferenceHistory.child(String.valueOf(countAdd)).setValue(MHistory);
                         new Handler().postDelayed(new Runnable() {
@@ -1128,7 +1129,8 @@ public class HomeMenuFragment extends Fragment {
                         longitudeVal = locationTracking.getLongitude();
                         latitudeVal = locationTracking.getLatitude();
                         MHistory history = new MHistory(idRoomHist,sessionPrefference.getUserId(),meter, scoreClass,scoreId,longitudeVal, latitudeVal,dateFrRoom);
-                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf(idRoomHist)).setValue(history);
+//                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf(idRoomHist)).setValue(history);
+                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("ElectricCity")).child(grain_slected).child(String.valueOf(idRoomHist)).setValue(history);
 
 //                        databaseReferenceHistory.child(String.valueOf(idRoomHist)).setValue(history);
 

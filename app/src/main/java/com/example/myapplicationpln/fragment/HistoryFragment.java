@@ -129,7 +129,8 @@ public class HistoryFragment extends Fragment {
         Log.d("get userzId Historiy", " : " + userId);
 
         mDatabase = FirebaseDatabase.getInstance();
-        mUserDatabase = mDatabase.getReference().child("History").child(session.getPhone()).orderByChild("createdAt");
+//        mUserDatabase = mDatabase.getReference().child("History").child(session.getPhone()).orderByChild("createdAt");
+        mUserDatabase = mDatabase.getReference().child("HistoryMeter").child(session.getPhone()).child(String.valueOf("ElectricCity")).child(session.getIdPelanggan()).orderByChild("createdAt");
         final DatabaseReference nm = FirebaseDatabase.getInstance().getReference("data");
         mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -332,6 +333,7 @@ public class HistoryFragment extends Fragment {
         return view;
     }
 
+    /*
     @Override
     public void onStart() {
         super.onStart();
@@ -363,6 +365,7 @@ public class HistoryFragment extends Fragment {
         });
     }
 
+     */
     private void showChart(ArrayList<Entry> datavals) {
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.removeAllLimitLines();
