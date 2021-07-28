@@ -130,7 +130,7 @@ public class HistoryFragment extends Fragment {
 
         mDatabase = FirebaseDatabase.getInstance();
 //        mUserDatabase = mDatabase.getReference().child("History").child(session.getPhone()).orderByChild("createdAt");
-        mUserDatabase = mDatabase.getReference().child("HistoryMeter").child(session.getPhone()).child(String.valueOf("ElectricCity")).child(session.getIdPelanggan()).orderByChild("createdAt");
+        mUserDatabase = mDatabase.getReference().child("HistoryMeter").child(session.getPhone()).child(String.valueOf("Electricity")).child(session.getIdPelanggan()).orderByChild("createdAt");
         final DatabaseReference nm = FirebaseDatabase.getInstance().getReference("data");
         mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

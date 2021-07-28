@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -147,7 +148,7 @@ public class HomeMenuFragment extends Fragment {
     //20210706
 //    String urlDomain = "http://110.50.85.28:8200";
     String urlDomain = "http://110.50.86.154:8200";
-
+    ProgressDialog progress;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -181,7 +182,7 @@ public class HomeMenuFragment extends Fragment {
                 //int idRoomHist = listHistory.get(i).getId();// get id file
                 GHistory history = listHistory.get(i);
                 //uploadImageFromRoom(fileImage, idRoomHist);
-                uploadImageFromRoom(history);
+                uploadImageFromRoom(sessionPrefference.getIdPelanggan(),history);
             }
 
             // 20210707 get last meter api value
@@ -455,8 +456,19 @@ public class HomeMenuFragment extends Fragment {
                 }
             });
         }
+        progress = new ProgressDialog(getActivity());
 
         return view;
+    }
+
+    private void showProgress() {
+        progress.setTitle("Loading");
+        progress.setMessage("Wait while loading...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();
+    }
+    private void closeProgress() {
+        progress.dismiss();
     }
 
     private void setMessage01(MeterApi meterApi) {
@@ -813,6 +825,7 @@ public class HomeMenuFragment extends Fragment {
         }
         int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
         try {
+            showProgress();
             Log.d("Upload jwtKeys respons", "String respons jwtKey : " +jwtKey);
 
             HttpLoggingInterceptor loggingInterceptor2 = new HttpLoggingInterceptor();
@@ -929,7 +942,7 @@ public class HomeMenuFragment extends Fragment {
                         longitudeVal = locationTracking.getLongitude();
                         latitudeVal = locationTracking.getLatitude();
                         MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter, scoreClass, scoreId,longitudeVal, latitudeVal, date);
-                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("ElectricCity")).child(grain_slected).child(String.valueOf(countAdd)).setValue(MHistory);
+                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(grain_slected).child(String.valueOf(countAdd)).setValue(MHistory);
 
 //                        databaseReferenceHistory.child(String.valueOf(countAdd)).setValue(MHistory);
                         new Handler().postDelayed(new Runnable() {
@@ -943,7 +956,7 @@ public class HomeMenuFragment extends Fragment {
                         GHistory gHistory = new GHistory(countAdd,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,mImageFileLocation,3);
                         insertDataHistory(gHistory);
 
-
+                        closeProgress();
 
                     } else {
 //                        Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
@@ -958,6 +971,7 @@ public class HomeMenuFragment extends Fragment {
                 @Override
                 public void onFailure(Call call, Throwable t) {
 //                    Toast.makeText(getActivity(), " ", Toast.LENGTH_LONG).show();
+                    closeProgress();
                     Date date = new Date();
                     SimpleDateFormat sfd = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy",
                             Locale.getDefault());
@@ -983,11 +997,12 @@ public class HomeMenuFragment extends Fragment {
             });
 
         } catch (Exception e) {
+            closeProgress();
             String errMessage = e.getMessage();
         }
 
     }
-    private void uploadImageFromRoom(GHistory history) {  //String fileImage, int idRoomHist) {
+    private void uploadImageFromRoom(String idPelanggan, GHistory history) {  //String fileImage, int idRoomHist) {
         String fileImage = history.getImagez();
         int idRoomHist = history.getId();
         Date dateFrRoom = history.getDate_time();
@@ -1131,7 +1146,7 @@ public class HomeMenuFragment extends Fragment {
                         latitudeVal = locationTracking.getLatitude();
                         MHistory history = new MHistory(idRoomHist,sessionPrefference.getUserId(),meter, scoreClass,scoreId,longitudeVal, latitudeVal,dateFrRoom);
 //                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf(idRoomHist)).setValue(history);
-                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("ElectricCity")).child(grain_slected).child(String.valueOf(idRoomHist)).setValue(history);
+                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(String.valueOf(idPelanggan)).child(String.valueOf(idRoomHist)).setValue(history);
 
 //                        databaseReferenceHistory.child(String.valueOf(idRoomHist)).setValue(history);
 
