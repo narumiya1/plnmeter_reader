@@ -497,7 +497,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
-//                    Toast.makeText(getApplicationContext(), "TRY AGAINSZCH", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Server Error", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(PreviewActivity.this, MainActivity.class);
                     startActivity(intent);
                     /*

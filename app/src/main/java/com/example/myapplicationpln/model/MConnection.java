@@ -13,7 +13,7 @@ public class MConnection {
             NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
             if (activeNetworkInfo != null) {
                 if (activeNetworkInfo.isConnected() || activeNetworkInfo.isConnectedOrConnecting()) {
-                    android.widget.Toast.makeText(context, "response.message()", Toast.LENGTH_LONG).show();
+//                    android.widget.Toast.makeText(context, "response.message()", Toast.LENGTH_LONG).show();
                     return true;
                 } else {
                     return false;

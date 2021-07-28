@@ -976,6 +976,7 @@ public class HomeMenuFragment extends Fragment {
                     GHistory.setImagez(mImageFileLocation);
                      */
 //                    Toast.makeText(getActivity(), "server error, db inserted to local db", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Server Error", Toast.LENGTH_LONG).show();
                     insertDataHistory2(GHistory);
 
                 }
@@ -1148,6 +1149,7 @@ public class HomeMenuFragment extends Fragment {
                 @Override
                 public void onFailure(Call call, Throwable t) {
 //                    Toast.makeText(getActivity(), "TRY AGAINSZCH", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Server Error", Toast.LENGTH_LONG).show();
                 }
             });
 
