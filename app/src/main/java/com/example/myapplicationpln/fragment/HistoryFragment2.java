@@ -97,6 +97,7 @@ public class HistoryFragment2 extends Fragment {
         //Mamasang adapter pada RecyclerView
         adapter= new HistoryAdapter2(listHistory, getActivity());
         mRecyclerview.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
         session = new SessionPrefference(getActivity());
         String idUserAddress = session.getUserAddressId();
         Log.d("get idUserAddress2 ", " : " + idUserAddress);
