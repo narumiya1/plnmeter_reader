@@ -35,16 +35,19 @@ public class HistoryAdapter2 extends RecyclerView.Adapter<HistoryAdapter2.ViewHo
     private AppDatabase appDatabase;
     private Context context;
 
-    public HistoryAdapter2(ArrayList<GHistory> GHistory, Context context) {
+    public HistoryAdapter2(ArrayList<GHistory> gHistories, Context context) {
 
         //Inisialisasi data yang akan digunakan
-        this.listHistory = GHistory;
+        this.listHistory = gHistories;
         this.context = context;
+        /*
         appDatabase = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
                 .addMigrations(AppDatabase.MIGRATION_1_7)
                 .build();
+
+         */
     }
 
 
@@ -147,7 +150,7 @@ public class HistoryAdapter2 extends RecyclerView.Adapter<HistoryAdapter2.ViewHo
         holder.Classify.setVisibility(View.GONE);
         holder.Identify.setVisibility(View.GONE);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(30, 40, 16, 0);
+        params.setMargins(30, 90, 16, 0);
         holder.DateCreated.setLayoutParams(params);
     }
     private void showStatus2Visible(ViewHolder holder, String strTimeCreated) {
@@ -188,13 +191,16 @@ public class HistoryAdapter2 extends RecyclerView.Adapter<HistoryAdapter2.ViewHo
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmap = BitmapFactory.decodeFile(mImageFileLocation,
                 bitmapOptions);
-        bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+//        bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
         holder.imgv.setImageBitmap(BitmapFactory.decodeFile(mImageFileLocation));
-
-        holder.Meter.setText(String.valueOf(history.getMeter()));
+        double meter = history.getMeter();
+        holder.Meter.setVisibility(View.VISIBLE);
+        holder.Meter.setText(String.valueOf(meter));
         holder.DateCreated.setText(strTimeCreated);
         holder.Classify.setText(String.valueOf(history.getScoreClassfification()));
+        holder.Classify.setVisibility(View.VISIBLE);
         holder.Identify.setText(String.valueOf(history.getScoreIdentification()));
+        holder.Identify.setVisibility(View.VISIBLE);
         holder.done.setVisibility(View.GONE);
         holder.pending.setVisibility(View.GONE);
         holder.doneAll.setVisibility(View.VISIBLE);
