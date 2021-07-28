@@ -85,7 +85,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
     DatabaseReference mDatabaseRefApiMeter;
     long maxIdHistory;
     private AppDatabase db;
-    String urlDomain = "http://110.50.85.28:8200";
+//    String urlDomain = "http://110.50.85.28:8200";
+    String urlDomain = "http://110.50.86.154:8200";
     private ArrayList<String> permissionsToRequest;
     private ArrayList<String> permissionsRejected = new ArrayList();
     private ArrayList<String> permissions = new ArrayList();
@@ -495,8 +496,9 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), "TRY AGAINSZCH", Toast.LENGTH_LONG).show();
-
+//                    Toast.makeText(getApplicationContext(), "TRY AGAINSZCH", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(PreviewActivity.this, MainActivity.class);
+                    startActivity(intent);
                     /*
                     String message = "";
                     String jwtNull = "";

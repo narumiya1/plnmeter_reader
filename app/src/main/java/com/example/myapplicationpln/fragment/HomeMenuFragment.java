@@ -145,7 +145,8 @@ public class HomeMenuFragment extends Fragment {
     private Dialog dialog;
     ImageButton add_photo;
     //20210706
-    String urlDomain = "http://110.50.85.28:8200";
+//    String urlDomain = "http://110.50.85.28:8200";
+    String urlDomain = "http://110.50.86.154:8200";
 
 
     @Override
@@ -1144,7 +1145,7 @@ public class HomeMenuFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
-                    Toast.makeText(getActivity(), "TRY AGAINSZCH", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getActivity(), "TRY AGAINSZCH", Toast.LENGTH_LONG).show();
                 }
             });
 
