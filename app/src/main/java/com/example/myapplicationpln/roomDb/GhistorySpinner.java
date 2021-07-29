@@ -35,6 +35,9 @@ public interface GhistorySpinner {
     long insertHistoryiData(GHistory GHistory);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertHistoryiDataMeter(GhistoryMeter ghistoryMeter);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertImageTemp(GimageUploaded gimageUploaded);
 
     @Query("SELECT value_int FROM tbIndeks WHERE type=1")
@@ -86,8 +89,14 @@ public interface GhistorySpinner {
 
     @Query("SELECT * FROM tbHistory WHERE status in (1,2)")
     List<GHistory> selectHistoryfromRoom();
+    @Query("SELECT * FROM tblHistoryMeter WHERE status in (1,2)")
+    List<GhistoryMeter> selectHistoryfromRoomMeter12();
     @Query("SELECT * FROM tbHistory WHERE status in (3)")
     List<GHistory> selectHistoryfromRoom3();
+
+    @Query("SELECT * FROM tblHistoryMeter WHERE status in (3)")
+    List<GhistoryMeter> selectHistoryfromRoomMeter();
+
     @Query("SELECT imagez FROM tbHistory WHERE status in (1,2)")
     String selectHistoryfromRoomImage();
     @Query("SELECT imagez FROM tbHistory")
@@ -126,7 +135,8 @@ public interface GhistorySpinner {
     int updateGrainSelectedGspinner(GIndeksSpinner gindeks);
     @Update
     int updateHistoryFroomRoom(GHistory gindeks);
-
+    @Update
+    int updateHistoryFroomRoomMeter(GhistoryMeter gindeks);
     @Query("UPDATE tbSpinner SET id_pelanggan = :id_pelanggan, address =:address WHERE user_address_id = :id")
     int updateIndeks(int id, String address, int id_pelanggan);
 

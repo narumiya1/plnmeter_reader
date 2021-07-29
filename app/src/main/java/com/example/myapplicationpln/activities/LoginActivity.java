@@ -78,6 +78,8 @@ public class LoginActivity extends AppCompatActivity {
     String phoneNumb;
     final Handler handler = new Handler(Looper.getMainLooper());
     private String mImageFileLocation = "";
+    String urlDomain = "http://110.50.86.154:8200";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
     private void loginJwtApi(String phone, String pw, String id_user) {
-        String urlDomain = "http://110.50.85.28:8200";
+//        String urlDomain = "http://110.50.85.28:8200";
         JavaNetCookieJar jncj = new JavaNetCookieJar(CookieHandler.getDefault());
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

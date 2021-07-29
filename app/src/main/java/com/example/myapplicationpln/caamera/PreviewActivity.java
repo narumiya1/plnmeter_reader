@@ -37,6 +37,7 @@ import com.example.myapplicationpln.network_retrofit.PLNData;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GHistory;
+import com.example.myapplicationpln.roomDb.GhistoryMeter;
 import com.example.myapplicationpln.roomDb.Gimage;
 import com.example.myapplicationpln.roomDb.GimageUploaded;
 import com.example.myapplicationpln.roomDb.GMeterApi;
@@ -157,6 +158,13 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             String dateTime = sfd.format(date);
             //2021 07 07 add id +1
             GHistory gHistoryItem = new GHistory(sessionPrefference.getUserId(),0.0, 0.0, 0.0,date,text,imageFilePath,1);
+            String idpel = sessionPrefference.getIdPelanggan();
+            long valueIdPelanggan = Long.parseLong( idpel );
+            double longitudeValue,latitudeValue;
+            longitudeValue = locationTracking.getLongitude();
+            latitudeValue = locationTracking.getLatitude();
+            GhistoryMeter ghistoryMeter = new GhistoryMeter(sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,0,0,0.0, 0.0,longitudeValue, latitudeValue,date, text, imageFilePath, 1);
+            insertDataHistoryMeter(ghistoryMeter);
 
             /*
 
@@ -463,7 +471,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                         latitudeVal = locationTracking.getLatitude();
                         MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter, scoreId, scoreClass,longitudeVal, latitudeVal, date);
 //                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf(countAdd)).setValue(MHistory);
-                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("ElectricCity")).child(sessionPrefference.getIdPelanggan()).child(String.valueOf(countAdd)).setValue(MHistory);
+                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(sessionPrefference.getIdPelanggan()).child(String.valueOf(countAdd)).setValue(MHistory);
 
 //                        databaseReferenceHistory.child(maxIdHistoryi).setValue(MHistory);
                         new Handler().postDelayed(new Runnable() {
@@ -482,7 +490,12 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                         GHistory.setScore_identfy(idtfy);
 
                          */
+                        String idpel = sessionPrefference.getIdPelanggan();
+                        long valueIdPelanggan = Long.parseLong( idpel );
                         insertDataHistory(itesm);
+
+                        GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,0,scoreClass, scoreId,longitude, latitude,date, text, imageFilePath, 3);
+                        insertDataHistoryMeter(ghistoryMeter);
                     } else {
                         Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_LONG).show();
                         String jwtNull = "";
@@ -516,6 +529,24 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             String errMessage = e.getMessage();
         }
 
+    }
+
+    private void insertDataHistoryMeter(GhistoryMeter ghistoryMeter) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertHistoryiDataMeter(ghistoryMeter);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " +status);
+            }
+        }.execute();
     }
 
     private void insertDataHistory(GHistory GHistory) {

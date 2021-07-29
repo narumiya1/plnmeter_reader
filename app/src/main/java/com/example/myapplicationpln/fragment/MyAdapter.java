@@ -27,6 +27,7 @@ import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.model.MHistory;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GHistory;
+import com.example.myapplicationpln.roomDb.GhistoryMeter;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.squareup.picasso.Picasso;
 
@@ -39,6 +40,7 @@ import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private List<MHistory> listData;
     private ArrayList<GHistory> listDataHistory;
+    private ArrayList<GhistoryMeter> listDataHistoryMeter;
     private String imageHistrory;
     private AppDatabase appDatabase;
     private Context context;
@@ -46,11 +48,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     Dialog dialog;
     Button button ;
 
-    public MyAdapter(List<MHistory> listData, Context context, String imageHistrory, ArrayList<GHistory> gHistories) {
+    public MyAdapter(List<MHistory> listData, Context context, String imageHistrory, ArrayList<GhistoryMeter> gHistories) {
         this.listData = listData;
         this.context = context;
         this.imageHistrory = imageHistrory;
-        this.listDataHistory = gHistories;
+        this.listDataHistoryMeter = gHistories;
         /*
         appDatabase = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()

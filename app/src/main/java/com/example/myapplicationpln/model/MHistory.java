@@ -15,6 +15,8 @@ public class MHistory implements Serializable {
     private long id;
     @SerializedName("id_user")
     private String id_user;
+    @SerializedName("input_kwh")
+    private long input_kwh;
     @SerializedName("meter")
     private double meter;
     @SerializedName("scoreClassification")
@@ -67,6 +69,14 @@ public class MHistory implements Serializable {
 
     public void setId_user(String id_user) {
         this.id_user = id_user;
+    }
+
+    public long getInput_kwh() {
+        return input_kwh;
+    }
+
+    public void setInput_kwh(long input_kwh) {
+        this.input_kwh = input_kwh;
     }
 
     public double getMeter() {

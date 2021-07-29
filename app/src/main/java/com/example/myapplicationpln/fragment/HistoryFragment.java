@@ -27,6 +27,7 @@ import com.example.myapplicationpln.model.PointValue;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GHistory;
+import com.example.myapplicationpln.roomDb.GhistoryMeter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.github.mikephil.charting.charts.LineChart;
@@ -78,6 +79,7 @@ public class HistoryFragment extends Fragment {
     LineGraphSeries series;
     private List<MHistory> listData;
     private ArrayList<GHistory> listHistLocal;
+    private ArrayList<GhistoryMeter> listHistMeterLocal;
     private MyAdapter adapter;
     private LineChart mChart;
     private AppDatabase db;
@@ -105,6 +107,7 @@ public class HistoryFragment extends Fragment {
         graphView.addSeries(series);
         listData = new ArrayList<>();
         listHistLocal = new ArrayList<>();
+        listHistMeterLocal = new ArrayList<>();
         mChart = view.findViewById(R.id.line_chartFbase);
         mChart.setTouchEnabled(true);
         mChart.setPinchZoom(true);
@@ -130,6 +133,10 @@ public class HistoryFragment extends Fragment {
 
         mDatabase = FirebaseDatabase.getInstance();
 //        mUserDatabase = mDatabase.getReference().child("History").child(session.getPhone()).orderByChild("createdAt");
+        //20210729
+        String selectedIdPelanggan = "1111"; //ambil dengan cara setperti pencet tombol
+        String selectedUserID = "";
+        //mUserDatabase = mDatabase.getReference().child("HistoryMeter").child(session.getPhone()).child(String.valueOf("Electricity")).child(session.getIdPelanggan()).orderByChild("createdAt");
         mUserDatabase = mDatabase.getReference().child("HistoryMeter").child(session.getPhone()).child(String.valueOf("Electricity")).child(session.getIdPelanggan()).orderByChild("createdAt");
         final DatabaseReference nm = FirebaseDatabase.getInstance().getReference("data");
         mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -165,8 +172,10 @@ public class HistoryFragment extends Fragment {
                     //iterasi list firebase --> listData
                     int countHist = listData.size();
                     List<GHistory> listHistoryCount = db.gHistorySpinnerDao().selectHistoryfromRoom3();
+                    List<GhistoryMeter> listHistoryMeterCount = db.gHistorySpinnerDao().selectHistoryfromRoomMeter();
 
                     String fileNameLocal = "";
+                    String fileNameLocalMeter = "";
                     for (int i = 0; i < countHist; i++) {
                         listHistJoin = new ArrayList<>();
                         //cari di room database lokasi file
@@ -174,15 +183,18 @@ public class HistoryFragment extends Fragment {
                         double meter = listData.get(i).getMeter();
                         //find di local db
                         int countHistLocal = listHistLocal.size();
-                        for (int j = 0; j < listHistoryCount.size(); j++) {
+                        for (int j = 0; j < listHistoryMeterCount.size(); j++) {
                             GHistory history = listHistoryCount.get(i);
+                            GhistoryMeter ghistoryMeter = listHistoryMeterCount.get(i);
 //                            GHistory histLocal = listHistLocal.get(j);
                             int idHistLocal = history.getId();
+                            int idHistLocalMeter = ghistoryMeter.getId();
 //                            String mImageFileLocation = db.gHistorySpinnerDao().getImageHistory(String.valueOf(history.getMeter()));
                             if (idHist == idHistLocal) {
                                 //amvil id tersebut
                                 //ambil lokasi file tersebut
                                 fileNameLocal = history.getImagez();
+                                fileNameLocalMeter = ghistoryMeter.getImagez();
                                 Log.d("", " " + fileNameLocal);
 //                                showData(listData);
 
@@ -191,7 +203,7 @@ public class HistoryFragment extends Fragment {
                             }
                         }
                     }
-                    adapter = new MyAdapter(listData, getActivity(), fileNameLocal, listHistLocal);
+                    adapter = new MyAdapter(listData, getActivity(), fileNameLocalMeter, listHistMeterLocal);
                     mRecyclerview.setAdapter(adapter);
 
                 }

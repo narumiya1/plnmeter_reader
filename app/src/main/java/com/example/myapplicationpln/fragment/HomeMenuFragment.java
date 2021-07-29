@@ -30,8 +30,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,6 +64,7 @@ import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GHistory;
 import com.example.myapplicationpln.roomDb.GIndeksSpinner;
+import com.example.myapplicationpln.roomDb.GhistoryMeter;
 import com.example.myapplicationpln.roomDb.Gimage;
 import com.example.myapplicationpln.roomDb.GimageUploaded;
 import com.example.myapplicationpln.roomDb.GMeterApi;
@@ -129,6 +132,9 @@ public class HomeMenuFragment extends Fragment {
     String valueSpinner;
     LocationTracking locationTracking;
     TextView hasilMeter, hasilScore, hasilIdentify;
+    TextView  tvInputKwh;
+    EditText etInputKwh;
+    LinearLayout linearLayoutKWH;
     DatabaseReference databaseReferenceHistory;
     DatabaseReference mDatabaseRefApiMeter;
 
@@ -145,6 +151,7 @@ public class HomeMenuFragment extends Fragment {
     private String mImageFileLocation = "";
     private Dialog dialog;
     ImageButton add_photo;
+    ImageButton check_spinner;
     //20210706
 //    String urlDomain = "http://110.50.85.28:8200";
     String urlDomain = "http://110.50.86.154:8200";
@@ -161,6 +168,9 @@ public class HomeMenuFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_menu, container, false);
         hasilMeter=view.findViewById(R.id.tv_meter);
+        linearLayoutKWH = view.findViewById(R.id.ll_angka_kwh);
+        etInputKwh = view.findViewById(R.id.et_input_kwh);
+        tvInputKwh = view.findViewById(R.id.tv_input_kwh);
         sessionPrefference = new SessionPrefference(getActivity());
         db = Room.databaseBuilder(getContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
@@ -174,15 +184,17 @@ public class HomeMenuFragment extends Fragment {
         if (MConnection.isConnect(getContext())){
             //20200706
             //menggunakan objek Ghistory untuk get table list
-            List<GHistory> listHistory = db.gHistorySpinnerDao().selectHistoryfromRoom();
+            List<GhistoryMeter> listHistory = db.gHistorySpinnerDao().selectHistoryfromRoomMeter12();
             //iterasi untuk membaca table tbHistory dengan status 1, 2
             for (int i = 0 ; i<listHistory.size(); i++){
                 //String fileImage = listHistory.get(i).getImagez(); // get image file
                 //20210702
                 //int idRoomHist = listHistory.get(i).getId();// get id file
-                GHistory history = listHistory.get(i);
+//                GHistory history = listHistory.get(i);
+                GhistoryMeter ghistoryMeter = listHistory.get(i);
                 //uploadImageFromRoom(fileImage, idRoomHist);
-                uploadImageFromRoom(sessionPrefference.getIdPelanggan(),history);
+                double meter = ghistoryMeter.getMeter();
+                uploadImageFromRoom(sessionPrefference.getIdPelanggan(),ghistoryMeter);
             }
 
             // 20210707 get last meter api value
@@ -230,6 +242,7 @@ public class HomeMenuFragment extends Fragment {
                 }
             });
         add_photo = view.findViewById(R.id.imageview_add);
+        check_spinner = view.findViewById(R.id.check_spinner);
         photoView=view.findViewById(R.id.photo_view);
         hasilScore = view.findViewById(R.id.tv_scoreClassify);
         hasilIdentify = view.findViewById(R.id.tv_scoreIdentify);
@@ -456,6 +469,12 @@ public class HomeMenuFragment extends Fragment {
                 }
             });
         }
+        check_spinner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MToastr.showToast(getActivity(),grain_slected);
+            }
+        });
         progress = new ProgressDialog(getActivity());
 
         return view;
@@ -741,6 +760,14 @@ public class HomeMenuFragment extends Fragment {
                         GHistory.setImagez(mImageFileLocation);
                         insertDataHistory2(GHistory);
 
+                        String idpel = sessionPrefference.getIdPelanggan();
+                        long valueIdPelanggan = Long.parseLong( idpel );
+                        double longitudeValue,latitudeValue;
+                        longitudeValue = locationTracking.getLongitude();
+                        latitudeValue = locationTracking.getLatitude();
+                        GhistoryMeter ghistoryMeter = new GhistoryMeter(sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,0,0,0.0, 0.0,longitudeValue, latitudeValue,date, text, mImageFileLocation, 1);
+                        insertDataHistoryMeter(ghistoryMeter);
+
 //                        MToastr.showToast(getActivity(), "NO INTERNET CONNECTION");
                         GimageUploaded gimageUploaded=new GimageUploaded();
                         gimageUploaded.setImage(mImageFileLocation);
@@ -794,8 +821,11 @@ public class HomeMenuFragment extends Fragment {
 
     //20210702
     //perhatikan parameter variable converetdImage dan grain_slected sepertinya tidak terpakai malah menggunakan global variable
+    //2021 07 29
+    //tambah parameter lastValue dari firebase/local setelah countAdd
     private void uploadImage(Bitmap converetdImage, String grain_slected, int countAdd) {
         String jwtKey =  new SessionPrefference(getContext()).getKeyApiJwt();
+
         sessionPrefference.setIdPelanggan(grain_slected);
         Log.d("Body jwtKeys", "String jwtKey : " +jwtKey);
         if (jwtKey.equals(jwt)){
@@ -955,8 +985,18 @@ public class HomeMenuFragment extends Fragment {
                         double langitudeValue = locationTracking.getLongitude();
                         GHistory gHistory = new GHistory(countAdd,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,mImageFileLocation,3);
                         insertDataHistory(gHistory);
+                        etInputKwh.setVisibility(View.VISIBLE);
+                        linearLayoutKWH.setVisibility(View.VISIBLE);
+                        tvInputKwh.setVisibility(View.VISIBLE);
+                        String getinputKwh = etInputKwh.getText().toString();
+                        String idpel = sessionPrefference.getIdPelanggan();
+                        long valueIdPelanggan = Long.parseLong( idpel );
+//                        long valueKwh = Long.parseLong( getinputKwh );
 
+                        GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,0,scoreClass, scoreId,longitude, latitude,date, text, mImageFileLocation, 3);
+                        insertDataHistoryMeter(ghistoryMeter);
                         closeProgress();
+                        tvInputKwh.setText("0");
 
                     } else {
 //                        Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
@@ -993,6 +1033,11 @@ public class HomeMenuFragment extends Fragment {
                     Toast.makeText(getActivity(), "Server Error", Toast.LENGTH_LONG).show();
                     insertDataHistory2(GHistory);
 
+                    String idpel = sessionPrefference.getIdPelanggan();
+                    long valueIdPelanggan = Long.parseLong( idpel );
+                    GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,0,0,0.0, 0.0,longitude, latitude,date, text, mImageFileLocation, 2);
+                    insertDataHistoryMeter(ghistoryMeter);
+
                 }
             });
 
@@ -1002,7 +1047,7 @@ public class HomeMenuFragment extends Fragment {
         }
 
     }
-    private void uploadImageFromRoom(String idPelanggan, GHistory history) {  //String fileImage, int idRoomHist) {
+    private void uploadImageFromRoom(String idPelanggan, GhistoryMeter history) {  //String fileImage, int idRoomHist) {
         String fileImage = history.getImagez();
         int idRoomHist = history.getId();
         Date dateFrRoom = history.getDate_time();
@@ -1141,6 +1186,12 @@ public class HomeMenuFragment extends Fragment {
                         double langitudeValue = locationTracking.getLongitude();
                         GHistory item = new GHistory(idRoomHist,sessionPrefference.getUserId(),meter,scoreClass,scoreId,longitudeValue,langitudeValue,dateFrRoom,text,fileImage,3);
                         updateHistoryFroomRoom(item);
+                        String idpel = sessionPrefference.getIdPelanggan();
+                        long valueIdPelanggan = Long.parseLong( idpel );
+                        String phone = sessionPrefference.getPhone();
+                        Integer number = Integer.valueOf(idRoomHist);
+                        GhistoryMeter ghistoryMeter = new GhistoryMeter(number,sessionPrefference.getUserId(),phone,valueIdPelanggan,meter, 0,scoreClass,scoreId,longitudeValue, langitudeValue,dateFrRoom,text,fileImage,3 );
+                        updateHistoryFroomRoomMeter(ghistoryMeter);
                         double longitudeVal,latitudeVal;
                         longitudeVal = locationTracking.getLongitude();
                         latitudeVal = locationTracking.getLatitude();
@@ -1178,6 +1229,25 @@ public class HomeMenuFragment extends Fragment {
             @Override
             protected Long doInBackground(Void... voids) {
                 long status = db.gHistorySpinnerDao().insertHistoryiData(GHistory);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " +status);
+            }
+        }.execute();
+
+    }
+
+    private void insertDataHistoryMeter(GhistoryMeter ghistoryMeter) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().insertHistoryiDataMeter(ghistoryMeter);
                 return status;
             }
 
@@ -1357,6 +1427,25 @@ public class HomeMenuFragment extends Fragment {
             }
         }.execute();
     }
+
+    private void updateHistoryFroomRoomMeter(GhistoryMeter item) {
+        new AsyncTask<Void, Void, Long>() {
+            @Override
+            protected Long doInBackground(Void... voids) {
+                long status = db.gHistorySpinnerDao().updateHistoryFroomRoomMeter(item);
+                return status;
+            }
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            protected void onPostExecute(Long status) {
+//                Toast.makeText(getActivity().getApplicationContext(), "status row " + status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "history row added sucessfully" + status, Toast.LENGTH_SHORT).show();
+                Log.d("Upload history row added sucessfullys", "String status  : " + status);
+            }
+        }.execute();
+    }
+
     private void updateHistoryFroomRoom(GHistory item) {
         new AsyncTask<Void, Void, Long>() {
             @Override
