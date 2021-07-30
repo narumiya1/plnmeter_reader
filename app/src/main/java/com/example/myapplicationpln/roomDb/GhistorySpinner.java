@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -106,6 +105,8 @@ public interface GhistorySpinner {
     List<Integer> selectIdfromRoomHistory();
     @Query("SELECT id FROM tbHistory")
     List<Integer> selectIdfromRoomHistoryCount();
+    @Query("SELECT meter FROM tblHistoryMeter WHERE id = :selectIdFromHistory LIMIT 1 ")
+    Double selectRoomMeterLast(int selectIdFromHistory);
     @Query("SELECT * FROM tbUserData WHERE id_user = :nim LIMIT 1")
     GUserData selectDetailUserData(String nim);
 

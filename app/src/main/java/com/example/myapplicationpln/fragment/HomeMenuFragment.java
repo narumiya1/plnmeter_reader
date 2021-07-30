@@ -137,7 +137,7 @@ public class HomeMenuFragment extends Fragment {
     LinearLayout linearLayoutKWH;
     DatabaseReference databaseReferenceHistory;
     DatabaseReference mDatabaseRefApiMeter;
-
+    double selectLastMeterFromHistory;
     //20210702
     //di explore agar bisa ditaruh di local variable
     long maxIdHistoryGlobal;
@@ -739,7 +739,15 @@ public class HomeMenuFragment extends Fragment {
                         int countHistory = selectIdFromHistory.size();
                         int countAdd = countHistory+1;
                         //20210706
-                        uploadImage(converetdImage, grain_slected,countAdd );
+                        if (countHistory==0){
+                            uploadImage(converetdImage, grain_slected,countAdd, 0.0 );
+                        }else {
+                            selectLastMeterFromHistory = db.gHistorySpinnerDao().selectRoomMeterLast(countHistory);
+                            Log.d("Body uploadImage grain_slected", "grain_slected  : " + selectLastMeterFromHistory);
+                            Log.d("Body uploadImage grain_slected", "grain_slected  : " + selectIdFromHistory);
+                            uploadImage(converetdImage, grain_slected,countAdd, selectLastMeterFromHistory );
+
+                        }
                         Log.d("Body uploadImage grain_slected", "grain_slected  : " + grain_slected);
                     }else {
                         // insert image to Tb image room
@@ -823,7 +831,7 @@ public class HomeMenuFragment extends Fragment {
     //perhatikan parameter variable converetdImage dan grain_slected sepertinya tidak terpakai malah menggunakan global variable
     //2021 07 29
     //tambah parameter lastValue dari firebase/local setelah countAdd
-    private void uploadImage(Bitmap converetdImage, String grain_slected, int countAdd) {
+    private void uploadImage(Bitmap converetdImage, String grain_slected, int countAdd, double selectLastMeterFromHistory) {
         String jwtKey =  new SessionPrefference(getContext()).getKeyApiJwt();
 
         sessionPrefference.setIdPelanggan(grain_slected);
@@ -926,7 +934,9 @@ public class HomeMenuFragment extends Fragment {
                         System.out.println(month.getDisplayName(TextStyle.FULL, Locale.US));
                         Log.d("Upload day createdAt", "createdAt  : " +day + " MONTH " +month +" textDate" +text);
 
+                        double lastValue = selectLastMeterFromHistory;
                         double meter = plnData.getMeterValue();
+                        double selisih =   lastValue - meter ;
                         double scoreId = plnData.getScoreIdentification();
                         double scoreClass = plnData.getScoreClassification();
                         mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("meter_value").setValue(String.valueOf(meter));
@@ -967,6 +977,7 @@ public class HomeMenuFragment extends Fragment {
 
                         }
 
+                        Log.d("selisih"," "+selisih);
 
                         double longitudeVal,latitudeVal;
                         longitudeVal = locationTracking.getLongitude();
@@ -985,18 +996,27 @@ public class HomeMenuFragment extends Fragment {
                         double langitudeValue = locationTracking.getLongitude();
                         GHistory gHistory = new GHistory(countAdd,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,mImageFileLocation,3);
                         insertDataHistory(gHistory);
-                        etInputKwh.setVisibility(View.VISIBLE);
-                        linearLayoutKWH.setVisibility(View.VISIBLE);
-                        tvInputKwh.setVisibility(View.VISIBLE);
+                        if (selisih <= 0){
+                            double selisiNegatv = selisih*-1 ;
+                            etInputKwh.setVisibility(View.GONE);
+                            linearLayoutKWH.setVisibility(View.GONE);
+                            tvInputKwh.setVisibility(View.GONE);
+                        }else {
+                            etInputKwh.setVisibility(View.VISIBLE);
+                            linearLayoutKWH.setVisibility(View.VISIBLE);
+                            tvInputKwh.setVisibility(View.VISIBLE);
+                            tvInputKwh.setText(String.valueOf(selisih));
+
+                        }
+
                         String getinputKwh = etInputKwh.getText().toString();
                         String idpel = sessionPrefference.getIdPelanggan();
                         long valueIdPelanggan = Long.parseLong( idpel );
 //                        long valueKwh = Long.parseLong( getinputKwh );
 
-                        GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,0,scoreClass, scoreId,longitude, latitude,date, text, mImageFileLocation, 3);
+                        GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,selisih,scoreClass, scoreId,longitude, latitude,date, text, mImageFileLocation, 3);
                         insertDataHistoryMeter(ghistoryMeter);
                         closeProgress();
-                        tvInputKwh.setText("0");
 
                     } else {
 //                        Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
@@ -1352,7 +1372,10 @@ public class HomeMenuFragment extends Fragment {
         List<Integer> selectIdFromHistory = db.gHistorySpinnerDao().selectIdfromRoomHistoryCount();
         int countHistory = selectIdFromHistory.size();
         int countAdd = countHistory+1;
-        uploadImage(rotateBitmap, grain_slected, countAdd);
+        double selectLastMeterFromHistory = db.gHistorySpinnerDao().selectRoomMeterLast(countHistory);
+        Log.d("Body uploadImage grain_slected", "grain_slected  : " + selectLastMeterFromHistory);
+        Log.d("Body uploadImage grain_slected", "grain_slected  : " + selectIdFromHistory);
+        uploadImage(rotateBitmap, grain_slected, countAdd, selectLastMeterFromHistory);
         dialog.dismiss();
 
     }

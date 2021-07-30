@@ -22,7 +22,7 @@ public class GhistoryMeter {
     @ColumnInfo(name = "meter")
     private double meter;
     @ColumnInfo(name = "input_kwh")
-    private long input_kwh;
+    private double input_kwh;
     @ColumnInfo(name = "score_classfy")
     private double scoreClassfification;
     @ColumnInfo(name = "score_identfy")
@@ -42,7 +42,7 @@ public class GhistoryMeter {
     @ColumnInfo(name = "status")
     private int status;
 
-    public GhistoryMeter(int id, String id_user, String phone, long id_pelanggan, double meter, long input_kwh, double scoreClassfification, double scoreIdentification, double longitude, double latitude, Date date_time, String created_at, String imagez, int status) {
+    public GhistoryMeter(int id, String id_user, String phone, long id_pelanggan, double meter, double input_kwh, double scoreClassfification, double scoreIdentification, double longitude, double latitude, Date date_time, String created_at, String imagez, int status) {
         this.id = id;
         this.id_user = id_user;
         this.phone = phone;
@@ -115,11 +115,11 @@ public class GhistoryMeter {
         this.meter = meter;
     }
 
-    public long getInput_kwh() {
+    public double getInput_kwh() {
         return input_kwh;
     }
 
-    public void setInput_kwh(long input_kwh) {
+    public void setInput_kwh(double input_kwh) {
         this.input_kwh = input_kwh;
     }
 
