@@ -999,8 +999,10 @@ public class HomeMenuFragment extends Fragment {
                         if (selisih <= 0){
                             double selisiNegatv = selisih*-1 ;
                             etInputKwh.setVisibility(View.GONE);
-                            linearLayoutKWH.setVisibility(View.GONE);
-                            tvInputKwh.setVisibility(View.GONE);
+                            linearLayoutKWH.setVisibility(View.VISIBLE);
+                            tvInputKwh.setVisibility(View.VISIBLE);
+
+                            tvInputKwh.setText(String.valueOf(selisiNegatv));
                         }else {
                             etInputKwh.setVisibility(View.VISIBLE);
                             linearLayoutKWH.setVisibility(View.VISIBLE);
