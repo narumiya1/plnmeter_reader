@@ -16,7 +16,7 @@ public class MHistory implements Serializable {
     @SerializedName("id_user")
     private String id_user;
     @SerializedName("input_kwh")
-    private long input_kwh;
+    private double input_kwh;
     @SerializedName("meter")
     private double meter;
     @SerializedName("scoreClassification")
@@ -38,12 +38,24 @@ public class MHistory implements Serializable {
     public MHistory() {
     }
 
-    //20210702
-    //ganti parameter type untuk created_at menjadi Date Time
-    public MHistory(long id, String id_user, double meter, double score_classfy, double score_identfy, double longitude,double latitude,Date created_at) {
+    public MHistory(long id, String id_user, double meter, double scoreClassification, double scoreIdentification, double longitude, double latitude, Date created_at) {
         this.id = id;
         this.id_user = id_user;
         this.meter = meter;
+        this.scoreClassification = scoreClassification;
+        this.scoreIdentification = scoreIdentification;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.created_at = created_at;
+    }
+
+    //20210702
+    //ganti parameter type untuk created_at menjadi Date Time
+    public MHistory(long id, String id_user, double meter, double input_kwh,double score_classfy, double score_identfy, double longitude,double latitude,Date created_at) {
+        this.id = id;
+        this.id_user = id_user;
+        this.meter = meter;
+        this.input_kwh = input_kwh;
         this.scoreClassification = score_classfy;
         this.scoreIdentification = score_identfy;
         this.longitude = longitude;
@@ -71,11 +83,11 @@ public class MHistory implements Serializable {
         this.id_user = id_user;
     }
 
-    public long getInput_kwh() {
+    public double getInput_kwh() {
         return input_kwh;
     }
 
-    public void setInput_kwh(long input_kwh) {
+    public void setInput_kwh(double input_kwh) {
         this.input_kwh = input_kwh;
     }
 

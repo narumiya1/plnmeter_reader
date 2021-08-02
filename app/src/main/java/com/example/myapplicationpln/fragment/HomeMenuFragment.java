@@ -90,6 +90,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.Instant;
@@ -979,11 +980,6 @@ public class HomeMenuFragment extends Fragment {
 
                         Log.d("selisih"," "+selisih);
 
-                        double longitudeVal,latitudeVal;
-                        longitudeVal = locationTracking.getLongitude();
-                        latitudeVal = locationTracking.getLatitude();
-                        MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter, scoreClass, scoreId,longitudeVal, latitudeVal, date);
-                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(grain_slected).child(String.valueOf(countAdd)).setValue(MHistory);
 
 //                        databaseReferenceHistory.child(String.valueOf(countAdd)).setValue(MHistory);
                         new Handler().postDelayed(new Runnable() {
@@ -992,33 +988,68 @@ public class HomeMenuFragment extends Fragment {
 
                             }
                         },1000);
-                        double longitudeValue = locationTracking.getLatitude();
-                        double langitudeValue = locationTracking.getLongitude();
-                        GHistory gHistory = new GHistory(countAdd,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,mImageFileLocation,3);
-                        insertDataHistory(gHistory);
+
                         if (selisih <= 0){
                             double selisiNegatv = selisih*-1 ;
                             etInputKwh.setVisibility(View.GONE);
                             linearLayoutKWH.setVisibility(View.VISIBLE);
                             tvInputKwh.setVisibility(View.VISIBLE);
+                            //decimal Format
+                            DecimalFormat df = new DecimalFormat();
+                            df.setMaximumFractionDigits(2);
+                            System.out.println(df.format(selisih));
+                            double formatSelsh = Double.parseDouble(df.format(selisiNegatv));
+                            Log.d("selisih"," "+formatSelsh);
+                            double selisihNegativFormat = Double.parseDouble(df.format(selisiNegatv));
+                            tvInputKwh.setText(String.valueOf(selisihNegativFormat));
 
-                            tvInputKwh.setText(String.valueOf(selisiNegatv));
+                            double longitudeVal,latitudeVal;
+                            longitudeVal = locationTracking.getLongitude();
+                            latitudeVal = locationTracking.getLatitude();
+                            MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter,formatSelsh, scoreClass, scoreId,longitudeVal, latitudeVal, date);
+                            databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(grain_slected).child(String.valueOf(countAdd)).setValue(MHistory);
+                            double longitudeValue = locationTracking.getLatitude();
+                            double langitudeValue = locationTracking.getLongitude();
+                            GHistory gHistory = new GHistory(countAdd,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,mImageFileLocation,3);
+                            insertDataHistory(gHistory);
+
+                            String idpel = sessionPrefference.getIdPelanggan();
+                            long valueIdPelanggan = Long.parseLong( idpel );
+
+                            GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,formatSelsh,scoreClass, scoreId,longitude, latitude,date, text, mImageFileLocation, 3);
+                            insertDataHistoryMeter(ghistoryMeter);
+                            closeProgress();
                         }else {
                             etInputKwh.setVisibility(View.VISIBLE);
                             linearLayoutKWH.setVisibility(View.VISIBLE);
                             tvInputKwh.setVisibility(View.VISIBLE);
-                            tvInputKwh.setText(String.valueOf(selisih));
+                            //decimal Format
+                            DecimalFormat df = new DecimalFormat();
+                            df.setMaximumFractionDigits(2);
+                            System.out.println(df.format(selisih));
+                            double formatSelsh = Double.parseDouble(df.format(selisih));
+                            Log.d("selisih"," "+formatSelsh);
+                            double selisihFormat = Double.parseDouble(df.format(selisih));
+                            tvInputKwh.setText(String.valueOf(selisihFormat));
+                            double longitudeVal,latitudeVal;
+                            longitudeVal = locationTracking.getLongitude();
+                            latitudeVal = locationTracking.getLatitude();
+                            MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter,formatSelsh, scoreClass, scoreId,longitudeVal, latitudeVal, date);
+                            databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(grain_slected).child(String.valueOf(countAdd)).setValue(MHistory);
+                            double longitudeValue = locationTracking.getLatitude();
+                            double langitudeValue = locationTracking.getLongitude();
+                            GHistory gHistory = new GHistory(countAdd,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,mImageFileLocation,3);
+                            insertDataHistory(gHistory);
 
+                            String idpel = sessionPrefference.getIdPelanggan();
+                            long valueIdPelanggan = Long.parseLong( idpel );
+
+                            GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,formatSelsh,scoreClass, scoreId,longitude, latitude,date, text, mImageFileLocation, 3);
+                            insertDataHistoryMeter(ghistoryMeter);
+                            closeProgress();
                         }
 
-                        String getinputKwh = etInputKwh.getText().toString();
-                        String idpel = sessionPrefference.getIdPelanggan();
-                        long valueIdPelanggan = Long.parseLong( idpel );
-//                        long valueKwh = Long.parseLong( getinputKwh );
 
-                        GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,selisih,scoreClass, scoreId,longitude, latitude,date, text, mImageFileLocation, 3);
-                        insertDataHistoryMeter(ghistoryMeter);
-                        closeProgress();
 
                     } else {
 //                        Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
