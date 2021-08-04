@@ -9,8 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +26,7 @@ import androidx.room.Room;
 
 import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.model.MHistory;
+import com.example.myapplicationpln.model.MSpinnerSelectx;
 import com.example.myapplicationpln.model.PointValue;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
@@ -86,6 +90,8 @@ public class HistoryFragment extends Fragment {
     LineDataSet lineDataSet = new LineDataSet(null, null);
     ArrayList<ILineDataSet> lineDataSets = new ArrayList<>();
     LineData lineData;
+    MSpinnerSelectx mSpinnerSelectx = new MSpinnerSelectx();
+    String selected;
 
     public HistoryFragment() {
 
@@ -136,8 +142,156 @@ public class HistoryFragment extends Fragment {
         //20210729
         String selectedIdPelanggan = "1111"; //ambil dengan cara setperti pencet tombol
         String selectedUserID = "";
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference mDatabaseRefs = database.getReference();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child("Address").child(session.getPhone());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final List<String> areasList = new ArrayList<String>();
+
+                int lenght = (int) dataSnapshot.getChildrenCount();
+
+                for (DataSnapshot spinnerSnapshot : dataSnapshot.getChildren()) {
+                    String idName = spinnerSnapshot.child("id_pelanggan").getValue(String.class);
+                    areasList.add(idName);
+                }
+
+                Spinner spinner = (Spinner) view.findViewById(R.id.listItemHisotrySpinner);
+                ArrayAdapter<String> areasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, areasList);
+                areasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(areasAdapter);
+
+                DatabaseReference references = FirebaseDatabase.getInstance().getReference();
+                Query queryx = references.child("SpinnerDbx").child(session.getPhone());
+                queryx.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            String valueSpinner;
+                            mSpinnerSelectx = dataSnapshot.getValue(MSpinnerSelectx.class);
+                            String hyde = mSpinnerSelectx.getSpinner_long();
+                            valueSpinner = mSpinnerSelectx.getSpinner_value();
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        selected = areasAdapter.getItem(i);
+                        //20210803
+                        listData = new ArrayList();
+                        mDatabaseRefs.child("SpinnerDbx").child(session.getPhone()).child("spinner_value").setValue(String.valueOf(i));
+                        mDatabaseRefs.child("SpinnerDbx").child(session.getPhone()).child("spinner_long").setValue(String.valueOf(selected));
+                        mSpinnerSelectx.setSpinner_value(String.valueOf(i));
+                        mSpinnerSelectx.setSpinner_long(areasAdapter.getItem(i));
+                        //2021-07-30
+                        //tunjukkan array atau list yang diambil dari firebase
+                        //masukkan ke dalam variable bernama listHistoryFirebase
+
+                        mUserDatabase = mDatabase.getReference().child("HistoryMeter").child(session.getPhone()).child(String.valueOf("Electricity")).child(selected).orderByChild("meter");
+                        final DatabaseReference nm = FirebaseDatabase.getInstance().getReference("data");
+                        mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                float f = 50, d;
+                                double y;
+                                if (dataSnapshot.exists()) {
+                                    for (DataSnapshot npsnapshot : dataSnapshot.getChildren()) {
+                                        MHistory l = npsnapshot.getValue(MHistory.class);
+                                        listData.add(l);
+
+                                    }
+                                    //20210716
+                                    //ambil history dari room database untuk user tersebut
+                                    //masukkan ke list atau array dengan nama listHistoryLocal
+                                    // = new List<GHistory>();
+                                    List<GHistory> listHistJoin; //gabungan local dan firebase
+                                    //iterasi list firebase --> listData
+                                    int countHist = listData.size();
+                                    String idpel = session.getIdPelanggan();
+                                    long value1 = Long.valueOf(selected);
+                                    List<GHistory> listHistoryCount = db.gHistorySpinnerDao().selectHistoryfromRoom3();
+                                    List<GhistoryMeter> listHistoryMeterCount = db.gHistorySpinnerDao().selectHistoryfromRoomMeter();
+                                    List<GhistoryMeter> listHistoryMeterSelected = db.gHistorySpinnerDao().selectHistoryfromRoomMeterSelected(value1);
+
+                                    String fileNameLocal = "";
+                                    String fileNameLocalMeter = "";
+                                    for (int i = 0; i < countHist; i++) {
+                                        listHistJoin = new ArrayList<>();
+                                        //cari di room database lokasi file
+                                        long idHist = listData.get(i).getId();
+                                        double meter = listData.get(i).getMeter();
+                                        //find di local db
+                                        int countHistLocal = listHistLocal.size();
+                                        for (int j = 0; j < listHistoryMeterSelected.size(); j++) {
+                                            GhistoryMeter ghistoryMeter = listHistoryMeterSelected.get(i);
+
+                                            int idHistLocalMeter = ghistoryMeter.getId();
+                                            if (idHist == idHistLocalMeter) {
+
+                                                fileNameLocalMeter = ghistoryMeter.getImagez();
+                                                Log.d("", " " + fileNameLocal);
+
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    adapter = new MyAdapter(listData, getActivity(), fileNameLocalMeter, listHistMeterLocal);
+                                    mRecyclerview.setAdapter(adapter);
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                        adapterView.setTag(selected);
+                        ((TextView)adapterView.getChildAt(0)).setTextColor(Color.BLUE);
+                        String value = areasAdapter.getItem(i);
+                        String id_user = session.getUserId();
+
+                        //firebase check if data > 0 , insert
+                        if (lenght == 0) {
+                            Log.d("DATA CHANGE insertz", "insertz: ");
+                        } else {
+                            Log.d("DATA CHANGE updatez", "updatez: ");
+//                                Toast.makeText(getActivity().getApplicationContext(), "value if " + value + " choosen", Toast.LENGTH_LONG).show();
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        /*
         //mUserDatabase = mDatabase.getReference().child("HistoryMeter").child(session.getPhone()).child(String.valueOf("Electricity")).child(session.getIdPelanggan()).orderByChild("createdAt");
-        mUserDatabase = mDatabase.getReference().child("HistoryMeter").child(session.getPhone()).child(String.valueOf("Electricity")).child(session.getIdPelanggan()).orderByChild("createdAt");
+        mUserDatabase = mDatabase.getReference().child("HistoryMeter").child(session.getPhone()).child(String.valueOf("Electricity")).child(session.getIdPelanggan()).orderByChild("meter");
         final DatabaseReference nm = FirebaseDatabase.getInstance().getReference("data");
         mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -153,15 +307,15 @@ public class HistoryFragment extends Fragment {
 
                         // showData(listData,l,gHistory);
 
-                        /*
-                        ArrayList<Entry> datavals = new ArrayList<Entry>();
-                        f = f + 50;
-                        y =l.getMeter();
-                        float c = (float) y;
-                        datavals.add(new Entry(f,c));
-                        showData(listData);
-                       showChart(datavals,c);
-                         */
+
+//                        ArrayList<Entry> datavals = new ArrayList<Entry>();
+//                        f = f + 50;
+//                        y =l.getMeter();
+//                        float c = (float) y;
+//                        datavals.add(new Entry(f,c));
+//                        showData(listData);
+//                       showChart(datavals,c);
+
 
                     }
                     //20210716
@@ -171,8 +325,11 @@ public class HistoryFragment extends Fragment {
                     List<GHistory> listHistJoin; //gabungan local dan firebase
                     //iterasi list firebase --> listData
                     int countHist = listData.size();
+                    String idpel = session.getIdPelanggan();
+                    long value1 = Long.valueOf(idpel);
                     List<GHistory> listHistoryCount = db.gHistorySpinnerDao().selectHistoryfromRoom3();
                     List<GhistoryMeter> listHistoryMeterCount = db.gHistorySpinnerDao().selectHistoryfromRoomMeter();
+                    List<GhistoryMeter> listHistoryMeterSelected = db.gHistorySpinnerDao().selectHistoryfromRoomMeterSelected(value1);
 
                     String fileNameLocal = "";
                     String fileNameLocalMeter = "";
@@ -184,16 +341,16 @@ public class HistoryFragment extends Fragment {
                         //find di local db
                         int countHistLocal = listHistLocal.size();
                         for (int j = 0; j < listHistoryMeterCount.size(); j++) {
-                            GHistory history = listHistoryCount.get(i);
+//                            GHistory history = listHistoryCount.get(i);
                             GhistoryMeter ghistoryMeter = listHistoryMeterCount.get(i);
 //                            GHistory histLocal = listHistLocal.get(j);
-                            int idHistLocal = history.getId();
+//                            int idHistLocal = history.getId();
                             int idHistLocalMeter = ghistoryMeter.getId();
 //                            String mImageFileLocation = db.gHistorySpinnerDao().getImageHistory(String.valueOf(history.getMeter()));
-                            if (idHist == idHistLocal) {
+                            if (idHist == idHistLocalMeter) {
                                 //amvil id tersebut
                                 //ambil lokasi file tersebut
-                                fileNameLocal = history.getImagez();
+//                                fileNameLocal = history.getImagez();
                                 fileNameLocalMeter = ghistoryMeter.getImagez();
                                 Log.d("", " " + fileNameLocal);
 //                                showData(listData);
@@ -214,6 +371,8 @@ public class HistoryFragment extends Fragment {
 
             }
         });
+
+         */
         /*
         setListener();
         mUserDatabase2 = mDatabase.getReference().child("History");

@@ -95,7 +95,8 @@ public interface GhistorySpinner {
 
     @Query("SELECT * FROM tblHistoryMeter WHERE status in (3)")
     List<GhistoryMeter> selectHistoryfromRoomMeter();
-
+    @Query("SELECT * FROM tblHistoryMeter WHERE  id_pealanggan = :id_pel")
+    List<GhistoryMeter> selectHistoryfromRoomMeterSelected(long id_pel);
     @Query("SELECT imagez FROM tbHistory WHERE status in (1,2)")
     String selectHistoryfromRoomImage();
     @Query("SELECT imagez FROM tbHistory")

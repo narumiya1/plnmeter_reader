@@ -1,6 +1,7 @@
 package com.example.myapplicationpln.caamera;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -52,6 +53,10 @@ import com.google.gson.GsonBuilder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -148,7 +153,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             List<Integer> selectIdFromHistory = db.gHistorySpinnerDao().selectIdfromRoomHistoryCount();
             int countHistory = selectIdFromHistory.size();
             int countAdd = countHistory+1;
-            uploadImage(imageFilePath, countAdd);
+            double selectLastMeterFromHistory = db.gHistorySpinnerDao().selectRoomMeterLast(countHistory);
+            uploadImage(imageFilePath, countAdd, selectLastMeterFromHistory);
         }else {
 
             Date date = new Date();
@@ -279,7 +285,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         int countHistory = selectIdFromHistory.size();
         int countAdd = countHistory+1;
         //20210706
-        uploadImage(imageFilePath, countAdd);
+        double selectLastMeterFromHistory = db.gHistorySpinnerDao().selectRoomMeterLast(countHistory);
+        uploadImage(imageFilePath, countAdd, selectLastMeterFromHistory);
 
     }
     private Bitmap setReducedImageSize() {
@@ -318,7 +325,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         return compressedOri;
     }
 
-    private void uploadImage(String imageFilePath, int countAdd) {
+    private void uploadImage(String imageFilePath, int countAdd, double selectLastMeterFromHistory) {
         String jwtKey =  new SessionPrefference(getApplicationContext()).getKeyApiJwt();
         Log.d("Body jwtKeys", "String jwtKey : " +jwtKey);
         String jwt = "";
@@ -415,6 +422,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                         double meter = plnData.getMeterValue();
                         double scoreId = plnData.getScoreIdentification();
                         double scoreClass = plnData.getScoreClassification();
+                        double lastValue = selectLastMeterFromHistory;
+                        double selisih =   lastValue - meter ;
                         mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("meter_value").setValue(String.valueOf(meter));
                         mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("identify_value").setValue(String.valueOf(scoreId));
                         mDatabaseRefApiMeter.child("MeterApi").child(sessionPrefference.getPhone()).child("classify_long").setValue(String.valueOf(scoreClass));
@@ -466,12 +475,6 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
                         String idtfy = String.valueOf(scoreId);
                         String classfy = String.valueOf(scoreClass);
-                        double longitudeVal,latitudeVal;
-                        longitudeVal = locationTracking.getLongitude();
-                        latitudeVal = locationTracking.getLatitude();
-                        MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter, scoreId, scoreClass,longitudeVal, latitudeVal, date);
-//                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf(countAdd)).setValue(MHistory);
-                        databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(sessionPrefference.getIdPelanggan()).child(String.valueOf(countAdd)).setValue(MHistory);
 
 //                        databaseReferenceHistory.child(maxIdHistoryi).setValue(MHistory);
                         new Handler().postDelayed(new Runnable() {
@@ -480,7 +483,6 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
                             }
                         },1000);
-                        GHistory itesm = new GHistory(sessionPrefference.getUserId(), meter, scoreClass, scoreId, longitudeVal, latitudeVal, date, text, imageFilePath, 3);
 //                        GHistory item = new GHistory(sessionPrefference.getUserId(),meter,scoreClass,scoreId,longitudeVal, latitudeVal,date,text,imageFilePath,3);
                         /*
                         GHistory.setMeter(m);
@@ -492,10 +494,61 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                          */
                         String idpel = sessionPrefference.getIdPelanggan();
                         long valueIdPelanggan = Long.parseLong( idpel );
-                        insertDataHistory(itesm);
 
-                        GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,0,scoreClass, scoreId,longitude, latitude,date, text, imageFilePath, 3);
-                        insertDataHistoryMeter(ghistoryMeter);
+
+                        if (selisih <= 0){
+                            double selisiNegatv = selisih*-1 ;
+
+                            //decimal Format
+                            /*
+                            df.setMaximumFractionDigits(2);
+                            System.out.println(df.format(selisih));
+                            double formatSelsh = Double.parseDouble(df.format(selisiNegatv));
+                            Log.d("selisih"," "+formatSelsh);
+                            double selisihNegativFormat = Double.parseDouble(df.format(selisiNegatv));
+
+                             */
+                            DecimalFormat df = new DecimalFormat();
+                            df.setRoundingMode(RoundingMode.HALF_EVEN);
+                            BigDecimal bd = new BigDecimal(selisiNegatv).setScale(1, RoundingMode.HALF_EVEN);
+                            double newInput = bd.doubleValue();
+                            String.format("%.2f", selisiNegatv);
+                            String.format("%.2f", newInput);
+                            Log.d("",""+newInput);
+                            NumberFormat nf= NumberFormat.getInstance();
+                            nf.setMaximumFractionDigits(2);
+
+                            double longitudeVal,latitudeVal;
+                            longitudeVal = locationTracking.getLongitude();
+                            latitudeVal = locationTracking.getLatitude();
+                            MHistory mHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter,newInput, scoreClass, scoreId,longitudeVal, latitudeVal, date);
+                            databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(sessionPrefference.getIdPelanggan()).child(String.valueOf(countAdd)).setValue(mHistory);
+
+                            GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,newInput,scoreClass, scoreId,longitude, latitude,date, text, imageFilePath, 3);
+                            insertDataHistoryMeter(ghistoryMeter);
+                        }else {
+
+                            //decimal Format
+                            DecimalFormat df = new DecimalFormat();
+                            df.setMaximumFractionDigits(2);
+                            System.out.println(df.format(selisih));
+                            double formatSelsh = Double.parseDouble(df.format(selisih));
+                            Log.d("selisih"," "+formatSelsh);
+
+                            double selisihFormat = Double.parseDouble(df.format(selisih));
+                            double longitudeVal,latitudeVal;
+                            String idpelg = sessionPrefference.getIdPelanggan();
+                            long valueIdPelanggang = Long.parseLong( idpelg );
+
+                            longitudeVal = locationTracking.getLongitude();
+                            latitudeVal = locationTracking.getLatitude();
+                            MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter,0.0, scoreClass, scoreId,longitudeVal, latitudeVal, date);
+                            databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(String.valueOf(valueIdPelanggang)).child(String.valueOf(countAdd)).setValue(MHistory);
+
+                            GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggang,meter,0.0,scoreClass, scoreId,longitude, latitude,date, text, imageFilePath, 3);
+                            insertDataHistoryMeter(ghistoryMeter);
+                        }
+
                     } else {
                         Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_LONG).show();
                         String jwtNull = "";

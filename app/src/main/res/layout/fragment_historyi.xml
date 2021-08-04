@@ -4,7 +4,37 @@
     android:layout_height="match_parent"
     android:layout_margin="4dp"
     android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/llspinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingRight="8dp">
+
+        <TextView
+            android:id="@+id/pilihIdPel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="Pilih ID Pelanggan "
+            android:textColor="#293859"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:background="@drawable/line_background"
+
+            android:id="@+id/listItemHisotrySpinner"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_toRightOf="@+id/pilih"
+            android:padding="6dp" />
+    </LinearLayout>
+
     <com.github.mikephil.charting.charts.LineChart
+        android:layout_below="@id/llspinner"
         android:id="@+id/line_chartFbase"
         android:layout_width="match_parent"
         android:layout_height="200dp"
