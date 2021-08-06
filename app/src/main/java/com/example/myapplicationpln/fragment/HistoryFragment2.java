@@ -22,6 +22,7 @@ import com.example.myapplicationpln.adapter.HistoryAdapter2;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GHistory;
+import com.example.myapplicationpln.roomDb.GhistoryMeter;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.LimitLine;
@@ -48,7 +49,7 @@ public class HistoryFragment2 extends Fragment {
     RecyclerView mRecyclerview;
     private RecyclerView.LayoutManager layoutManager;
     private AppDatabase db;
-    private ArrayList<GHistory> listHistory;
+    private ArrayList<GhistoryMeter> listHistory;
     private RecyclerView.Adapter adapter;
     SessionPrefference session;
     private LineChart mChart;
@@ -85,7 +86,7 @@ public class HistoryFragment2 extends Fragment {
         MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.custom_marker_view);
         mv.setChartView(mChart);
         mChart.setMarker(mv);
-        GHistory[] gHistory = db.gHistorySpinnerDao().readDataHistory();
+        GhistoryMeter[] gHistory = db.gHistorySpinnerDao().readDataHistory();
         showData(gHistory);
 
         mRecyclerview = view.findViewById(R.id.recyclerViewHistory2);
@@ -120,7 +121,7 @@ public class HistoryFragment2 extends Fragment {
         return dataPoints;
     }
 
-    private void showData(GHistory[] gHistory) {
+    private void showData(GhistoryMeter[] gHistory) {
 
         double x, y;
         for (int i = 0 ; i<gHistory.length; i++){
@@ -165,7 +166,7 @@ public class HistoryFragment2 extends Fragment {
         setData(gHistory);
     }
 
-    private void setData(GHistory[] listHistory) {
+    private void setData(GhistoryMeter[] listHistory) {
         GHistory gHistory = new GHistory();
         ArrayList<Entry> values = new ArrayList<>();
         int historyCount = listHistory.length;

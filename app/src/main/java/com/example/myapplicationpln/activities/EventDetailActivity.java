@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
@@ -20,9 +21,12 @@ import com.example.myapplicationpln.R;
 import com.example.myapplicationpln.preference.SessionPrefference;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.Gspinner;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
 
@@ -36,8 +40,11 @@ public class EventDetailActivity extends AppCompatActivity {
     private Query mUserDatabase;
     private FirebaseDatabase mDatabase;
     SessionPrefference sessionPrefference;
+    DatabaseReference databaseReference2;
+    long maxId;
     String idUser;
     String userAddressId;
+    long getMaxId;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +56,8 @@ public class EventDetailActivity extends AppCompatActivity {
         Log.d("DATA  userDetailId ", "userDetailId: " + idPel);
         userAddressId = intent.getStringExtra("userAddressId");
         Log.d("DATA  get userAddressId ", "userAddressId: " + userAddressId);
-
+        userAddressId = intent.getStringExtra("userAddressId");
+        getMaxId=intent.getLongExtra("getId",maxId);
         address_updated=findViewById(R.id.id_AddressUpdated);
         db = Room.databaseBuilder(getBaseContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
@@ -65,9 +73,25 @@ public class EventDetailActivity extends AppCompatActivity {
         update = findViewById(R.id.button_udpate);
         database = FirebaseDatabase.getInstance().getReference();
         idUser = sessionPrefference.getUserId();
+        String phone = sessionPrefference.getPhone();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mDatabaseRef = database.getReference();
+        databaseReference2 = FirebaseDatabase.getInstance().getReference().child("Address").child(phone);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        databaseReference2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    maxId = (snapshot.getChildrenCount());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
 //        mDatabase = FirebaseDatabase.getInstance();
@@ -109,9 +133,9 @@ public class EventDetailActivity extends AppCompatActivity {
                 get address id
                 mDatabaseRef.child("Address").child(String.valueOf(1)).child("alamat_pelanggan").setValue(String.valueOf(update_alamat));
                  */
-                mDatabaseRef.child("Address").child(userAddressId).child("alamat_pelanggan").setValue(String.valueOf(update_alamat));
-                mDatabaseRef.child("Address").child(userAddressId).child("id_pelanggan").setValue(String.valueOf(id_pln_update));
-                mDatabaseRef.child("Address").child(userAddressId).child("user_address_id").setValue(String.valueOf(userAddressId));
+                mDatabaseRef.child("Address").child(phone).child(userAddressId).child("alamat_pelanggan").setValue(String.valueOf(update_alamat));
+                mDatabaseRef.child("Address").child(phone).child(userAddressId).child("id_pelanggan").setValue(String.valueOf(id_pln_update));
+                mDatabaseRef.child("Address").child(phone).child(userAddressId).child("user_address_id").setValue(String.valueOf(userAddressId));
                 /* user db 2 not updated
                 mDatabaseRef.child("User2").child(sessionPrefference.getPhone()).child("address").setValue(String.valueOf(update_alamat));
                 mDatabaseRef.child("User2").child(sessionPrefference.getPhone()).child("id_pelanggan").setValue(String.valueOf(id_pln_update));

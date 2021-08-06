@@ -61,10 +61,10 @@ public interface GhistorySpinner {
     @Query("SELECT * FROM tbSpinner")
     Gspinner[] readDataAddress();
 
-    @Query("SELECT * FROM tbHistory ORDER BY status ASC ")
-    GHistory[] readDataHistory();
-    @Query("SELECT * FROM tbHistory WHERE status = 3 ORDER BY status ASC")
-    GHistory[] readDataHistory3();
+    @Query("SELECT * FROM tblHistoryMeter ORDER BY status ASC ")
+    GhistoryMeter[] readDataHistory();
+    @Query("SELECT * FROM tblHistoryMeter WHERE status = 3 ORDER BY status ASC")
+    GhistoryMeter[] readDataHistory3();
 //    @Query("SELECT id_user,score_classfy,id  FROM tbHistory WHERE id_user =18")
 //    Ghistoryi[] readDataHistoryn();
     @Query("SELECT * FROM tbImageUploaded WHERE status = 0")
@@ -104,7 +104,7 @@ public interface GhistorySpinner {
 //    @Query("SELECT id FROM tbHistory WHERE status =1")
     @Query("SELECT id FROM tbHistory WHERE status in (1,2)")
     List<Integer> selectIdfromRoomHistory();
-    @Query("SELECT id FROM tbHistory")
+    @Query("SELECT id FROM tblHistoryMeter")
     List<Integer> selectIdfromRoomHistoryCount();
     @Query("SELECT meter FROM tblHistoryMeter WHERE id = :selectIdFromHistory LIMIT 1 ")
     Double selectRoomMeterLast(int selectIdFromHistory);
@@ -141,10 +141,11 @@ public interface GhistorySpinner {
     int updateHistoryFroomRoomMeter(GhistoryMeter gindeks);
     @Query("UPDATE tbSpinner SET id_pelanggan = :id_pelanggan, address =:address WHERE user_address_id = :id")
     int updateIndeks(int id, String address, int id_pelanggan);
-
+    @Query("UPDATE tbSpinner SET id_pelanggan = :id_pelanggan")
+    int updateSpinnerValue(int id_pelanggan);
     @Query("SELECT image FROM tbImage")
     List<String> getImageStorage();
-    @Query("SELECT imagez FROM tbHistory WHERE meter = :meter")
+    @Query("SELECT imagez FROM tblHistoryMeter WHERE phone = :meter")
     String getImageHistory(String meter);
     @Query("SELECT imagez FROM tbHistory WHERE id = :id")
     String getImageHistoryId(int id);

@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.myapplicationpln.R;
+import com.example.myapplicationpln.model.MToastr;
 import com.example.myapplicationpln.roomDb.AppDatabase;
 import com.example.myapplicationpln.roomDb.GHistory;
+import com.example.myapplicationpln.roomDb.GhistoryMeter;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
@@ -31,11 +33,11 @@ import java.util.Date;
 public class HistoryAdapter2 extends RecyclerView.Adapter<HistoryAdapter2.ViewHolder> {
 
     //Deklarasi Variable
-    private ArrayList<GHistory> listHistory; //salah, nama variable tidak oleh sama dengan nama class
+    private ArrayList<GhistoryMeter> listHistory; //salah, nama variable tidak oleh sama dengan nama class
     private AppDatabase appDatabase;
     private Context context;
 
-    public HistoryAdapter2(ArrayList<GHistory> gHistories, Context context) {
+    public HistoryAdapter2(ArrayList<GhistoryMeter> gHistories, Context context) {
 
         //Inisialisasi data yang akan digunakan
         this.listHistory = gHistories;
@@ -119,7 +121,7 @@ public class HistoryAdapter2 extends RecyclerView.Adapter<HistoryAdapter2.ViewHo
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date timeCreated = listHistory.get(position).getDate_time();
         String strTimeCreated = formatter.format(timeCreated);
-        GHistory history = listHistory.get(position);
+        GhistoryMeter history = listHistory.get(position);
 
         //Menampilkan data berdasarkan posisi Item dari RecyclerView
         if (history.getStatus() == 1) {
@@ -175,7 +177,7 @@ public class HistoryAdapter2 extends RecyclerView.Adapter<HistoryAdapter2.ViewHo
         params.setMargins(30, 90, 16, 0);
         holder.DateCreated.setLayoutParams(params);
     }
-    private void showStatus3Visible(GHistory history, ViewHolder holder, String strTimeCreated) {
+    private void showStatus3Visible(GhistoryMeter history, ViewHolder holder, String strTimeCreated) {
         AppDatabase db;
         db = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "tbGrainHistory")
                 .allowMainThreadQueries()
@@ -184,15 +186,20 @@ public class HistoryAdapter2 extends RecyclerView.Adapter<HistoryAdapter2.ViewHo
                 .build();
         String mImageFileLocation;
 
-        mImageFileLocation = db.gHistorySpinnerDao().getImageHistory(String.valueOf(history.getMeter()));
-        File imgFile = new File(mImageFileLocation);
-        Log.d("image makeover", ""+mImageFileLocation);
+        String ph = history.getPhone();
+        mImageFileLocation = db.gHistorySpinnerDao().getImageHistory(ph);
+//        File imgFile = new File(mImageFileLocation);
+        if (mImageFileLocation==null) {
+            MToastr.showToast(context.getApplicationContext(), "no image ");
+        } else{
+            Log.d("image makeover", "" + mImageFileLocation);
         Bitmap bitmap;
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmap = BitmapFactory.decodeFile(mImageFileLocation,
                 bitmapOptions);
 //        bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
         holder.imgv.setImageBitmap(BitmapFactory.decodeFile(mImageFileLocation));
+        }
         double meter = history.getMeter();
         holder.Meter.setVisibility(View.VISIBLE);
         holder.Meter.setText(String.valueOf(meter));

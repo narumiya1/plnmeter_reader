@@ -407,7 +407,7 @@ public class HomeMenuFragment extends Fragment {
                             mDatabaseRefs.child("SpinnerDbx").child(sessionPrefference.getPhone()).child("spinner_long").setValue(String.valueOf(grain_slected));
                             MSpinnerSelectx.setSpinner_value(String.valueOf(i));
                             MSpinnerSelectx.setSpinner_long(areasAdapter.getItem(i));
-
+                            sessionPrefference.setIdPelanggan(grain_slected);
                             adapterView.setTag(grain_slected);
                             ((TextView)adapterView.getChildAt(0)).setTextColor(Color.BLUE);
                             String value = areasAdapter.getItem(i);
@@ -854,6 +854,7 @@ public class HomeMenuFragment extends Fragment {
     private void uploadImage(Bitmap converetdImage, String grain_slected, int countAdd, double selectLastMeterFromHistory) {
         String jwtKey =  new SessionPrefference(getContext()).getKeyApiJwt();
 
+        int count = countAdd+1;
         sessionPrefference.setIdPelanggan(grain_slected);
         Log.d("Body jwtKeys", "String jwtKey : " +jwtKey);
         if (jwtKey.equals(jwt)){
@@ -1007,7 +1008,9 @@ public class HomeMenuFragment extends Fragment {
 
                             }
                         },1000);
-
+                        double longitudeVal,latitudeVal;
+                        longitudeVal = locationTracking.getLongitude();
+                        latitudeVal = locationTracking.getLatitude();
                         if (selisih <= 0){
                             double selisiNegatv = selisih*-1 ;
                             etInputKwh.setVisibility(View.GONE);
@@ -1021,24 +1024,22 @@ public class HomeMenuFragment extends Fragment {
                             String.format("%.2f", selisiNegatv);
                             String.format("%.2f", newInput);
                             Log.d("",""+newInput);
-                            NumberFormat nf= NumberFormat.getInstance();
-                            nf.setMaximumFractionDigits(2);
+//                            NumberFormat nf= NumberFormat.getInstance();
+//                            nf.setMaximumFractionDigits(2);
 //                            String ds=nf.format(selisiNegatv);
 //                            double str1 = Double.parseDouble(ds);
 //                            Log.d("",""+ds+" "+str1);
 
-                            double longitudeVal,latitudeVal;
-                            longitudeVal = locationTracking.getLongitude();
-                            latitudeVal = locationTracking.getLatitude();
-                            MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter,newInput, scoreClass, scoreId,longitudeVal, latitudeVal, date);
-                            databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(grain_slected).child(String.valueOf(countAdd)).setValue(MHistory);
+
+                            MHistory MHistory = new MHistory(count, sessionPrefference.getUserId(), meter,newInput, scoreClass, scoreId,longitudeVal, latitudeVal, date);
+                            databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(grain_slected).child(String.valueOf(count)).setValue(MHistory);
                             double longitudeValue = locationTracking.getLatitude();
                             double langitudeValue = locationTracking.getLongitude();
 
                             String idpel = sessionPrefference.getIdPelanggan();
                             long valueIdPelanggan = Long.parseLong( idpel );
 
-                            GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,newInput,scoreClass, scoreId,longitude, latitude,date, text, mImageFileLocation, 3);
+                            GhistoryMeter ghistoryMeter = new GhistoryMeter(count, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,newInput,scoreClass, scoreId,longitude, latitude,date, text, mImageFileLocation, 3);
                             insertDataHistoryMeter(ghistoryMeter);
                             tvInputKwh.setText(String.valueOf(newInput));
 
@@ -1049,20 +1050,17 @@ public class HomeMenuFragment extends Fragment {
                             tvInputKwh.setVisibility(View.VISIBLE);
 
                             tvInputKwh.setText(String.valueOf(0.0));
-                            double longitudeVal,latitudeVal;
-                            longitudeVal = locationTracking.getLongitude();
-                            latitudeVal = locationTracking.getLatitude();
-                            MHistory MHistory = new MHistory(countAdd, sessionPrefference.getUserId(), meter,0.0, scoreClass, scoreId,longitudeVal, latitudeVal, date);
+                            MHistory MHistory = new MHistory(count, sessionPrefference.getUserId(), meter,0.0, scoreClass, scoreId,longitudeVal, latitudeVal, date);
                             databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(grain_slected).child(String.valueOf(countAdd)).setValue(MHistory);
                             double longitudeValue = locationTracking.getLatitude();
                             double langitudeValue = locationTracking.getLongitude();
-                            GHistory gHistory = new GHistory(countAdd,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,mImageFileLocation,3);
+                            GHistory gHistory = new GHistory(count,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,mImageFileLocation,3);
                             insertDataHistory(gHistory);
 
                             String idpel = sessionPrefference.getIdPelanggan();
                             long valueIdPelanggan = Long.parseLong( idpel );
 
-                            GhistoryMeter ghistoryMeter = new GhistoryMeter(countAdd, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,0.0,scoreClass, scoreId,longitude, latitude,date, text, mImageFileLocation, 3);
+                            GhistoryMeter ghistoryMeter = new GhistoryMeter(count, sessionPrefference.getUserId(),sessionPrefference.getPhone(),valueIdPelanggan,meter,0.0,scoreClass, scoreId,longitude, latitude,date, text, mImageFileLocation, 3);
                             insertDataHistoryMeter(ghistoryMeter);
                             closeProgress();
                         }
@@ -1248,7 +1246,7 @@ public class HomeMenuFragment extends Fragment {
                             updateImage(gimage);
 
                         }
-                        if (selisih <= 0){
+                        if (selisih <= 0 && selisih==0){
                             double selisiNegatv = selisih*-1 ;
                             etInputKwh.setVisibility(View.GONE);
                             linearLayoutKWH.setVisibility(View.VISIBLE);
@@ -1260,8 +1258,8 @@ public class HomeMenuFragment extends Fragment {
                             String.format("%.2f", selisiNegatv);
                             String.format("%.2f", newInput);
                             Log.d("",""+newInput);
-                            NumberFormat nf= NumberFormat.getInstance();
-                            nf.setMaximumFractionDigits(2);
+//                            NumberFormat nf= NumberFormat.getInstance();
+//                            nf.setMaximumFractionDigits(2);
                             //decimal Format
                             /*
                             DecimalFormat df = new DecimalFormat();
@@ -1281,10 +1279,10 @@ public class HomeMenuFragment extends Fragment {
                             databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(String.valueOf(idPel)).child(String.valueOf(idRoomHist)).setValue(MHistory);
                             double longitudeValue = locationTracking.getLatitude();
                             double langitudeValue = locationTracking.getLongitude();
-                            GHistory gHistory = new GHistory(idRoomHist,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,mImageFileLocation,3);
+                            GHistory gHistory = new GHistory(idRoomHist,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,fileImage,3);
                             updateHistoryFroomRoom(gHistory);
 
-                            GhistoryMeter ghistoryMeter = new GhistoryMeter(idRoomHist, sessionPrefference.getUserId(),sessionPrefference.getPhone(),idPel,meter,newInput,scoreClass, scoreId,longitude, latitude,date, text, mImageFileLocation, 3);
+                            GhistoryMeter ghistoryMeter = new GhistoryMeter(idRoomHist, sessionPrefference.getUserId(),sessionPrefference.getPhone(),idPel,meter,newInput,scoreClass, scoreId,longitude, latitude,date, text, fileImage, 3);
                             updateHistoryFroomRoomMeter(ghistoryMeter);
                             closeProgress();
                         }else {
@@ -1299,12 +1297,12 @@ public class HomeMenuFragment extends Fragment {
                             databaseReferenceHistory.child(sessionPrefference.getPhone()).child(String.valueOf("Electricity")).child(String.valueOf(idPel)).child(String.valueOf(idRoomHist)).setValue(MHistory);
                             double longitudeValue = locationTracking.getLatitude();
                             double langitudeValue = locationTracking.getLongitude();
-                            GHistory gHistory = new GHistory(idRoomHist,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,mImageFileLocation,3);
+                            GHistory gHistory = new GHistory(idRoomHist,sessionPrefference.getUserId(), meter,scoreClass, scoreId, longitudeValue, langitudeValue,date,text,fileImage,3);
                             updateHistoryFroomRoom(gHistory);
 
 
 
-                            GhistoryMeter ghistoryMeter = new GhistoryMeter(idRoomHist, sessionPrefference.getUserId(),sessionPrefference.getPhone(),idPel,meter,0.0,scoreClass, scoreId,longitude, latitude,date, text, mImageFileLocation, 3);
+                            GhistoryMeter ghistoryMeter = new GhistoryMeter(idRoomHist, sessionPrefference.getUserId(),sessionPrefference.getPhone(),idPel,meter,0.0,scoreClass, scoreId,longitude, latitude,date, text, fileImage, 3);
                             updateHistoryFroomRoomMeter(ghistoryMeter);
 
                             closeProgress();

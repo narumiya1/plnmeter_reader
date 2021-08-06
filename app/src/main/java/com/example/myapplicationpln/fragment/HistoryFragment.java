@@ -120,7 +120,7 @@ public class HistoryFragment extends Fragment {
         MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.custom_marker_view);
         mv.setChartView(mChart);
         mChart.setMarker(mv);
-        GHistory[] gHistory = db.gHistorySpinnerDao().readDataHistory3();
+        GhistoryMeter[] gHistory = db.gHistorySpinnerDao().readDataHistory3();
         // disable dismiss by tapping outside of the dialog
         showDataRoom(gHistory);
         dialog = new Dialog(getActivity());
@@ -197,7 +197,7 @@ public class HistoryFragment extends Fragment {
                         //tunjukkan array atau list yang diambil dari firebase
                         //masukkan ke dalam variable bernama listHistoryFirebase
 
-                        mUserDatabase = mDatabase.getReference().child("HistoryMeter").child(session.getPhone()).child(String.valueOf("Electricity")).child(selected).orderByChild("meter");
+                        mUserDatabase = mDatabase.getReference().child("HistoryMeter").child(session.getPhone()).child(String.valueOf("Electricity")).child(selected).orderByChild("createdAt");
                         final DatabaseReference nm = FirebaseDatabase.getInstance().getReference("data");
                         mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -226,6 +226,10 @@ public class HistoryFragment extends Fragment {
 
                                     String fileNameLocal = "";
                                     String fileNameLocalMeter = "";
+                                    if (listHistoryMeterSelected.size()!=countHist){
+                                        fileNameLocalMeter = " ";
+
+                                    }else {
                                     for (int i = 0; i < countHist; i++) {
                                         listHistJoin = new ArrayList<>();
                                         //cari di room database lokasi file
@@ -245,6 +249,8 @@ public class HistoryFragment extends Fragment {
                                                 break;
                                             }
                                         }
+                                    }
+
                                     }
                                     adapter = new MyAdapter(listData, getActivity(), fileNameLocalMeter, listHistMeterLocal);
                                     mRecyclerview.setAdapter(adapter);
@@ -589,7 +595,7 @@ public class HistoryFragment extends Fragment {
         mChart.invalidate();
     }
 
-    private void showDataRoom(GHistory[] gHistory) {
+    private void showDataRoom(GhistoryMeter[] gHistory) {
 
         double x, y;
         for (int i = 0; i < gHistory.length; i++) {
@@ -617,7 +623,7 @@ public class HistoryFragment extends Fragment {
     }
 
 
-    private void setDataRoom(GHistory[] listHistory) {
+    private void setDataRoom(GhistoryMeter[] listHistory) {
 
         GHistory gHistory = new GHistory();
         ArrayList<Entry> values = new ArrayList<>();

@@ -130,9 +130,9 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d("DATA CHANGEt", "onDataChange: " + snapshot.getValue());
                             accounts = snapshot.getValue(MDataUser.class);
                             Log.d("accounts", "accounts: " + accounts.getPhone());
-                            Log.d("accountsUser", "accounts.getId_user: " + accounts.getId_user());
+                            Log.d("accountsUser", "accounts.getId_user: " + accounts.getId_pelanggan());
 
-                            loginJwtApi(phoneNumb, pw, accounts.getId_user());
+                            loginJwtApi(phoneNumb, pw, accounts.getId_pelanggan());
 
                         }
                     }
@@ -231,7 +231,7 @@ public class LoginActivity extends AppCompatActivity {
                     closeProgress();
                     Log.d("Body API <>", "Response: " + response.body().toString());
                     sessionPrefference.setPhone(phone);
-                    sessionPrefference.setUserId(id_user);
+                    sessionPrefference.setIdPelanggan(id_user);
                     Log.d("accountsUser accountsUser", " 2.======== " + id_user);
 
                     Log.d("Body Token 1 <>", "Response: " + jwt);
