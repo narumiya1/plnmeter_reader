@@ -79,6 +79,7 @@ public class HistoryFragment2 extends Fragment {
                 }
             }
         });
+        session = new SessionPrefference(getActivity());
         graphView.addSeries(series);
         mChart = view.findViewById(R.id.line_chart);
         mChart.setTouchEnabled(true);
@@ -86,20 +87,19 @@ public class HistoryFragment2 extends Fragment {
         MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.custom_marker_view);
         mv.setChartView(mChart);
         mChart.setMarker(mv);
-        GhistoryMeter[] gHistory = db.gHistorySpinnerDao().readDataHistory();
+        GhistoryMeter[] gHistory = db.gHistorySpinnerDao().readDataHistory(session.getPhone());
         showData(gHistory);
 
         mRecyclerview = view.findViewById(R.id.recyclerViewHistory2);
         mRecyclerview.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerview.setLayoutManager(layoutManager);
-        listHistory.addAll(Arrays.asList(db.gHistorySpinnerDao().readDataHistory()));
+        listHistory.addAll(Arrays.asList(db.gHistorySpinnerDao().readDataHistory(session.getPhone())));
         Log.d("historiyi "," list : "+listHistory);
         //Mamasang adapter pada RecyclerView
         adapter= new HistoryAdapter2(listHistory, getActivity());
         mRecyclerview.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        session = new SessionPrefference(getActivity());
         String idUserAddress = session.getUserAddressId();
         Log.d("get idUserAddress2 ", " : " + idUserAddress);
         return view;

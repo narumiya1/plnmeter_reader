@@ -61,8 +61,8 @@ public interface GhistorySpinner {
     @Query("SELECT * FROM tbSpinner")
     Gspinner[] readDataAddress();
 
-    @Query("SELECT * FROM tblHistoryMeter ORDER BY status ASC ")
-    GhistoryMeter[] readDataHistory();
+    @Query("SELECT * FROM tblHistoryMeter WHERE phone = :phone ORDER BY status ASC ")
+    GhistoryMeter[] readDataHistory(String phone);
     @Query("SELECT * FROM tblHistoryMeter WHERE status = 3 ORDER BY status ASC")
     GhistoryMeter[] readDataHistory3();
 //    @Query("SELECT id_user,score_classfy,id  FROM tbHistory WHERE id_user =18")
