@@ -117,9 +117,9 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
             imageVew.requestLayout();
             imageVew.getLayoutParams().width = 450;
             imageVew.getLayoutParams().height = 200;
-            int x = 250;
+            int x = 370;
             imageVew.setX(x);
-            int y = 200;
+            int y = 100;
             imageVew.setX(y);
         }else {
             //  20210616
@@ -565,7 +565,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
             ByteArrayOutputStream ostream = new ByteArrayOutputStream();
 
             // save image into gallery
-            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, ostream);
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 75, ostream);
 
             FileOutputStream fout = null;
             try {
